@@ -8,6 +8,9 @@
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
+    "paths": {
+      "@angular/*": ["./node_modules/@angular/*"]
+    }
   }
 }
