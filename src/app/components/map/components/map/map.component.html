@@ -1,4 +1,11 @@
 <div class="map">
-    <google-map [options]="mapOptions"></google-map>
+    <google-map [options]="mapOptions" (mapClick)="addMarker($event)">
+        <map-polyline [options]="polylineOptions" [path]="vertices"></map-polyline>
+        <map-marker *ngFor="let markerPosition of markerPositions" [position]="markerPosition" [options]="markerOptions"></map-marker>
+        <map-circle [center]="circleCenter" [options]="circleOptions" [radius]="radius"></map-circle>
+        <app-map-info-box>
+            <div>ssssss</div>
+        </app-map-info-box>
+    </google-map>
     <app-legend></app-legend>
 </div>

@@ -1,0 +1,47 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened='true'>
+        <aside class="sidebar">
+            <h1 class="h1-mobile sidebar__title">Locations</h1>
+            <div class="sidebar__body">
+                <div class="sidebar__item" data-item="#stats">
+                </div>
+
+                <app-list-items></app-list-items>
+                <app-filter></app-filter>
+
+            </div>
+            <div class="sidebar__footer">
+                <a href="#" class="download-xml">Download XML</a>
+            </div>
+        </aside>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <main class="main">
+            <div class="main-header">
+                <div class="main-header__left">
+                    <ul style="display: none;" class="trigger-list">
+                        <li class="trigger-list__item">
+                            <a routerLinkActive="trigger-list__button_active" class="trigger-list__button " routerLink="/statictics">Stats</a>
+                        </li>
+                        <li class="trigger-list__item">
+                            <a routerLinkActive="trigger-list__button_active" class="trigger-list__button trigger-list__button_active" routerLink="/map">Map</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="save-png main-header__right">
+                    <div class="save-png__controls controls">
+                        <a href="#" class="controls__button controls__button_undo"></a>
+                        <a href="#" class="controls__button controls__button_redo controls__button_disabled"></a>
+                    </div>
+                    <div class="save-png__buttons">
+                        <a href="#" class="button button_primary save-png__button">Save as PNG</a>
+                        <a href="#" class="button button_secondary save-png__button">Discard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="main-body">
+                <router-outlet></router-outlet>
+            </div>
+        </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>

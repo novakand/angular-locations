@@ -1,5 +1,70 @@
 /* You can add global styles to this file, and also import other style files */
 
+mat-sidenav {
+    width: 400px;
+    box-shadow: 8px 12px 24px -5px rgb(70 107 155 / 30%);
+}
+
+mat-slider {
+    width: 300px;
+}
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+
+/* ==========================================================================
+   Ngx slider
+   ========================================================================== */
+
+.ngx-slider .ngx-slider-bubble {
+    display: none !important;
+}
+
+.ngx-slider .ngx-slider-pointer {
+    cursor: pointer;
+    top: -11px !important;
+    z-index: 3;
+    width: 28px !important;
+    height: 28px !important;
+    border: 2px solid #1471ea !important;
+    box-shadow: 3px 3px 12px rgb(0 0 0 / 15%) !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+}
+
+.ngx-slider.animate .ngx-slider-pointer {
+    transition: none !important;
+}
+
+.ngx-slider .ngx-slider-pointer:after {
+    content: '';
+    width: 0 !important;
+    height: 0;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    border-radius: 4px;
+    background: #fff;
+    display: none !important;
+}
+
+.ngx-slider .ngx-slider-bar {
+    left: 0;
+    width: 100%;
+    height: 5px !important;
+    z-index: 1;
+    background: #1471ea !important;
+    border-radius: 5px !important;
+}
+
 
 /* ==========================================================================
    Map
@@ -960,8 +1025,8 @@ a {
 .sidebar {
     width: 400px;
     background: #ffffff;
-    position: relative;
-    box-shadow: 8px 12px 24px -5px rgba(70, 107, 155, 0.3);
+    // position: relative;
+    // box-shadow: 8px 12px 24px -5px rgba(70, 107, 155, 0.3);
 }
 
 .sidebar__vam {
@@ -1167,10 +1232,9 @@ a {
     width: 100%;
 }
 
-.main {
-    width: calc(100% - 400px);
-}
-
+// .main {
+//     width: calc(100% - 400px);
+// }
 .top-account {
     position: relative;
 }
@@ -1423,7 +1487,7 @@ a {
 }
 
 .main-header {
-    padding: 16px 40px 15px;
+    padding: 16px 40px 16px;
     border-bottom: 1px dashed #c2dcff;
     display: flex;
     align-items: center;
@@ -1508,9 +1572,8 @@ a {
 }
 
 .main-body {
-    padding: 24px 40px;
-    height: calc(100vh - 82px);
-    overflow: auto;
+    padding: 23px 40px;
+    overflow: hidden;
 }
 
 .main-body__item {
@@ -2172,6 +2235,7 @@ a {
     padding: 14px 16px;
     border-radius: 10px;
     box-shadow: 2px 6px 12px rgba(15, 48, 92, 0.2);
+    margin: 3px;
 }
 
 .controls__button {

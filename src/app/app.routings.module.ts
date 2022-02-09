@@ -2,16 +2,13 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { MapComponent } from './components/map/components/map/map.component';
 import { StaticticsComponent } from './components/statictics/components/statictics/statictics.component';
-
-
+import { LocationsComponent } from './components/locations/components/locations/locations.component';
 
 @NgModule({
     declarations: [],
     imports: [
         RouterModule.forRoot([
-            { path: 'map', component: MapComponent },
-            { path: 'statictics', component: StaticticsComponent },
-            { path: '**', redirectTo: 'map' }
+            {path: '**', redirectTo: 'map' },
         ])
     ],
     exports: [
@@ -21,3 +18,5 @@ import { StaticticsComponent } from './components/statictics/components/staticti
 
 })
 export class AppRoutingsModule { }
+
+
