@@ -5,6 +5,10 @@ mat-sidenav {
     box-shadow: 8px 12px 24px -5px rgb(70 107 155 / 30%);
 }
 
+.mat-drawer {
+    transform: none !important;
+}
+
 .example-form {
     min-width: 150px;
     max-width: 500px;
