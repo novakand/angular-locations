@@ -4,8 +4,8 @@
             <h1 class="h1-mobile sidebar__title">Locations</h1>
             <div class="sidebar__body">
 
-                <app-list-items></app-list-items>
-                <app-filter></app-filter>
+                <app-list-items [dataFilterLocation]="dataFilterLocation"></app-list-items>
+                <app-filter [dataFilterLocation]="dataFilterLocation" (addPoints)="addPoints()"></app-filter>
 
             </div>
             <div class="sidebar__footer">
@@ -17,8 +17,8 @@
         <main class="main">
             <div class="main-header">
                 <div class="main-header__left">
-                    <ul style="display: none;" class="trigger-list">
-                        <li class="trigger-list__item">
+                    <ul class="trigger-list">
+                        <li style="display: none;" class="trigger-list__item">
                             <a routerLinkActive="trigger-list__button_active" class="trigger-list__button " routerLink="/statictics">Stats</a>
                         </li>
                         <li class="trigger-list__item">
@@ -29,7 +29,7 @@
                 <div class="save-png main-header__right">
                     <div class="save-png__controls controls">
                         <a href="#" class="controls__button controls__button_undo"></a>
-                        <a href="#" class="controls__button controls__button_redo controls__button_disabled"></a>
+                        <a style="display: none;" href="#" class="controls__button controls__button_redo controls__button_disabled"></a>
                     </div>
                     <div class="save-png__buttons">
                         <a href="#" class="button button_primary save-png__button">Save as PNG</a>
@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="main-body">
-                <router-outlet></router-outlet>
+                <app-map [dataFilterLocation]="dataFilterLocation" [addPoint]="points"></app-map>
             </div>
         </main>
     </mat-sidenav-content>

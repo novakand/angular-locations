@@ -1,0 +1,49 @@
+[{
+        "officeName": "Sopra Steria Premium Lounge",
+        "allOffices": [],
+        "commutes": [],
+        "nearbies": [{
+            "centerLat": 48.85551,
+            "centerLon": 2.337668,
+            "radiusKm": 0.8
+        }],
+        "forecastPoint": {
+            "lat": 0,
+            "lon": 0
+        },
+        "totalCO2KgPerWeek": 0,
+        "totalCO2KgForecastPerWeek": null
+    },
+    {
+        "officeName": "219 Kennington Ln, London, 219 Kennington Ln, London",
+        "allOffices": [],
+        "commutes": [],
+        "nearbies": [{
+            "centerLat": 48.85551,
+            "centerLon": 2.337668,
+            "radiusKm": 0.8
+        }],
+        "forecastPoint": {
+            "lat": 0,
+            "lon": 0
+        },
+        "totalCO2KgPerWeek": 0,
+        "totalCO2KgForecastPerWeek": null
+    },
+    {
+        "officeName": "Weidenweg 33, 47059 Duisbur",
+        "allOffices": [],
+        "commutes": [],
+        "nearbies": [{
+            "centerLat": 48.85551,
+            "centerLon": 2.337668,
+            "radiusKm": 0.8
+        }],
+        "forecastPoint": {
+            "lat": 0,
+            "lon": 0
+        },
+        "totalCO2KgPerWeek": 0,
+        "totalCO2KgForecastPerWeek": null
+    }
+]

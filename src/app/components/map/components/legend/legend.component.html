@@ -1,5 +1,5 @@
-<form action="#" class="map-filter">
-    <ul class="map-filter__nav">
+<form action="#" class="map-filter" cdkDrag>
+    <ul class="map-filter__nav" style="display: none;">
         <li class="map-filter__nav-item">
             <a href="#map-total" class="map-filter__nav-link map-filter__nav-link_active">Total</a>
         </li>
@@ -7,35 +7,35 @@
             <a href="#map-period" class="map-filter__nav-link">Period</a>
         </li>
     </ul>
-    <div class="map-filter__body">
+    <div class="map-filter__body" style="padding: 0;">
         <div class="map-filter__body-item map-filter__body-item_active" id="map-total">
-            <ul class="color-filters">
+            <ul class="color-filters" style="width: 390px;">
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" name="color-all" id="color-all" class="color-filter__checkbox" checked>
+                    <input type="checkbox" name="color-all" id="color-all" class="color-filter__checkbox" [(ngModel)]="isCheckedColorAll">
                     <label for="color-all" style="background: conic-gradient(from 180deg at 50% 50%, #54c95a 0deg, #ff7a19 79.56deg, #fdb31b 145.19deg, #ff196e 244.56deg, #54c956 360deg);" class="color-filter__label"></label>
                 </li>
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" name="color-1" id="color-1" class="color-filter__checkbox">
+                    <input type="checkbox" name="color-1" id="color-1" (change)="fieldsChange($event)" class="color-filter__checkbox" [(ngModel)]="IsCheckedColor">
                     <label for="color-1" style="background: #54c956;" class="color-filter__label"></label>
                 </li>
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" name="color-2" id="color-2" class="color-filter__checkbox">
+                    <input type="checkbox" name="color-2" id="color-2" (change)="fieldsChange($event)" class="color-filter__checkbox" [(ngModel)]="IsCheckedColor">
                     <label for="color-2" style="background: #fdbe1b;" class="color-filter__label"></label>
                 </li>
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" name="color-3" id="color-3" class="color-filter__checkbox">
+                    <input type="checkbox" name="color-3" id="color-3" (change)="fieldsChange($event)" class="color-filter__checkbox" [(ngModel)]="IsCheckedColor">
                     <label for="color-3" style="background: #ff7a19;" class="color-filter__label"></label>
                 </li>
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" name="color-4" id="color-4" class="color-filter__checkbox">
+                    <input type="checkbox" name="color-4" id="color-4" (change)="fieldsChange($event)" class="color-filter__checkbox" [(ngModel)]="IsCheckedColor">
                     <label for="color-4" style="background: #ff196e;" class="color-filter__label"></label>
                 </li>
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" name="color-5" id="color-5" class="color-filter__checkbox">
+                    <input type="checkbox" name="color-5" id="color-5" (change)="fieldsChange($event)" class="color-filter__checkbox" [(ngModel)]="IsCheckedColor">
                     <label for="color-5" style="background: #ff0a20;" class="color-filter__label"></label>
                 </li>
             </ul>
-            <ul class="tags-list tags-list_mt_24">
+            <ul class="tags-list tags-list_mt_24" style="display: none;">
                 <li class="tags-list__item tag-checkbox">
                     <input type="checkbox" name="all" id="all" class="tag-checkbox__input">
                     <label for="all" class="tag-checkbox__label">All</label>

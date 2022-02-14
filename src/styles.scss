@@ -19,16 +19,117 @@ mat-sidenav {
     width: 100%;
 }
 
+.gm-style-iw button>img {
+    display: none !important;
+}
+
+.gm-style .gm-style-iw-t::after {
+    background: none !important;
+    box-shadow: none !important;
+}
+
+.gm-style .gm-style-iw-c {
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.gm-style-iw-d {
+    overflow: hidden !important;
+}
+
+.gm-ui-hover-effect:hover {
+    opacity: 0 !important;
+}
+
+.gm-ui-hover-effect {
+    opacity: 0 !important;
+}
+
 
 /* ==========================================================================
    Ngx slider
    ========================================================================== */
 
-.ngx-slider .ngx-slider-bubble {
+ngx-slider.animate .ngx-slider-pointer {
+    transition: none !important;
+}
+
+ngx-slider .ngx-slider-bubble {
     display: none !important;
 }
 
+ngx-slider {
+    margin: 0 !important;
+}
+
+ngx-slider .animate .ngx-slider-pointer {
+    transition: none !important;
+}
+
+ngx-slider .ngx-slider-pointer:after {
+    content: "";
+    width: 0 !important;
+    height: 0;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    border-radius: 4px;
+    background: #fff;
+    display: none !important;
+}
+
+ngx-slider [disabled] .ngx-slider-selection {
+    background: #ffffff;
+}
+
+ngx-slider .ngx-slider-bar {
+    left: 0;
+    width: 100%;
+    height: 5px !important;
+    z-index: 1;
+    //  background: #1471ea !important;
+    border-radius: 5px !important;
+}
+
+ngx-slider [disabled] .ngx-slider-pointer {
+    cursor: not-allowed;
+    background-color: #ffffff !important;
+}
+
+ngx-slider[disabled] .ngx-slider-selection {
+    background: #ffffff !important;
+}
+
+ngx-slider .ngx-slider-bar {
+    left: 0;
+    width: 100%;
+    height: 4px;
+    z-index: 1;
+    background: #1471ea !important;
+    border-radius: 5px;
+}
+
+ngx-slider[disabled] .ngx-slider-bar {
+    left: 0;
+    width: 100%;
+    height: 4px;
+    z-index: 1;
+    background-color: #ffffff !important;
+    border-radius: 5px;
+}
+
 .ngx-slider .ngx-slider-pointer {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    top: -14px;
+    background-color: #0db9f0;
+    z-index: 3;
+    border-radius: 16px;
+}
+
+ngx-slider .ngx-slider-pointer {
     cursor: pointer;
     top: -11px !important;
     z-index: 3;
@@ -40,29 +141,26 @@ mat-sidenav {
     background: #ffffff !important;
 }
 
-.ngx-slider.animate .ngx-slider-pointer {
-    transition: none !important;
+ngx-slider[disabled] .ngx-slider-pointer {
+    border: 2px solid #ffffff !important;
 }
 
-.ngx-slider .ngx-slider-pointer:after {
-    content: '';
-    width: 0 !important;
-    height: 0;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    border-radius: 4px;
-    background: #fff;
-    display: none !important;
+ngx-slider[disabled] .ngx-slider-pointer {
+    cursor: not-allowed;
+    background-color: #ffffff;
 }
 
-.ngx-slider .ngx-slider-bar {
+ngx-slider .ngx-slider-bar [disabled] {
     left: 0;
     width: 100%;
-    height: 5px !important;
+    height: 4px;
     z-index: 1;
-    background: #1471ea !important;
-    border-radius: 5px !important;
+    background: #ffffff !important;
+    border-radius: 2px;
+}
+
+.add-point {
+    cursor: pointer;
 }
 
 
@@ -2109,6 +2207,7 @@ a {
     border-radius: 6px;
     background: #ffffff;
     padding: 24px;
+    cursor: move;
 }
 
 .map-filter__nav {

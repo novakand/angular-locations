@@ -1,10 +1,10 @@
 <div class="locations">
     <ul class="locations-list locations__list">
-        <li class="locations-list__item">
-            <div class="location locations-list__location">
+        <li class="locations-list__item" *ngFor="let item of allOffices">
+            <div class="location locations-list__location" [class.location_active]="item.isOpen" type="button" (click)="onSelect(item)">
                 <div class="location__top">
                     <a href="#" class="location__visibility"></a>
-                    <div class="location__name">Sopra Steria Premium Lounge</div>
+                    <div class="location__name">{{item.officeName}} {{item.officeAddr}}</div>
                 </div>
                 <div class="location__body">
                     <div class="location__qr">
@@ -21,108 +21,8 @@
                 </div>
             </div>
             <div class="locations-list__checkbox radio location-radio">
-                <input type="radio" name="location" id="radio-location-1" class="radio__input location-radio__input" checked="">
-                <label for="radio-location-1" class="radio__label"></label>
-            </div>
-        </li>
-        <li class="locations-list__item">
-            <div class="location locations-list__location">
-                <div class="location__top">
-                    <a href="#" class="location__visibility"></a>
-                    <div class="location__name">Hoofddorppleinbuurt</div>
-                </div>
-                <div class="location__body">
-                    <div class="location__qr">
-                        <img src="assets/img/image 1.png" alt="" class="location__qr-image">
-                    </div>
-                    <ul class="location__buttons">
-                        <li class="location__buttons-item">
-                            <a href="assets/img/image 1.png" class="link link_download">Download QR-code</a>
-                        </li>
-                        <li class="location__buttons-item">
-                            <a href="#" class="link link_delete">Delete location</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="locations-list__checkbox radio location-radio">
-                <input type="radio" name="location" id="radio-location-2" class="radio__input location-radio__input">
-                <label for="radio-location-2" class="radio__label"></label>
-            </div>
-        </li>
-        <li class="locations-list__item">
-            <div class="location locations-list__location">
-                <div class="location__top">
-                    <a href="#" class="location__visibility"></a>
-                    <div class="location__name">219 Kennington Ln, London, 219 Kennington Ln, London</div>
-                </div>
-                <div class="location__body">
-                    <div class="location__qr">
-                        <img src="assets/img/image 1.png" alt="" class="location__qr-image">
-                    </div>
-                    <ul class="location__buttons">
-                        <li class="location__buttons-item">
-                            <a href="assets/img/image 1.png" class="link link_download">Download QR-code</a>
-                        </li>
-                        <li class="location__buttons-item">
-                            <a href="#" class="link link_delete">Delete location</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="locations-list__checkbox radio location-radio">
-                <input type="radio" name="location" id="radio-location-3" class="radio__input location-radio__input">
-                <label for="radio-location-3" class="radio__label"></label>
-            </div>
-        </li>
-        <li class="locations-list__item">
-            <div class="location locations-list__location">
-                <div class="location__top">
-                    <a href="#" class="location__visibility"></a>
-                    <div class="location__name">Weidenweg 33, 47059 Duisbur</div>
-                </div>
-                <div class="location__body">
-                    <div class="location__qr">
-                        <img src="assets/img/image 1.png" alt="" class="location__qr-image">
-                    </div>
-                    <ul class="location__buttons">
-                        <li class="location__buttons-item">
-                            <a href="assets/img/image 1.png" class="link link_download">Download QR-code</a>
-                        </li>
-                        <li class="location__buttons-item">
-                            <a href="#" class="link link_delete">Delete location</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="locations-list__checkbox radio location-radio">
-                <input type="radio" name="location" id="radio-location-4" class="radio__input location-radio__input">
-                <label for="radio-location-4" class="radio__label"></label>
-            </div>
-        </li>
-        <li class="locations-list__item">
-            <div class="location locations-list__location location_disabled">
-                <div class="location__top">
-                    <a href="#" class="location__visibility"></a>
-                    <div class="location__name">City Zürich Switzerland</div>
-                </div>
-                <div class="location__body">
-                    <div class="location__qr">
-                        <img src="assets/img/image 1.png" alt="" class="location__qr-image">
-                    </div>
-                    <ul class="location__buttons">
-                        <li class="location__buttons-item">
-                            <a href="assets/img/image 1.png" class="link link_download">Download QR-code</a>
-                        </li>
-                        <li class="location__buttons-item">
-                            <a href="#" class="link link_delete">Delete location</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="locations-list__checkbox radio location-radio">
-                <input type="radio" name="location" id="radio-location-5" class="radio__input location-radio__input">
-                <label for="radio-location-5" class="radio__label"></label>
+                <input type="radio" name="location" id="radio-location-{{item.id}}" class="radio__input location-radio__input" checked="">
+                <label for="radio-location-{{item.id}}" class="radio__label"></label>
             </div>
         </li>
     </ul>

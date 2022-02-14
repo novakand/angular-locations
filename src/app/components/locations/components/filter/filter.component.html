@@ -1,61 +1,44 @@
 <div class="filters">
-    <ngx-slider [(value)]="value" [options]="options"></ngx-slider>
-    <!-- <form action="#" class="filters-form">
+    <form action="#" class="filters-form">
         <div class="filters-form__default">
             <div class="filter-wrapper">
-                <div class="filter-slider noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" data-value="13875" data-max="13875" data-input="co2" id="co2-filter-slider">
-                    <div class="noUi-base">
-                        <div class="noUi-connects">
-                            <div class="noUi-connect" style="transform: translate(0%, 0px) scale(1, 1);"></div>
-                        </div>
-                        <div class="noUi-origin" style="transform: translate(-100%, 0px); z-index: 5;">
-                            <div class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0.0" aria-valuemax="13875.0" aria-valuenow="0.0" aria-valuetext="0">
-                                <div class="noUi-touch-area"></div>
-                            </div>
-                        </div>
-                        <div class="noUi-origin" style="transform: translate(0%, 0px); z-index: 4;">
-                            <div class="noUi-handle noUi-handle-upper" data-handle="1" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0.0" aria-valuemax="13875.0" aria-valuenow="13875.0" aria-valuetext="13875">
-                                <div class="noUi-touch-area"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ngx-slider class="filter-slider custom" id="1" (userChange)="onUserChange($event,sliderType.cO2KgWeek)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
                 <div class="filter-details filter-wrapper__details clearfix">
-                    <label for="co2" class="filter-details__label">CO<sub>2</sub></label>
+                    <label for="co2" class="filter-details__label">CO<sub>2</sub> kg per week</label>
                     <div class="filter-details__right">
-                        <div class="filter-details__m">km</div>
-                        <input type="number" name="co2" id="co2" class="filter-details__input" value="13875" min="0" max="13875">
+                        <div class="filter-details__m"></div>
+                        <input type="number" [(ngModel)]="sliderPerWeekOptions.value" name="co2" id="co2" class="filter-details__input">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="filters-form__hidden-part filters-form__hidden-part_active">
+        <div class="filters-form__hidden-part" [ngClass]="{'filters-form__hidden-part_active': isFilterShow}">
             <ul class="togglers-list">
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" name="transport" id="transport" class="toggler__input">
+                        <input type="checkbox" [(ngModel)]="isChekedTransport" name="transport" id="transport" class="toggler__input">
                         <label for="transport" class="toggler__label">Transport</label>
                     </div>
                     <div class="toggler__body">
                         <ul class="tags-list">
                             <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="pub-trans" id="pub-trans" class="tag-checkbox__input" disabled="">
+                                <input type="checkbox" name="pub-trans" id="pub-trans" class="tag-checkbox__input" [disabled]="!isChekedTransport">
                                 <label for="pub-trans" class="tag-checkbox__label">Pub. trans</label>
                             </li>
                             <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="car" id="car" class="tag-checkbox__input" disabled="">
+                                <input type="checkbox" name="car" id="car" class="tag-checkbox__input" [disabled]="!isChekedTransport">
                                 <label for="car" class="tag-checkbox__label">Car</label>
                             </li>
                             <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="e-bike" id="e-bike" class="tag-checkbox__input" disabled="">
+                                <input type="checkbox" name="e-bike" id="e-bike" class="tag-checkbox__input" [disabled]="!isChekedTransport">
                                 <label for="e-bike" class="tag-checkbox__label">E-bike</label>
                             </li>
                             <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="bicycle" id="bicycle" class="tag-checkbox__input" disabled="">
+                                <input type="checkbox" name="bicycle" id="bicycle" class="tag-checkbox__input" [disabled]="!isChekedTransport">
                                 <label for="bicycle" class="tag-checkbox__label">Bicycle</label>
                             </li>
                             <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="e-car" id="e-car" class="tag-checkbox__input" disabled="">
+                                <input type="checkbox" name="e-car" id="e-car" class="tag-checkbox__input" [disabled]="!isChekedTransport">
                                 <label for="e-car" class="tag-checkbox__label">E-Car</label>
                             </li>
                         </ul>
@@ -63,63 +46,31 @@
                 </li>
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" name="nearby-homes" id="nearby-homes" class="toggler__input">
+                        <input type="checkbox" (change)="fieldsChange($event)" name="nearby-homes" id="nearby-homes" [(ngModel)]="isNearbyHomes" class="toggler__input">
                         <label for="nearby-homes" class="toggler__label">Nearby homes</label>
                     </div>
                     <div class="toggler__body">
                         <ul class="filter-list">
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <div class="filter-slider noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" data-value="9" data-max="16" data-input="within" id="within-filter-slider" disabled="">
-                                        <div class="noUi-base">
-                                            <div class="noUi-connects">
-                                                <div class="noUi-connect" style="transform: translate(0%, 0px) scale(0.5625, 1);"></div>
-                                            </div>
-                                            <div class="noUi-origin" style="transform: translate(-100%, 0px); z-index: 5;">
-                                                <div class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0.0" aria-valuemax="9.0" aria-valuenow="0.0" aria-valuetext="0">
-                                                    <div class="noUi-touch-area"></div>
-                                                </div>
-                                            </div>
-                                            <div class="noUi-origin" style="transform: translate(-43.75%, 0px); z-index: 4;">
-                                                <div class="noUi-handle noUi-handle-upper" data-handle="1" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0.0" aria-valuemax="16.0" aria-valuenow="9.0" aria-valuetext="9">
-                                                    <div class="noUi-touch-area"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.NearbyKm)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions"></ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="within" class="filter-details__label">Within</label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">km</div>
-                                            <input type="number" name="within" id="within" class="filter-details__input" value="9" min="0" max="16" disabled="">
+                                            <input type="number" name="within" id="within" [disabled]="!isNearbyHomes" class="filter-details__input" [(ngModel)]="sliderNearbyKmOptions.value" min="0" max="16">
                                         </div>
                                     </div>
                                 </div>
                             </li>
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <div class="filter-slider noUi-target noUi-ltr noUi-horizontal noUi-txt-dir-ltr" data-value="5" data-max="9" data-input="min" id="min-filter-slider" disabled="">
-                                        <div class="noUi-base">
-                                            <div class="noUi-connects">
-                                                <div class="noUi-connect" style="transform: translate(0%, 0px) scale(0.555556, 1);"></div>
-                                            </div>
-                                            <div class="noUi-origin" style="transform: translate(-100%, 0px); z-index: 5;">
-                                                <div class="noUi-handle noUi-handle-lower" data-handle="0" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0.0" aria-valuemax="5.0" aria-valuenow="0.0" aria-valuetext="0">
-                                                    <div class="noUi-touch-area"></div>
-                                                </div>
-                                            </div>
-                                            <div class="noUi-origin" style="transform: translate(-44.4444%, 0px); z-index: 4;">
-                                                <div class="noUi-handle noUi-handle-upper" data-handle="1" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0.0" aria-valuemax="9.0" aria-valuenow="5.0" aria-valuetext="5">
-                                                    <div class="noUi-touch-area"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.NearbyHomes)" [(value)]="sliderNearbyHomesOptions.value" [(highValue)]="sliderNearbyHomesOptions.highValue" [options]="sliderNearbyHomesOptions"></ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input type="number" name="min" id="min" class="filter-details__input" value="5" min="0" max="9" disabled="">
+                                            <input type="number" [disabled]="!isNearbyHomes" name="min" id="min" class="filter-details__input" [(ngModel)]="sliderNearbyHomesOptions.value" min="0" max="9">
                                         </div>
                                     </div>
                                 </div>
@@ -129,19 +80,22 @@
                 </li>
                 <li class="togglers-list__item toggler clearfix">
                     <div class="toggler__head">
-                        <input type="checkbox" name="forecast" id="forecast" class="toggler__input">
+                        <input type="checkbox" name="forecast" id="forecast" [(ngModel)]="isChekedForecast" class="toggler__input">
                         <label for="forecast" class="toggler__label">Forecast</label>
                     </div>
                     <div class="toggler__body toggler__body_right">
-                        <a href="#" class="add-point add-point_disabled">+ Add point</a>
+                        <a class="add-point" (click)="addPoint()" [ngClass]="{'add-point_disabled': !isChekedForecast}">+ Add point</a>
                     </div>
                 </li>
             </ul>
         </div>
-        <div class="filters-form__toggle">
-            <a href="#" class="filters-form__toggler">
-                <span class="filters-form__toggler-text">Show filters</span>
+        <div class="filters-form__toggle" [ngClass]="{'filters-form__toggler_active': isFilterShow}">
+            <a class="filters-form__toggler" (click)=toggleFilter()>
+                <span class="filters-form__toggler-text">
+                    <span *ngIf="!isFilterShow">Show filters</span>
+                <span *ngIf="isFilterShow">Hide filters</span>
+                </span>
             </a>
         </div>
-    </form> -->
+    </form>
 </div>

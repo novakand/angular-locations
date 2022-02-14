@@ -16,6 +16,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 
 // routing
 import { AppLocationModule } from './location.routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientService } from 'src/app/services/http-client.service';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import { AppLocationModule } from './location.routing.module';
     CommonModule,
     MatSidenavModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [LocationsComponent]
