@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 
 // interfaces
-import { FilterResponce } from 'src/app/components/locations/interfaces/filter-responce.interfaces';
+import { FilterResponce } from '../../../locations/interfaces/filter-responce.interfaces';
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
 @Component({
   selector: 'app-map',

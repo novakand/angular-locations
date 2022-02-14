@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IEnvironment } from 'src/environments/environment.interface';
+import { IEnvironment } from '../.././environments/environment.interface';
 
 @Injectable()
 export class SettingsService {
