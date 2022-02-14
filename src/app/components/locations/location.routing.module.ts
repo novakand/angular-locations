@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { MapComponent } from '../map/components/map/map.component';
 import { StaticticsComponent } from '../statictics/components/statictics/statictics.component';
 
-
 @NgModule({
     declarations: [],
     imports: [

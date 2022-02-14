@@ -8,17 +8,9 @@ import { FilterComponent } from './components/filter/filter.component';
 import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
-// components
-
-
-// modules
-
-
 // routing
 import { AppLocationModule } from './location.routing.module';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientService } from 'src/app/services/http-client.service';
-
 @NgModule({
   declarations: [
     FilterComponent,

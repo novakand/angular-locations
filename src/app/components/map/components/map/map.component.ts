@@ -4,7 +4,6 @@ import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 // interfaces
 import { FilterResponce } from 'src/app/components/locations/interfaces/filter-responce.interfaces';
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
-
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -80,8 +79,6 @@ export class MapComponent implements OnInit, OnChanges {
           anchorPoint: new google.maps.Point(-290, 90),
           position: { lat: this.dataFilterLocation.forecastPoint.lat, lng: this.dataFilterLocation.forecastPoint.lon },
         };
-
-
 
         this.markers.push(this.markerOptions);
         // tslint:disable-next-line: max-line-length

@@ -69,10 +69,11 @@ export class FilterComponent implements OnInit {
     }
   }
 
+  // tslint:disable-next-line: typedef
   public fieldsChange(event) {
     this.sliderNearbyKmOptions = Object.assign({}, this.sliderNearbyKmOptions, { disabled: !event.currentTarget.checked });
     this.sliderNearbyHomesOptions = Object.assign({}, this.sliderNearbyHomesOptions, { disabled: !event.currentTarget.checked });
-    //event.currentTarget.checked
+    // event.currentTarget.checked
   }
 
   // tslint:disable-next-line: typedef

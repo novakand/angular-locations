@@ -24,7 +24,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MapInfoBoxComponent } from './components/map/components/map-info-box/map-info-box.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FilterComponent } from './components/locations/components/filter/filter.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { LocationsService } from './components/locations/services/locations.service';
 import { HttpClientService } from './services/http-client.service';
 import { SettingsService } from './services/settings.service';

@@ -51,6 +51,7 @@ export class LocationsComponent implements OnInit {
     });
   }
 
+  // tslint:disable-next-line: typedef
   public addPoints() {
     this.points = {};
   }

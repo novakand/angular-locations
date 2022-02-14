@@ -7,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LegendComponent implements OnInit {
 
-
   public isCheckedColorAll = true;
   public IsCheckedColor = false;
 
