@@ -44,7 +44,7 @@ export class MapComponent implements OnInit, OnChanges {
   };
 
   public mapOptions: google.maps.MapOptions = {
-    center: { lat: 37.772, lng: -122.214 },
+    center: { lat: 48.79875, lng: 2.538979 },
     restriction: { strictBounds: false, latLngBounds: { north: 83.8, south: -83.8, west: -180, east: 180 } },
     zoom: 8,
     disableDefaultUI: true,
@@ -63,9 +63,13 @@ export class MapComponent implements OnInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.dataFilterLocation && changes.dataFilterLocation.currentValue) {
-      this.buildPolylines();
+
+      this.infoWindowOptions = {};
+      this.infoWindowOptions.pixelOffset = new google.maps.Size(0, -60);
+      this.infoWindowOptions.disableAutoPan = false;
       this.buildMarker(this.dataFilterLocation.forecastPoint);
       this.buildCircle(this.dataFilterLocation);
+      this.buildPolylines();
     }
 
     if (changes.addPoint && changes.addPoint.currentValue) {
@@ -81,7 +85,7 @@ export class MapComponent implements OnInit, OnChanges {
 
         this.markers.push(this.markerOptions);
         // tslint:disable-next-line: max-line-length
-        // this.map.googleMap.setCenter(new google.maps.LatLng(this.dataFilterLocation.forecastPoint.lat, this.dataFilterLocation.forecastPoint.lon));
+        this.map.googleMap.setCenter(new google.maps.LatLng(this.dataFilterLocation.forecastPoint.lat, this.dataFilterLocation.forecastPoint.lon));
       }
     }
   }

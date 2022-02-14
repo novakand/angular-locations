@@ -33,6 +33,7 @@ export class FilterComponent implements OnInit {
     maxRange: 13875,
     hideLimitLabels: true,
     hidePointerLabels: true,
+    step: 1,
   };
 
   public sliderNearbyKmOptions: any = {
@@ -44,6 +45,7 @@ export class FilterComponent implements OnInit {
     maxRange: 16,
     hideLimitLabels: true,
     hidePointerLabels: true,
+    step: 1,
   };
 
   public sliderNearbyHomesOptions: any = {
@@ -58,6 +60,7 @@ export class FilterComponent implements OnInit {
     hideLimitLabels: true,
     hidePointerLabels: true,
   };
+
 
   constructor() { }
 
@@ -82,7 +85,12 @@ export class FilterComponent implements OnInit {
   }
 
   // tslint:disable-next-line: typedef
-  public onUserChange(event, filterType: FilterSliderType) { }
+  public onUserChange(event, filterType: FilterSliderType) {
+    if (filterType === FilterSliderType.NearbyHomes) {
+      event.pointerType === 0 ? this.currentValue = event.value : this.currentValue = event.highValue;
+    }
+
+  }
 
   public addPoint(): void {
     this.addPoints.emit();
