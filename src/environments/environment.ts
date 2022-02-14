@@ -6,7 +6,7 @@ import { IEnvironment } from './environment.interface';
 
 export const environment: IEnvironment = {
   debounceTime: 300,
-  production: true,
+  production: false,
   apiLocationUri: 'https://144.76.237.58:9043/api/',
 
 };
