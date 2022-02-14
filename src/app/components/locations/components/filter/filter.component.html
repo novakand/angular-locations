@@ -2,7 +2,9 @@
     <form action="#" class="filters-form">
         <div class="filters-form__default">
             <div class="filter-wrapper">
-                <ngx-slider class="filter-slider custom" id="1" (userChange)="onUserChange($event,sliderType.cO2KgWeek)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
+                <div class="custom-slider">
+                    <ngx-slider class="filter-slider custom" (userChange)="onUserChange($event,sliderType.cO2KgWeek)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
+                </div>
                 <div class="filter-details filter-wrapper__details clearfix">
                     <label for="co2" class="filter-details__label">CO<sub>2</sub> kg per week</label>
                     <div class="filter-details__right">

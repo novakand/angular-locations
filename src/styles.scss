@@ -1,5 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
 
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use "@angular/material" as mat;
+// Plus imports for other components in your app.
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$theme-primary: mat.define-palette(mat.$indigo-palette);
+$theme-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+// The warn palette is optional (defaults to red).
+$theme-warn: mat.define-palette(mat.$red-palette);
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$theme: mat.define-light-theme( ( color: ( primary: $theme-primary, accent: $theme-accent, warn: $theme-warn, ), ));
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($theme);
+.h21-dialog-panel_progress {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    margin-top: 79px;
+    .mat-progress-bar-fill::after {
+        background-color: #1471ea;
+    }
+}
+
 mat-sidenav {
     width: 400px;
     box-shadow: 8px 12px 24px -5px rgb(70 107 155 / 30%);
@@ -51,6 +83,56 @@ mat-sidenav {
    Ngx slider
    ========================================================================== */
 
+ngx-slider [disabled] .ngx-slider-pointer {
+    border: 2px solid #ffffff !important;
+}
+
+ngx-slider [disabled] .ngx-slider-pointer {
+    cursor: not-allowed;
+    background-color: #ffffff !important;
+}
+
+ngx-slider .ngx-slider-bar [disabled] {
+    left: 0;
+    width: 100%;
+    height: 4px;
+    z-index: 1;
+    background: #ffffff;
+    border-radius: 2px;
+}
+
+ngx-slider .ngx-slider-bar {
+    left: 0;
+    width: 100%;
+    height: 6px !important;
+    z-index: 1;
+    background: #ffffff !important;
+    border-radius: 2px;
+}
+
+ngx-slider .ngx-slider-selection {
+    z-index: 2;
+    background: #1471ea !important;
+    border-radius: 2px;
+}
+
+ngx-slider .ngx-slider-selection [disabled] {
+    z-index: 2;
+    background: #ffffff !important;
+    border-radius: 2px;
+}
+
+ngx-slider[disabled] .ngx-slider-pointer {
+    border: none;
+}
+
+.ngx-slider[disabled] .ngx-slider-selection {
+    cursor: not-allowed;
+    z-index: 2;
+    background: #ffffff !important;
+    border-radius: 2px;
+}
+
 ngx-slider.animate .ngx-slider-pointer {
     transition: none !important;
 }
@@ -83,43 +165,7 @@ ngx-slider [disabled] .ngx-slider-selection {
     background: #ffffff;
 }
 
-ngx-slider .ngx-slider-bar {
-    left: 0;
-    width: 100%;
-    height: 5px !important;
-    z-index: 1;
-    //  background: #1471ea !important;
-    border-radius: 5px !important;
-}
-
-ngx-slider [disabled] .ngx-slider-pointer {
-    cursor: not-allowed;
-    background-color: #ffffff !important;
-}
-
-ngx-slider[disabled] .ngx-slider-selection {
-    background: #ffffff !important;
-}
-
-ngx-slider .ngx-slider-bar {
-    left: 0;
-    width: 100%;
-    height: 4px;
-    z-index: 1;
-    background: #1471ea !important;
-    border-radius: 5px;
-}
-
-ngx-slider[disabled] .ngx-slider-bar {
-    left: 0;
-    width: 100%;
-    height: 4px;
-    z-index: 1;
-    background-color: #ffffff !important;
-    border-radius: 5px;
-}
-
-.ngx-slider .ngx-slider-pointer {
+ngx-slider .ngx-slider-pointer {
     cursor: pointer;
     width: 32px;
     height: 32px;
@@ -135,28 +181,10 @@ ngx-slider .ngx-slider-pointer {
     z-index: 3;
     width: 28px !important;
     height: 28px !important;
-    border: 2px solid #1471ea !important;
+    border: 2px solid #1471ea;
     box-shadow: 3px 3px 12px rgb(0 0 0 / 15%) !important;
     border-radius: 50% !important;
     background: #ffffff !important;
-}
-
-ngx-slider[disabled] .ngx-slider-pointer {
-    border: 2px solid #ffffff !important;
-}
-
-ngx-slider[disabled] .ngx-slider-pointer {
-    cursor: not-allowed;
-    background-color: #ffffff;
-}
-
-ngx-slider .ngx-slider-bar [disabled] {
-    left: 0;
-    width: 100%;
-    height: 4px;
-    z-index: 1;
-    background: #ffffff !important;
-    border-radius: 2px;
 }
 
 .add-point {
@@ -1104,9 +1132,13 @@ table {
 
 body {
     font-family: "Rubik", sans-serif;
-    color: #647893;
+    color: #647893 !important;
     font-size: 16px;
     line-height: 1.62;
+}
+
+.filters {
+    color: #647893 !important;
 }
 
 a {

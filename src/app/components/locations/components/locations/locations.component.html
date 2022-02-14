@@ -14,6 +14,10 @@
         </aside>
     </mat-sidenav>
     <mat-sidenav-content>
+
+        <!-- <mat-progress-bar mode="determinate" value="40"></mat-progress-bar> -->
+        <!-- <mat-progress-bar class="example-margin" [color]="red" [mode]="indeterminate" [value]="50" [bufferValue]="70">
+        </mat-progress-bar> -->
         <main class="main">
             <div class="main-header">
                 <div class="main-header__left">
@@ -36,6 +40,7 @@
                         <a href="#" class="button button_secondary save-png__button">Discard</a>
                     </div>
                 </div>
+                <mat-progress-bar *ngIf="isProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
             </div>
             <div class="main-body">
                 <app-map [dataFilterLocation]="dataFilterLocation" [addPoint]="points"></app-map>

@@ -33,6 +33,7 @@ export class FilterComponent implements OnInit {
     maxRange: 13875,
     hideLimitLabels: true,
     hidePointerLabels: true,
+    showSelectionBar: true,
     step: 1,
   };
 
@@ -45,6 +46,7 @@ export class FilterComponent implements OnInit {
     maxRange: 16,
     hideLimitLabels: true,
     hidePointerLabels: true,
+    showSelectionBar: true,
     step: 1,
   };
 
@@ -58,6 +60,7 @@ export class FilterComponent implements OnInit {
     highValue: 5,
     steps: 1,
     hideLimitLabels: true,
+    showSelectionBar: true,
     hidePointerLabels: true,
   };
 

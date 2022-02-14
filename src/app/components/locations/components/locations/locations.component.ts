@@ -17,7 +17,7 @@ export class LocationsComponent implements OnInit {
   constructor(
     private filter: LocationsService,
   ) { }
-
+  public isProgress = false;
   public dataFilterLocation: FilterResponce;
   public points = {};
 
@@ -47,6 +47,7 @@ export class LocationsComponent implements OnInit {
       CommuteCO2WeightEnumstring: []
     }).subscribe((result) => {
       this.dataFilterLocation = result;
+      this.isProgress = true;
       console.log(result, 'result');
     });
   }

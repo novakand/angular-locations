@@ -29,6 +29,8 @@ import { LocationsService } from './components/locations/services/locations.serv
 import { HttpClientService } from './services/http-client.service';
 import { SettingsService } from './services/settings.service';
 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +56,8 @@ import { SettingsService } from './services/settings.service';
     MatSliderModule,
     MatInputModule,
     NgxSliderModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressBarModule
   ],
   providers: [HttpClientService, LocationsService, SettingsService],
   bootstrap: [AppComponent]

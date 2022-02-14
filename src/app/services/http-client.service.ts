@@ -24,6 +24,7 @@ export class HttpClientService {
 
     public post<T>(url: string, body: any, options?: IRequestOptions): Observable<T> {
         options = this._getDefaultOptions(options);
+
         return this.http.post<T>(url, JSON.stringify(body), options);
     }
 
