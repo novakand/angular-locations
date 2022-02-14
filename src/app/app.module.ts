@@ -28,8 +28,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { LocationsService } from './components/locations/services/locations.service';
 import { HttpClientService } from './services/http-client.service';
 import { SettingsService } from './services/settings.service';
-
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+
+export const options: Partial<IConfig> = { thousandSeparator: '\'' };
+
 
 @NgModule({
   declarations: [
@@ -57,7 +60,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatInputModule,
     NgxSliderModule,
     HttpClientModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    NgxMaskModule.forRoot(options),
   ],
   providers: [HttpClientService, LocationsService, SettingsService],
   bootstrap: [AppComponent]

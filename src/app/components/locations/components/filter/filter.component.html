@@ -72,7 +72,7 @@
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input type="number" [disabled]="!isNearbyHomes" name="min" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="0" max="9">
+                                            <input [disabled]="!isNearbyHomes" mask="0-0" name="min" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="0" max="9">
                                         </div>
                                     </div>
                                 </div>
