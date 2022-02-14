@@ -16,6 +16,6 @@ export class LegendComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public fieldsChange(event) { }
+  public fieldsChange(event): void { }
 
 }
