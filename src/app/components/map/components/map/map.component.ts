@@ -40,7 +40,6 @@ export class MapComponent implements OnInit, OnChanges {
 
 
   public infoWindowOptions: google.maps.InfoWindowOptions = {
-    pixelOffset: new google.maps.Size(0, -60),
     disableAutoPan: false,
   };
 
