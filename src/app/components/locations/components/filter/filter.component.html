@@ -1,15 +1,15 @@
 <div class="filters">
-    <form action="#" class="filters-form">
+    <form [formGroup]="filterForm" class="filters-form">
         <div class="filters-form__default">
             <div class="filter-wrapper">
                 <div class="custom-slider">
-                    <ngx-slider class="filter-slider custom" (userChange)="onUserChange($event,sliderType.cO2KgWeek)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
+                    <ngx-slider class="filter-slider custom" (userChange)="onUserChange($event,sliderType.cO2KgWeeklyMax)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
                 </div>
                 <div class="filter-details filter-wrapper__details clearfix">
                     <label for="co2" class="filter-details__label">CO<sub>2</sub> kg per week</label>
                     <div class="filter-details__right">
                         <div class="filter-details__m"></div>
-                        <input type="number" [(ngModel)]="sliderPerWeekOptions.value" name="co2" id="co2" class="filter-details__input">
+                        <input type="number" formControlName="cO2KgWeeklyMax" [(ngModel)]="sliderPerWeekOptions.value" name="co2" id="co2" class="filter-details__input">
                     </div>
                 </div>
             </div>
@@ -18,61 +18,67 @@
             <ul class="togglers-list">
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" [(ngModel)]="isChekedTransport" name="transport" id="transport" class="toggler__input">
+                        <input type="checkbox" [ngModelOptions]="{standalone: true}" (change)="fieldsChangeTransport($event)" [(ngModel)]="isChekedTransport" id="transport" class="toggler__input">
                         <label for="transport" class="toggler__label">Transport</label>
                     </div>
                     <div class="toggler__body">
                         <ul class="tags-list">
-                            <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="pub-trans" id="pub-trans" class="tag-checkbox__input" [disabled]="!isChekedTransport">
-                                <label for="pub-trans" class="tag-checkbox__label">Pub. trans</label>
-                            </li>
-                            <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="car" id="car" class="tag-checkbox__input" [disabled]="!isChekedTransport">
-                                <label for="car" class="tag-checkbox__label">Car</label>
-                            </li>
-                            <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="e-bike" id="e-bike" class="tag-checkbox__input" [disabled]="!isChekedTransport">
-                                <label for="e-bike" class="tag-checkbox__label">E-bike</label>
-                            </li>
-                            <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="bicycle" id="bicycle" class="tag-checkbox__input" [disabled]="!isChekedTransport">
-                                <label for="bicycle" class="tag-checkbox__label">Bicycle</label>
-                            </li>
-                            <li class="tags-list__item tag-checkbox">
-                                <input type="checkbox" name="e-car" id="e-car" class="tag-checkbox__input" [disabled]="!isChekedTransport">
-                                <label for="e-car" class="tag-checkbox__label">E-Car</label>
-                            </li>
+                            <ul class="tags-list" formArrayName="transports">
+                                <li class="tags-list__item tag-checkbox">
+                                    <input type="checkbox" id="pub-trans" class="tag-checkbox__input" formControlName="0">
+                                    <label for="pub-trans" class="tag-checkbox__label">Public</label>
+                                </li>
+                                <li class="tags-list__item tag-checkbox">
+                                    <input type="checkbox" id="car" class="tag-checkbox__input" formControlName="1">
+                                    <label for="car" class="tag-checkbox__label">Car</label>
+                                </li>
+                                <li class="tags-list__item tag-checkbox">
+                                    <input type="checkbox" id="e-bike" class="tag-checkbox__input" formControlName="2">
+                                    <label for="e-bike" class="tag-checkbox__label">E-bike</label>
+                                </li>
+                                <li class="tags-list__item tag-checkbox">
+                                    <input type="checkbox" id="bicycle" class="tag-checkbox__input" formControlName="3">
+                                    <label for="bicycle" class="tag-checkbox__label">Bicycle</label>
+                                </li>
+                                <li class="tags-list__item tag-checkbox">
+                                    <input type="checkbox" id="e-car" class="tag-checkbox__input" formControlName="4">
+                                    <label for="e-car" class="tag-checkbox__label">E-Car</label>
+                                </li>
+                                <li class="tags-list__item tag-checkbox">
+                                    <input type="checkbox" id="foot" class="tag-checkbox__input" formControlName="5">
+                                    <label for="foot" class="tag-checkbox__label">Foot</label>
+                                </li>
+                            </ul>
                         </ul>
                     </div>
                 </li>
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" (change)="fieldsChange($event)" name="nearby-homes" id="nearby-homes" [(ngModel)]="isNearbyHomes" class="toggler__input">
+                        <input type="checkbox" [ngModelOptions]="{standalone: true}" (change)="fieldsChange($event)" id="nearby-homes" [(ngModel)]="isNearbyHomes" class="toggler__input">
                         <label for="nearby-homes" class="toggler__label">Nearby homes</label>
                     </div>
                     <div class="toggler__body">
                         <ul class="filter-list">
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.NearbyKm)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions"></ngx-slider>
+                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.nearbyHomes)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions"></ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="within" class="filter-details__label">Within</label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">km</div>
-                                            <input type="number" name="within" id="within" [disabled]="!isNearbyHomes" class="filter-details__input" [(ngModel)]="sliderNearbyKmOptions.value" min="0" max="16">
+                                            <input type="number" formControlName="nearbyKm" class="filter-details__input" [(ngModel)]="sliderNearbyKmOptions.value" min="0" max="16">
                                         </div>
                                     </div>
                                 </div>
                             </li>
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.NearbyHomes)" [(value)]="sliderNearbyHomesOptions.value" [(highValue)]="sliderNearbyHomesOptions.highValue" [options]="sliderNearbyHomesOptions"></ngx-slider>
+                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.nearbyHomes)" [(value)]="sliderNearbyHomesOptions.value" [(highValue)]="sliderNearbyHomesOptions.highValue" [options]="sliderNearbyHomesOptions"></ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input [disabled]="!isNearbyHomes" mask="0-0" name="min" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="0" max="9">
+                                            <input formControlName="nearbyHomesCountMin" type="text" mask="0-00" (input)="NearbyHomesChange($event.target.value)" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="3" max="50">
                                         </div>
                                     </div>
                                 </div>
@@ -82,11 +88,11 @@
                 </li>
                 <li class="togglers-list__item toggler clearfix">
                     <div class="toggler__head">
-                        <input type="checkbox" name="forecast" id="forecast" [(ngModel)]="isChekedForecast" class="toggler__input">
+                        <input type="checkbox" id="forecast" [ngModelOptions]="{standalone: true}" [(ngModel)]="isChekedForecast" class="toggler__input">
                         <label for="forecast" class="toggler__label">Forecast</label>
                     </div>
                     <div class="toggler__body toggler__body_right">
-                        <a class="add-point" (click)="addPoint()" [ngClass]="{'add-point_disabled': !isChekedForecast}">+ Add point</a>
+                        <a class="add-point" (click)="onaddPoint()" [ngClass]="{'add-point_disabled': !isChekedForecast}">+ Add point</a>
                     </div>
                 </li>
             </ul>

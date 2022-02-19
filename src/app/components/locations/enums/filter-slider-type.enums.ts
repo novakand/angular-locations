@@ -1,5 +1,5 @@
 export enum FilterSliderType {
-    cO2KgWeek = 'CO2KgWeek',
-    NearbyKm = 'NearbyKm',
-    NearbyHomes = 'NearbyHomes',
+    cO2KgWeeklyMax = 'cO2KgWeeklyMax',
+    nearbyKm = 'nearbyKm',
+    nearbyHomes = 'nearbyHomes',
 }

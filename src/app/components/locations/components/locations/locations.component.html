@@ -1,50 +1,51 @@
-<mat-sidenav-container class="example-container autosize" autosize>
-    <mat-sidenav mode="side" [position]="'start'" [mode]="'side'" [opened]="true">
-        <aside class="sidebar">
-            <h1 class="h1-mobile sidebar__title">Locations</h1>
-            <div class="sidebar__body">
+<div class="container" #screen>
+    <mat-sidenav-container class="example-container autosize" autosize>
+        <app-save-image #saveImage [screenContainer]="screenContainer"></app-save-image>
 
-                <app-list-items [dataFilterLocation]="dataFilterLocation"></app-list-items>
-                <app-filter [dataFilterLocation]="dataFilterLocation" (addPoints)="addPoints()"></app-filter>
+        <mat-sidenav mode="side" [position]="'start'" [mode]="'side'" [opened]="true">
+            <aside class="sidebar">
+                <h1 class="h1-mobile sidebar__title">Locations</h1>
+                <div class="sidebar__body">
 
-            </div>
-            <div class="sidebar__footer">
-                <a href="#" class="download-xml">Download XML</a>
-            </div>
-        </aside>
-    </mat-sidenav>
-    <mat-sidenav-content>
+                    <app-list-items></app-list-items>
+                    <app-filter></app-filter>
 
-        <!-- <mat-progress-bar mode="determinate" value="40"></mat-progress-bar> -->
-        <!-- <mat-progress-bar class="example-margin" [color]="red" [mode]="indeterminate" [value]="50" [bufferValue]="70">
-        </mat-progress-bar> -->
-        <main class="main">
-            <div class="main-header">
-                <div class="main-header__left">
-                    <ul class="trigger-list">
-                        <li style="display: none;" class="trigger-list__item">
-                            <a routerLinkActive="trigger-list__button_active" class="trigger-list__button " routerLink="/statictics">Stats</a>
-                        </li>
-                        <li class="trigger-list__item">
-                            <a routerLinkActive="trigger-list__button_active" class="trigger-list__button trigger-list__button_active" routerLink="/map">Map</a>
-                        </li>
-                    </ul>
                 </div>
-                <div class="save-png main-header__right">
-                    <div class="save-png__controls controls">
-                        <a href="#" class="controls__button controls__button_undo"></a>
-                        <a style="display: none;" href="#" class="controls__button controls__button_redo controls__button_disabled"></a>
-                    </div>
-                    <div class="save-png__buttons">
-                        <a href="#" class="button button_primary save-png__button">Save as PNG</a>
-                        <a href="#" class="button button_secondary save-png__button">Discard</a>
-                    </div>
+                <div class="sidebar__footer">
+                    <a href="#" class="download-xml">Download XML</a>
                 </div>
-                <mat-progress-bar *ngIf="isProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
-            </div>
-            <div class="main-body">
-                <app-map [dataFilterLocation]="dataFilterLocation" [addPoint]="points"></app-map>
-            </div>
-        </main>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+            </aside>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <main class="main">
+                <div class="main-header">
+                    <div class="main-header__left">
+                        <ul class="trigger-list">
+                            <li style="display: none;" class="trigger-list__item">
+                                <a routerLinkActive="trigger-list__button_active" class="trigger-list__button " routerLink="/statictics">Stats</a>
+                            </li>
+                            <li class="trigger-list__item">
+                                <a routerLinkActive="trigger-list__button_active" class="trigger-list__button trigger-list__button_active" routerLink="/map">Map</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="save-png main-header__right">
+                        <div class="save-png__controls controls">
+                            <a class="controls__button controls__button_save"></a>
+                            <a class="controls__button controls__button_undo"></a>
+                            <a style="display: none;" class="controls__button controls__button_redo controls__button_disabled"></a>
+                        </div>
+                        <div class="save-png__buttons">
+                            <a class="button button_primary save-png__button" (click)="onSavePng()">Save as PNG</a>
+                            <a class="button button_secondary save-png__button">Discard</a>
+                        </div>
+                    </div>
+                    <mat-progress-bar *ngIf="isProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
+                </div>
+                <div class="main-body">
+                    <app-map></app-map>
+                </div>
+            </main>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

@@ -1,28 +1,36 @@
 import { Injectable } from '@angular/core';
 
 // external libs
-import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 // services
 import { HttpClientService } from '../../../services/http-client.service';
 
 // interfaces
-import { FilterRequest } from '../interfaces/filter-request.interfaces';
 import { FilterResponce } from '../interfaces/filter-responce.interfaces';
+import { FilterRequest } from '../models/qure.model';
 
 // environment
-
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class LocationsService {
 
+    public actionAddPoint$ = new BehaviorSubject<any>(null);
+    public actionCommutes$ = new BehaviorSubject<any>(null);
+    public actionPreloader$ = new BehaviorSubject<any>(false);
+    public takeFilter$ = new BehaviorSubject<FilterResponce>(null);
+
     constructor(
-         private http: HttpClientService,
+        private http: HttpClientService,
 
     ) { }
 
-    public getLocations(filter: FilterRequest): Observable<FilterResponce> {
-       return this.http.post<FilterResponce>(`${environment.apiLocationUri}public/web/filter`, filter);
+    public filterUpdateAsync(filter: any): Observable<FilterResponce> {
+        return this.http.post<FilterResponce>(`${environment.apiLocationUri}public/web/filter`, filter)
+            .pipe(
+                tap((data) => this.takeFilter$.next(data))
+            );
     }
 }

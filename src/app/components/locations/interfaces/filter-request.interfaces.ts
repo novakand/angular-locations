@@ -6,7 +6,8 @@ export interface FilterRequest {
     transports: string[];
     MoveTypeEnumstring: [];
     nearbyKm: number;
-    nearbyHomes: number;
+    nearbyHomesCountMin: number;
+    nearbyHomesCountMax: number;
     forecastPointLat: number;
     forecastPointLon: number;
     showCommutes: any[];

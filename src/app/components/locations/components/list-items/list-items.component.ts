@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, SimpleChanges, ViewRef } from '@angular/core';
-import { FilterResponce } from '../../interfaces/filter-responce.interfaces';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, takeUntil, tap } from 'rxjs/operators';
+import { LocationsService } from '../../services/locations.service';
 
 @Component({
   selector: 'app-list-items',
@@ -7,24 +9,40 @@ import { FilterResponce } from '../../interfaces/filter-responce.interfaces';
   styleUrls: ['./list-items.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListItemsComponent implements OnInit {
+export class ListItemsComponent implements OnInit, OnDestroy {
 
-  @Input() public dataFilterLocation: FilterResponce;
-  public allOffices: any = [];
+  public allOffices$ = new BehaviorSubject<any>(null);
+  public destroy$ = new Subject<boolean>();
 
   constructor(
     private cdr: ChangeDetectorRef,
+    private serv: LocationsService,
   ) { }
 
-  public ngOnInit(): void { }
 
-  // tslint:disable-next-line: use-lifecycle-interface
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.dataFilterLocation && changes.dataFilterLocation.currentValue) {
-      this.allOffices = this.dataFilterLocation.allOffices;
-    }
+  public ngOnInit(): void {
+    this.createListItem();
   }
 
+  public ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
+  // tslint:disable-next-line: typedef
+  public createListItem() {
+    this.serv.takeFilter$
+      .pipe(
+        filter(Boolean),
+        tap((items: any) => items.allOffices.forEach((item, index) => item.checked = index === 0)),
+        takeUntil(this.destroy$),
+      ).
+      subscribe((data: any) => {
+        this.allOffices$.next(data.allOffices);
+      });
+  }
+
+  // tslint:disable-next-line: use-lifecycle-interface
   public onSelect(items: any): void {
     items.isOpen = items.isOpen ? false : true;
     this.cdr.detectChanges();

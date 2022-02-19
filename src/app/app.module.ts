@@ -30,6 +30,7 @@ import { HttpClientService } from './services/http-client.service';
 import { SettingsService } from './services/settings.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { SaveImageComponent } from './components/save-image/components/save-image/save-image.component';
 
 export const options: Partial<IConfig> = { thousandSeparator: '\'' };
 
@@ -44,6 +45,7 @@ export const options: Partial<IConfig> = { thousandSeparator: '\'' };
     LocationsComponent,
     FilterComponent,
     ListItemsComponent,
+    SaveImageComponent
   ],
   imports: [
     BrowserModule,

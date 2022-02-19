@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { LocationsService } from 'src/app/components/locations/services/locations.service';
 
-// interfaces
-import { FilterResponce } from '../../../locations/interfaces/filter-responce.interfaces';
+// enums
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
 @Component({
   selector: 'app-map',
@@ -11,18 +13,20 @@ import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
   providers: [GoogleMap],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapComponent implements OnInit, OnChanges {
+export class MapComponent implements OnInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
+    private serv: LocationsService,
   ) { }
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
 
-  @Input() public dataFilterLocation: FilterResponce;
-  @Input() public addPoint: void;
+  public dataFilterLocation: any;
+  public destroy$ = new Subject<boolean>();
 
+  public restangle: google.maps.RectangleOptions;
   public markers: google.maps.MarkerOptions[] = [];
   public circles: google.maps.CircleOptions[] = [];
   public polylines: google.maps.PolygonOptions[] = [];
@@ -33,11 +37,14 @@ export class MapComponent implements OnInit, OnChanges {
   public sliderOptions: any = {
     floor: 0,
     value: 80,
-    ceil: 100,
+    ceil: 80,
     minRange: 0,
-    maxRange: 100,
+    maxRange: 16,
+    hideLimitLabels: true,
+    hidePointerLabels: true,
+    showSelectionBar: true,
+    step: 1,
   };
-
 
   public infoWindowOptions: google.maps.InfoWindowOptions = {
     disableAutoPan: false,
@@ -56,38 +63,62 @@ export class MapComponent implements OnInit, OnChanges {
   public circleOptions: google.maps.CircleOptions = {};
   public markerOptions: google.maps.MarkerOptions = {};
   public polylineOptions: google.maps.PolylineOptions = {};
-  public bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
+  public bounds: google.maps.LatLngBounds;
 
-  public ngOnInit(): void { }
+  public ngOnInit(): void {
 
+    this.bounds = new google.maps.LatLngBounds();
+    this.serv.takeFilter$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this.destroy$),
+      ).
+      subscribe((data: any) => {
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.dataFilterLocation && changes.dataFilterLocation.currentValue) {
+        this.markers = [];
+        this.circles = [];
+        this.polylines = [];
+        this.cdr.detectChanges();
+        this.dataFilterLocation = [];
+        this.dataFilterLocation = data;
+        this.infoWindowOptions = {};
+        // this.infoWindowOptions.pixelOffset = new google.maps.Size(0, -60);
+        // this.infoWindowOptions.disableAutoPan = false;
+       // this.buildMarker(this.dataFilterLocation.forecastPoint);
+        // this.buildCircle(this.dataFilterLocation);
+        this.buildPolylines();
+      });
 
-      this.infoWindowOptions = {};
-      this.infoWindowOptions.pixelOffset = new google.maps.Size(0, -60);
-      this.infoWindowOptions.disableAutoPan = false;
-      this.buildMarker(this.dataFilterLocation.forecastPoint);
-      this.buildCircle(this.dataFilterLocation);
-      this.buildPolylines();
-    }
+    this.serv.actionAddPoint$.pipe(
+      takeUntil(this.destroy$),
+    ).
+      subscribe((data: any) => {
+        this.addOffice();
+      });
 
-    if (changes.addPoint && changes.addPoint.currentValue) {
+  }
 
-      if (this.dataFilterLocation) {
-        this.markerOptions = {
-          draggable: true,
-          crossOnDrag: false,
-          icon: { url: MarkerTypeIcon.virtualOffice, anchor: new google.maps.Point(80, 75) },
-          anchorPoint: new google.maps.Point(-290, 90),
-          position: { lat: this.dataFilterLocation.forecastPoint.lat, lng: this.dataFilterLocation.forecastPoint.lon },
-        };
+  public addOffice(): void {
+    this.markerOptions = {
+      draggable: true,
+      crossOnDrag: false,
+      icon: { url: MarkerTypeIcon.virtualOffice, anchor: new google.maps.Point(80, 75) },
+      anchorPoint: new google.maps.Point(-290, 90),
+    //position: { lat: this.dataFilterLocation.forecastPoint.lat, lng: this.dataFilterLocation.forecastPoint.lon },
+    };
 
-        this.markers.push(this.markerOptions);
-        // tslint:disable-next-line: max-line-length
-        this.map.googleMap.setCenter(new google.maps.LatLng(this.dataFilterLocation.forecastPoint.lat, this.dataFilterLocation.forecastPoint.lon));
-      }
-    }
+    this.markers.push(this.markerOptions);
+    // tslint:disable-next-line: max-line-length
+    // this.map.googleMap.setCenter(new google.maps.LatLng(this.dataFilterLocation.forecastPoint.lat, this.dataFilterLocation.forecastPoint.lon));
+  }
+
+  // tslint:disable-next-line: use-lifecycle-interface
+  public ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+    this.markers = [];
+    this.circles = [];
+    this.polylines = [];
   }
 
   public buildMarker(point: any): void {
@@ -108,19 +139,27 @@ export class MapComponent implements OnInit, OnChanges {
     };
   }
 
-  public buildCircle(obj: any): void {
-    this.circles.push(this.createCircleOptions(obj));
+  public buildRestangle(): void {
+    this.restangle = this.createRestangleOptions();
     this.cdr.detectChanges();
   }
 
-  public createCircleOptions(obj: any): google.maps.CircleOptions {
-    return this.circleOptions = {
+  public createRestangleOptions(): google.maps.RectangleOptions {
+    const p1 = this.dataFilterLocation.nearbies[0].rectPoint1;
+    const p2 = this.dataFilterLocation.nearbies[0].rectPoint2;
+
+    const bounds = new google.maps.LatLngBounds();
+    bounds.extend(new google.maps.LatLng(p1.lat, p1.lon));
+    bounds.extend(new google.maps.LatLng(p2.lat, p2.lon));
+    this.map.fitBounds(bounds);
+
+    return this.restangle = {
       strokeColor: '#1471ea',
       strokeOpacity: 0.3,
       fillColor: '#1471ea',
-      fillOpacity: 0.3,
-      radius: (obj.nearbies[0].radiusKm * 1000),
-      center: { lat: obj.nearbies[0].centerLat, lng: obj.nearbies[0].centerLon }
+      fillOpacity: 0.8,
+      bounds
+
     };
   }
 
@@ -151,7 +190,7 @@ export class MapComponent implements OnInit, OnChanges {
       path: 'M 0,-1 0,1',
       strokeOpacity: 0.4,
       strokeColor: 'blue',
-      strokeWeight: 10,
+      strokeWeight: 12,
       scale: 4,
     };
 
@@ -161,7 +200,7 @@ export class MapComponent implements OnInit, OnChanges {
     this.selectedPolyline = polyline.polyline;
 
     this.cdr.detectChanges();
-    this.infoWindowViewContent = 'polyline';
+    // this.infoWindowViewContent = 'polyline';
     const bounds = new google.maps.LatLngBounds();
     polyline.getPath().getArray().forEach((latLng) => {
       bounds.extend(latLng);
@@ -170,7 +209,7 @@ export class MapComponent implements OnInit, OnChanges {
     const center = bounds.getCenter();
     this.map.googleMap.setCenter(center);
     this.infoWindow.position = center;
-    this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
+    // this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
     this.infoWindow.open();
     this.cdr.detectChanges();
   }

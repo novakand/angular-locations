@@ -41,7 +41,7 @@ export class HttpClientService {
     private _getDefaultOptions(options?: IRequestOptions): IRequestOptions {
         options = options || {};
         options.headers = options.headers || new HttpHeaders({ 'Content-Type': 'application/json' });
-        options.withCredentials = true;
+        options.withCredentials = false;
         return options;
     }
 }

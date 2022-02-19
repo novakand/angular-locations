@@ -1,9 +1,13 @@
 export interface FilterResponce {
-    officeName: string;
-    allOffices: [];
+    officeUid: string;
+    allOffices: any[];
     commutes: any;
-    nearbies: [];
+    nearbies: any[];
     forecastPoint: any;
     totalCO2KgPerWeek: any;
-    totalCO2KgForecastPerWeek: any;
+    officeTotalCO2KgPerDay: number;
+    officeTotalCO2KgForecastPerDay: number;
+    officeTotalCO2KgPerWeek: number;
+    officeTotalCO2KgForecastPerWeek: number;
 }
+

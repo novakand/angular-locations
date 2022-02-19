@@ -2,9 +2,11 @@
     <google-map [options]="mapOptions">
         <map-polyline #poly="mapPolyline" (polylineDblclick)="polylineDblclick(poly)" *ngFor="let polyline of polylines" [options]="polyline"></map-polyline>
         <map-marker #marker="mapMarker" (mapClick)="markerClick(marker)" *ngFor="let markerss of markers" [options]="markerss"></map-marker>
+        <map-rectangle [options]="restangle"></map-rectangle>
         <map-circle *ngFor="let circle of circles" [options]="circle"></map-circle>
         <map-info-window [options]="infoWindowOptions">
-            <ng-container [ngSwitch]="infoWindowViewContent">
+            HHHHH
+            <!-- <ng-container [ngSwitch]="infoWindowViewContent">
                 <div *ngSwitchCase="'marker'">
                     <div class="pin-data">
                         <div class="pin-data__line">0.367 kg per day</div>
@@ -39,7 +41,7 @@
                         <button class="wb-form__submit button button_primary" (click)="onApplyInfoWindows()" type="submit">Apply</button>
                     </div>
                 </div>
-            </ng-container>
+            </ng-container> -->
         </map-info-window>
     </google-map>
     <app-legend></app-legend>
