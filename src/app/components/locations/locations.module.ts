@@ -19,7 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { ScreensHotModule } from '../screenshot/screenshot.module';
 
-export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -47,10 +47,10 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
     NgxSliderModule,
     HttpClientModule,
     MatProgressBarModule,
-    NgxMaskModule.forRoot(options),
+    NgxMaskModule.forRoot(),
   ],
   exports: [
-    LocationsComponent, FilterComponent, ListItemsComponent, NgxMaskModule,
+    LocationsComponent, FilterComponent, ListItemsComponent,
   ],
   providers: [],
   bootstrap: [LocationsComponent],
