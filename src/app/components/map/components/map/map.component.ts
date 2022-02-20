@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -14,11 +14,6 @@ import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements OnInit {
-
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private serv: LocationsService,
-  ) { }
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
@@ -64,6 +59,11 @@ export class MapComponent implements OnInit {
   public markerOptions: google.maps.MarkerOptions = {};
   public polylineOptions: google.maps.PolylineOptions = {};
   public bounds: google.maps.LatLngBounds;
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private serv: LocationsService,
+  ) { }
 
   public ngOnInit(): void {
 

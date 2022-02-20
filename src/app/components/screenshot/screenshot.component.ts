@@ -4,18 +4,19 @@ import { from } from 'rxjs';
 
 
 @Component({
-  selector: 'app-save-image',
-  templateUrl: './save-image.component.html',
-  styleUrls: ['./save-image.component.scss']
+  selector: 'app-screenshot',
+  templateUrl: './screenshot.component.html',
+  styleUrls: ['./screenshot.component.scss'],
 })
-export class SaveImageComponent implements OnInit {
-
-  constructor() { }
+export class ScreensHotComponent implements OnInit {
 
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
   @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
 
   @Input() public screenContainer: ElementRef;
+
+
+  constructor() { }
 
 
   public ngOnInit(): void { }
@@ -27,7 +28,7 @@ export class SaveImageComponent implements OnInit {
   public async downloadImage(): Promise<void> {
 
     const capture$ = from(
-      html2canvas(this.screenContainer.nativeElement, { useCORS: true, allowTaint : true }).then(canv => {
+      html2canvas(this.screenContainer.nativeElement, { useCORS: true, allowTaint: true }).then((canv) => {
         return canv.toDataURL('image/png');
       }));
     const image = await capture$.toPromise();

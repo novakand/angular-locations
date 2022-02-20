@@ -1,9 +1,8 @@
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import html2canvas from 'html2canvas';
-import { from, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { SaveImageComponent } from 'src/app/components/save-image/components/save-image/save-image.component';
+import { ScreensHotComponent } from 'src/app/components/screenshot/screenshot.component';
 
 // services
 import { LocationsService } from '../../services/locations.service';
@@ -16,16 +15,17 @@ import { LocationsService } from '../../services/locations.service';
 export class LocationsComponent implements OnInit, OnDestroy {
 
   @ViewChild('screen', { static: true }) screenContainer: ElementRef;
-  @ViewChild('saveImage', { static: true }) saveImage: SaveImageComponent;
+
+  @ViewChild('screensHot', { static: true }) screensHot: ScreensHotComponent;
+
+  public destroy$ = new Subject<boolean>();
+  public isProgress = true;
 
 
   constructor(
     private locService: LocationsService,
   ) { }
 
-
-  public destroy$ = new Subject<boolean>();
-  public isProgress = true;
 
   public ngOnInit(): void {
     this.addListenerPreloader();
@@ -38,7 +38,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   }
 
   public onSavePng(): void {
-    this.saveImage.saveScreen();
+    this.screensHot.saveScreen();
   }
 
 

@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
     imports: [
         RouterModule.forRoot([
             {path: '**', redirectTo: 'map' },
-        ])
+        ]),
     ],
     exports: [
         RouterModule,
@@ -15,5 +15,3 @@ import { NgModule } from '@angular/core';
 
 })
 export class AppRoutingsModule { }
-
-

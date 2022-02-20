@@ -11,7 +11,7 @@ import { StaticticsComponent } from '../statictics/components/statictics/statict
             { path: 'map', component: MapComponent },
             { path: 'statictics', component: StaticticsComponent },
             { path: 'locations', component: MapComponent },
-        ])
+        ]),
     ],
     exports: [
         RouterModule,
@@ -19,4 +19,4 @@ import { StaticticsComponent } from '../statictics/components/statictics/statict
     providers: [],
 
 })
-export class AppLocationModule { }
+export class LocationRouteModule { }

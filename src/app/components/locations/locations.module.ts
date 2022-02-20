@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LocationsComponent } from './components/locations/locations.component';
@@ -9,15 +8,28 @@ import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
 // routing
-import { AppLocationModule } from './location.routing.module';
+import { LocationRouteModule } from './location.routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { ListItemsComponent } from './components/list-items/list-items.component';
+import { MapModule } from '../map/map.module';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
+import { ScreensHotModule } from '../screenshot/screenshot.module';
+
+export const options: Partial<IConfig> = { thousandSeparator: '\'' };
 @NgModule({
   declarations: [
+    LocationsComponent,
     FilterComponent,
-    LocationsComponent
+    ListItemsComponent,
   ],
   imports: [
-    AppLocationModule,
+    LocationRouteModule,
+    ScreensHotModule,
+    MapModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
@@ -25,8 +37,22 @@ import { HttpClientModule } from '@angular/common/http';
     MatSidenavModule,
     ReactiveFormsModule,
     HttpClientModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTabsModule,
+    MatSidenavModule,
+    MatInputModule,
+    NgxSliderModule,
+    HttpClientModule,
+    MatProgressBarModule,
+    NgxMaskModule.forRoot(options),
+  ],
+  exports: [
+    LocationsComponent, FilterComponent, ListItemsComponent, NgxMaskModule,
   ],
   providers: [],
-  bootstrap: [LocationsComponent]
+  bootstrap: [LocationsComponent],
 })
 export class LocationsModule { }
