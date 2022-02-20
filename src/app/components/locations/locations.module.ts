@@ -19,7 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { ScreensHotModule } from '../screenshot/screenshot.module';
 
-export const options: Partial<IConfig> = { thousandSeparator: '\'' };
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = {};
 @NgModule({
   declarations: [
     LocationsComponent,
