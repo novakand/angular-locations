@@ -78,7 +78,7 @@
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input formControlName="nearbyHomesCountMin" type="text" mask="0-00" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="3" max="50">
+                                            <input formControlName="nearbyHomesCountMin" type="text" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="3" max="50">
                                         </div>
                                     </div>
                                 </div>

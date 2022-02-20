@@ -19,7 +19,7 @@
         "@angular/core": "~12.2.16",
         "@angular/forms": "~12.2.16",
         "@angular/google-maps": "13.2.1",
-        "@angular/material": "^13.2.3",
+        "@angular/material": "^13.2.1",
         "@angular/platform-browser": "~12.2.16",
         "@angular/platform-browser-dynamic": "~12.2.16",
         "@angular/router": "~12.2.16",

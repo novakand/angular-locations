@@ -16,10 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { ScreensHotModule } from '../screenshot/screenshot.module';
-
-export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -47,7 +44,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NgxSliderModule,
     HttpClientModule,
     MatProgressBarModule,
-    NgxMaskModule.forRoot(),
   ],
   exports: [
     LocationsComponent, FilterComponent, ListItemsComponent,

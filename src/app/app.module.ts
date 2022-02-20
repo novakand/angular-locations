@@ -14,7 +14,6 @@ import { SettingsService } from './services/settings.service';
 import { LocationsModule } from './components/locations/locations.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -29,7 +28,6 @@ import { NgxMaskModule } from 'ngx-mask';
     ReactiveFormsModule,
     AppRoutingsModule,
     HttpClientModule,
-    NgxMaskModule.forRoot(),
   ],
   providers: [HttpClientService, LocationsService, SettingsService],
   bootstrap: [AppComponent],
