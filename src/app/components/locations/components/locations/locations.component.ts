@@ -2,7 +2,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ScreensHotComponent } from 'src/app/components/screenshot/screenshot.component';
+import { ScreensHotComponent } from '.././../../screenshot/screenshot.component';
 
 // services
 import { LocationsService } from '../../services/locations.service';

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChil
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { LocationsService } from 'src/app/components/locations/services/locations.service';
+import { LocationsService } from '../../../../components/locations/services/locations.service';
 
 // enums
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
