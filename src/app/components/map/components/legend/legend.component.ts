@@ -2,13 +2,13 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { LocationsService } from 'src/app/components/locations/services/locations.service';
+import { LocationsService } from '../../../../components/locations/services/locations.service';
 import { CommutesType } from '../../enums/commutest-type.enum';
 
 @Component({
   selector: 'app-legend',
   templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss']
+  styleUrls: ['./legend.component.scss'],
 })
 export class LegendComponent implements OnInit {
 
