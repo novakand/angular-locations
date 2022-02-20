@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import html2canvas from 'html2canvas';
 import { from } from 'rxjs';
+import moment from 'moment';
 
 
 @Component({
@@ -10,7 +11,6 @@ import { from } from 'rxjs';
 })
 export class ScreensHotComponent implements OnInit {
 
-  @ViewChild('canvas', { static: true }) canvas: ElementRef;
   @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
 
   @Input() public screenContainer: ElementRef;
@@ -26,15 +26,13 @@ export class ScreensHotComponent implements OnInit {
   }
 
   public async downloadImage(): Promise<void> {
-
     const capture$ = from(
-      html2canvas(this.screenContainer.nativeElement, { useCORS: true, allowTaint: true }).then((canv) => {
-        return canv.toDataURL('image/png');
+      html2canvas(this.screenContainer.nativeElement, { useCORS: true, allowTaint: true, logging: false }).then((canvas) => {
+        return canvas.toDataURL('image/png');
       }));
     const image = await capture$.toPromise();
     this.downloadLink.nativeElement.href = image;
-    this.canvas.nativeElement.src = image;
-    this.downloadLink.nativeElement.download = 'fatma-app.png';
+    this.downloadLink.nativeElement.download = `fatma ${moment().format('DD MM YYYY hh:mm:ss')}`;
     this.downloadLink.nativeElement.click();
   }
 }

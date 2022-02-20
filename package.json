@@ -28,6 +28,7 @@
         "@typescript-eslint/parser": "^5.10.2",
         "html2canvas": "^1.4.1",
         "i": "^0.3.7",
+        "moment": "^2.29.1",
         "ng2-material-dropdown": "^1.0.0",
         "ngx-mask": "^13.1.1",
         "normalize.css": "^8.0.1",
