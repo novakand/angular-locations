@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScreensHotModule } from '../screenshot/screenshot.module';
+import { NgxMaskModule } from 'ngx-mask';
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -44,6 +45,7 @@ import { ScreensHotModule } from '../screenshot/screenshot.module';
     NgxSliderModule,
     HttpClientModule,
     MatProgressBarModule,
+    NgxMaskModule.forRoot({}),
   ],
   exports: [
     LocationsComponent, FilterComponent, ListItemsComponent,
