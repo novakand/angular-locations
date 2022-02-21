@@ -6,8 +6,6 @@ import { LocationsComponent } from './components/locations/locations.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
-
-// routing
 import { LocationRouteModule } from './location.routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ListItemsComponent } from './components/list-items/list-items.component';
@@ -17,7 +15,6 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScreensHotModule } from '../screenshot/screenshot.module';
-import { NgxMaskModule } from 'ngx-mask';
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -45,7 +42,6 @@ import { NgxMaskModule } from 'ngx-mask';
     NgxSliderModule,
     HttpClientModule,
     MatProgressBarModule,
-    NgxMaskModule.forRoot({}),
   ],
   exports: [
     LocationsComponent, FilterComponent, ListItemsComponent,
