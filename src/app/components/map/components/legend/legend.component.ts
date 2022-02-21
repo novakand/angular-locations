@@ -57,14 +57,14 @@ export class LegendComponent implements OnInit {
 
   public addListenersForm(): void {
     this.legendForm.valueChanges.pipe(
-      filter(value => !!value),
+      filter((value) => !!value),
       debounceTime(800),
       takeUntil(this.destroy$),
     ).subscribe((value) => this.sendCommutes());
   }
 
   public sendCommutes(): void {
-    const selectCommutes = this.legendForm.get('showCommutes').value.filter(value => !!value);
+    const selectCommutes = this.legendForm.get('showCommutes').value.filter((value) => !!value);
     this.ftr.actionCommutes$.next(selectCommutes);
   }
 
@@ -74,7 +74,7 @@ export class LegendComponent implements OnInit {
     checkboxControl.valueChanges.subscribe(() => {
       checkboxControl.setValue(
         checkboxControl.value.map((value, i) => value ? Object.values(this.commutesType)[i] : false),
-        { emitEvent: false }
+        { emitEvent: false },
       );
     });
   }

@@ -27,7 +27,7 @@ export class ScreensHotComponent implements OnInit {
 
   public async downloadImage(): Promise<void> {
     const capture$ = from(
-      html2canvas(this.screenContainer.nativeElement, { useCORS: true, allowTaint: true, logging: false }).then((canvas) => {
+      html2canvas(this.screenContainer.nativeElement, { useCORS: true, logging: false }).then((canvas) => {
         return canvas.toDataURL('image/png');
       }));
     const image = await capture$.toPromise();

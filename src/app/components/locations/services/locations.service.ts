@@ -27,7 +27,7 @@ export class LocationsService {
 
     ) { }
 
-    public filterUpdateAsync(filter: FilterRequest): Observable<FilterResponce> {
+    public filterUpdateAsync(filter: any): Observable<FilterResponce> {
         return this.http.post<FilterResponce>(`${environment.apiLocationUri}public/web/filter`, filter)
             .pipe(
                 tap((data) => this.takeFilter$.next(data)),

@@ -1,3 +1,135 @@
+/* The switch - the box around the slider */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+
+/* Hide default HTML checkbox */
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+
+/* The slider */
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+
+/* Rounded sliders */
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.mat-radio-checked .mat-radio-inner-circle {
+    transform: scale(0.5);
+    opacity: 1;
+    transition: transform ease 280ms, background-color ease 280ms;
+}
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #ff4081;
+}
+
+.mat-radio-button {
+    display: inline-block;
+    -webkit-tap-highlight-color: transparent;
+    outline: 0;
+}
+
+.mat-radio-outer-circle {
+    box-sizing: border-box;
+    display: block;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: border-color ease 280ms;
+    width: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+}
+
+.mat-radio-outer-circle {
+    border-color: rgba(0, 0, 0, 0.54);
+}
+
+.mat-radio-inner-circle {
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: block;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transition: transform ease 280ms, background-color ease 280ms, opacity linear 1ms 280ms;
+    width: 20px;
+    transform: scale(0.001);
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+}
+
+.mat-radio-label {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    width: 100%;
+}
+
 .h21-dialog-panel_progress {
     position: absolute !important;
     top: 0;
@@ -27,27 +159,33 @@ mat-sidenav {
     width: 100%;
 }
 
-// .gm-style-iw button>img {
-//     display: none !important;
-// }
-// .gm-style .gm-style-iw-t::after {
-//     background: none !important;
-//     box-shadow: none !important;
-// }
-// .gm-style .gm-style-iw-c {
-//     border-radius: 0 !important;
-//     padding: 0 !important;
-//     box-shadow: none !important;
-// }
-// .gm-style-iw-d {
-//     overflow: hidden !important;
-// }
-// .gm-ui-hover-effect:hover {
-//     opacity: 0 !important;
-// }
-// .gm-ui-hover-effect {
-//     opacity: 0 !important;
-// }
+.gm-style-iw button>img {
+    display: none !important;
+}
+
+.gm-style .gm-style-iw-t::after {
+    background: none !important;
+    box-shadow: none !important;
+}
+
+.gm-style .gm-style-iw-c {
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.gm-style-iw-d {
+    overflow: hidden !important;
+}
+
+.gm-ui-hover-effect:hover {
+    opacity: 0 !important;
+}
+
+.gm-ui-hover-effect {
+    opacity: 0 !important;
+}
+
 
 /* ==========================================================================
    Ngx slider

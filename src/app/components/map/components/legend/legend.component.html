@@ -1,4 +1,4 @@
-<form *ngIf="isShowLegend" action="#" class="map-filter" cdkDrag>
+<form *ngIf="true" action="#" class="map-filter" cdkDrag>
     <ul class="map-filter__nav" style="display: none;">
         <li class="map-filter__nav-item">
             <a href="#map-total" class="map-filter__nav-link map-filter__nav-link_active">Total</a>
@@ -9,6 +9,7 @@
     </ul>
     <div class="map-filter__body" style="padding: 0;">
         <div class="map-filter__body-item map-filter__body-item_active" id="map-total">
+            <!-- <img src="../../../../../assets/img/board-legend.svg" alt=""> -->
             <ul class="color-filters" style="width: 390px;" [formGroup]="legendForm">
                 <li class="color-filters__item color-filter">
                     <input type="checkbox" formControlName="all" (change)="onAllChange($event)" name="color-all" id="color-all" class="color-filter__checkbox">

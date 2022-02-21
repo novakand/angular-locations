@@ -4,12 +4,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { MatRadioModule } from '@angular/material/radio';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 // components
 import { LegendComponent } from './components/legend/legend.component';
 import { MapComponent } from './components/map/map.component';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
     imports: [
@@ -23,6 +26,9 @@ import { MapComponent } from './components/map/map.component';
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
+        MatRadioModule,
+        MatSlideToggleModule,
+        NgxSliderModule,
     ],
     declarations: [
         LegendComponent,

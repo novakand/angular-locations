@@ -38,8 +38,6 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   @Output() public addPoints = new EventEmitter<void>();
 
-  public mokeReg: any;
-
   public TransportType = MoveTypeEnumstring;
   public sortedWeekdays = [];
   public filterForm: FormGroup;
@@ -57,10 +55,10 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public sliderPerWeekOptions: any = {
     floor: 0,
-    value: 30,
-    ceil: 13875,
+    value: 100000,
+    ceil: 100000,
     minRange: 0,
-    maxRange: 13875,
+    maxRange: 100000,
     hideLimitLabels: true,
     hidePointerLabels: true,
     showSelectionBar: true,
@@ -69,7 +67,7 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public sliderNearbyKmOptions: any = {
     floor: 0,
-    value: 4,
+    value: 12,
     ceil: 16,
     disabled: true,
     minRange: 3,
@@ -82,13 +80,13 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public sliderNearbyHomesOptions: any = {
     floor: 0,
-    value: 5,
+    value: 1,
     ceil: 50,
     disabled: true,
-    minRange: 5,
+    minRange: 1,
     maxRange: 50,
-    highValue: 50,
-    minLimit: 5,
+    highValue: 12,
+    minLimit: 1,
     steps: 1,
     hideLimitLabels: true,
     showSelectionBar: true,
@@ -100,7 +98,7 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private locationService: LocationsService,
+    private _locService: LocationsService,
   ) { }
 
   public ngOnInit(): void {
@@ -114,13 +112,12 @@ export class FilterComponent implements OnInit, OnDestroy {
       takeUntil(this._destroy$),
     ).subscribe((value) => this.sendFilter());
 
-    this.locationService.actionCommutes$
+    this._locService.actionCommutes$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
       ).
       subscribe((data: any) => {
-        console.log(data);
         this.commutes = data;
         this.sendFilter();
       });
@@ -134,37 +131,47 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public sendFilter(): void {
 
-    this.locationService.actionPreloader$.next(true);
+    this._locService.actionPreloader$.next(true);
+
     const defaultParam = {
       orgUid: '22cf31c2-9eea-460f-a489-c75a5d1dd2c9',
       officeUid: '22cf31c2-9eea-460f-a489-c75a5d1dd2c9',
-      ForecastPointLon: 2.538979,
-      ForecastPointLat: 48.79875,
-      nearbyHomesCountMin: this.sliderNearbyHomesOptions.value,
-      nearbyHomesCountMax: this.sliderNearbyHomesOptions.highValue,
-      transports: this.filterForm.get('transports').value.filter((value) => !!value),
+      cO2KgWeeklyMin: 0,
+      forecastPointLon: 2.538979,
+      forecastPointLat: 48.79875,
+      nearbyHomesCountMin: this.isNearbyHomes ? this.sliderNearbyHomesOptions.value : null,
+      nearbyHomesCountMax: this.isNearbyHomes ? this.sliderNearbyHomesOptions.highValue : null,
+      transports: this.getTransport(),
       showCommutes: this.commutes,
+      excludedCommutes: null,
 
     };
+
+
 
     const filterParam = {
       ...this.filterForm.value,
       ...defaultParam,
     };
 
-    console.log(filterParam, 'filterParam');
+    console.log('filterParam', filterParam);
 
-    this.locationService.filterUpdateAsync(filterParam)
+    this._locService.filterUpdateAsync(filterParam)
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
       )
       .subscribe((data: any) => {
         console.log(data, ' RESPONSE');
-        this.locationService.actionPreloader$.next(false);
+        this._locService.actionPreloader$.next(false);
       });
   }
 
+
+  public getTransport() {
+    const transport = this.filterForm.get('transports').value.filter((value) => !!value);
+    return !transport.length ? ['notSet'] : transport;
+  }
 
   public buildFieldsTransport(): any {
     return Object.values(this.TransportType).map((x) => false);
@@ -181,7 +188,6 @@ export class FilterComponent implements OnInit, OnDestroy {
     });
 
   }
-
 
   public buildForm(): void {
     this.filterForm = this.fb.group({
@@ -207,10 +213,10 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public fieldsChange(event) {
     event.currentTarget.checked ?
-      this.filterForm.get('nearbyKm').enable({ emitEvent: true }) : this.filterForm.get('nearbyKm').disable({ emitEvent: false });
+      this.filterForm.get('nearbyKm').enable({ emitEvent: true }) : this.filterForm.get('nearbyKm').disable({ emitEvent: true });
     event.currentTarget.checked ?
       this.filterForm.get('nearbyHomesCountMin').enable({ emitEvent: true })
-      : this.filterForm.get('nearbyHomesCountMin').disable({ emitEvent: false });
+      : this.filterForm.get('nearbyHomesCountMin').disable({ emitEvent: true });
 
     this.sliderNearbyKmOptions = { ...this.sliderNearbyKmOptions, ...{ disabled: !event.currentTarget.checked } };
     this.sliderNearbyHomesOptions = { ...this.sliderNearbyHomesOptions, ...{ disabled: !event.currentTarget.checked } };
@@ -223,7 +229,7 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public onUserChange(event, filterType: FilterSliderType) {
     if (filterType === FilterSliderType.nearbyHomes) {
-      this.currentValue = `${event.value}- ${event.highValue}`;
+      this.currentValue = `${event.value}-${event.highValue}`;
     }
   }
 
@@ -236,6 +242,6 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   public onaddPoint(): void {
-    this.locationService.actionAddPoint$.next(null);
+    this._locService.actionAddPoint$.next(true);
   }
 }

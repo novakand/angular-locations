@@ -61,7 +61,7 @@
                         <ul class="filter-list">
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.nearbyHomes)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions"></ngx-slider>
+                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.nearbyKm)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions"></ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="within" class="filter-details__label">Within</label>
                                         <div class="filter-details__right">
@@ -78,7 +78,7 @@
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input formControlName="nearbyHomesCountMin" type="text" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="3" max="50">
+                                            <input formControlName="nearbyHomesCountMin" type="text" readonly (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="3" max="50">
                                         </div>
                                     </div>
                                 </div>

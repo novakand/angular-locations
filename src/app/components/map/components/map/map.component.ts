@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { FilterResponce } from '../../../../components/locations/interfaces/filter-responce.interfaces';
 import { LocationsService } from '../../../../components/locations/services/locations.service';
 
 // enums
@@ -13,12 +14,11 @@ import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
   providers: [GoogleMap],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
 
-  public dataFilterLocation: any;
   public destroy$ = new Subject<boolean>();
 
   public restangle: google.maps.RectangleOptions;
@@ -28,6 +28,7 @@ export class MapComponent implements OnInit {
   public infoWindowBox: google.maps.InfoWindow[] = [];
   public infoWindowViewContent: string;
   public selectedPolyline: any;
+  public center: any;
 
   public sliderOptions: any = {
     floor: 0,
@@ -59,37 +60,32 @@ export class MapComponent implements OnInit {
   public markerOptions: google.maps.MarkerOptions = {};
   public polylineOptions: google.maps.PolylineOptions = {};
   public bounds: google.maps.LatLngBounds;
+  public dataSource: FilterResponce;
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private serv: LocationsService,
+    private _locService: LocationsService,
   ) { }
 
   public ngOnInit(): void {
 
     this.bounds = new google.maps.LatLngBounds();
-    this.serv.takeFilter$
+    this._locService.takeFilter$
       .pipe(
         filter(Boolean),
         takeUntil(this.destroy$),
       ).
-      subscribe((data: any) => {
-
-        this.markers = [];
-        this.circles = [];
-        this.polylines = [];
-        this.cdr.detectChanges();
-        this.dataFilterLocation = [];
-        this.dataFilterLocation = data;
-        this.infoWindowOptions = {};
-        // this.infoWindowOptions.pixelOffset = new google.maps.Size(0, -60);
-        // this.infoWindowOptions.disableAutoPan = false;
-       // this.buildMarker(this.dataFilterLocation.forecastPoint);
-        // this.buildCircle(this.dataFilterLocation);
-        this.buildPolylines();
+      subscribe((data: FilterResponce) => {
+        this.dataSource = data;
+        this.removeMapObject();
+        this.buildMarker();
+        this.dataSource.nearbies && this.buildCircle();
+        this.dataSource.commutes && this.buildPolylines();
+        this.createInfoWindow();
       });
 
-    this.serv.actionAddPoint$.pipe(
+    this._locService.actionAddPoint$.pipe(
+      filter(Boolean),
       takeUntil(this.destroy$),
     ).
       subscribe((data: any) => {
@@ -98,21 +94,33 @@ export class MapComponent implements OnInit {
 
   }
 
+  public createInfoWindow() {
+    this.infoWindowOptions = {};
+    this.infoWindowOptions.pixelOffset = new google.maps.Size(0, -60);
+    this.infoWindowOptions.disableAutoPan = false;
+  }
+
+  public removeMapObject(): void {
+    this.markers = [];
+    this.circles = [];
+    this.polylines = [];
+    this.cdr.detectChanges();
+  }
+
   public addOffice(): void {
     this.markerOptions = {
       draggable: true,
       crossOnDrag: false,
       icon: { url: MarkerTypeIcon.virtualOffice, anchor: new google.maps.Point(80, 75) },
       anchorPoint: new google.maps.Point(-290, 90),
-    //position: { lat: this.dataFilterLocation.forecastPoint.lat, lng: this.dataFilterLocation.forecastPoint.lon },
+      position: { lat: this.dataSource.forecastPoint.lat, lng: this.dataSource.forecastPoint.lon },
     };
 
     this.markers.push(this.markerOptions);
-    // tslint:disable-next-line: max-line-length
-    // this.map.googleMap.setCenter(new google.maps.LatLng(this.dataFilterLocation.forecastPoint.lat, this.dataFilterLocation.forecastPoint.lon));
+    this.map.googleMap.setCenter(new google.maps.LatLng(this.dataSource.forecastPoint.lat, this.dataSource.forecastPoint.lon));
+    this.cdr.detectChanges();
   }
 
-  // tslint:disable-next-line: use-lifecycle-interface
   public ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
@@ -121,13 +129,38 @@ export class MapComponent implements OnInit {
     this.polylines = [];
   }
 
-  public buildMarker(point: any): void {
+  public buildMarker(): void {
     this.infoWindowViewContent = 'marker';
+    const point = this.dataSource.forecastPoint;
     const marker = this.createMarkerOptions(point);
     this.markers.push(marker);
-    this.infoWindow.position = marker.position;
-    this.infoWindow.open();
+    this.center = marker.position;
+    this.map.googleMap.setCenter(marker.position);
+    // this.infoWindow = new google.maps.InfoWindow();
+    // this.infoWindow.position = marker.position;
+    // this.infoWindow.open();
     this.cdr.detectChanges();
+  }
+
+  public buildCircle(): void {
+    this.dataSource.nearbies.forEach((item) => {
+      this.addCircle(item);
+    });
+  }
+
+  public addCircle(item): void {
+    this.circles.push(this.createCircleOptions(item));
+  }
+
+  public createCircleOptions(item): google.maps.CircleOptions {
+    return this.circleOptions = {
+      center: new google.maps.LatLng(item.center.lat, item.center.lon),
+      radius: item.radiusKm * 1000,
+      fillColor: '#1471ea',
+      fillOpacity: 0.2,
+      strokeColor: '#1471ea',
+      strokeOpacity: 0.2,
+    };
   }
 
 
@@ -139,37 +172,6 @@ export class MapComponent implements OnInit {
     };
   }
 
-  public buildRestangle(): void {
-    this.restangle = this.createRestangleOptions();
-    this.cdr.detectChanges();
-  }
-
-  public createRestangleOptions(): google.maps.RectangleOptions {
-    const p1 = this.dataFilterLocation.nearbies[0].rectPoint1;
-    const p2 = this.dataFilterLocation.nearbies[0].rectPoint2;
-
-    const bounds = new google.maps.LatLngBounds();
-    bounds.extend(new google.maps.LatLng(p1.lat, p1.lon));
-    bounds.extend(new google.maps.LatLng(p2.lat, p2.lon));
-    this.map.fitBounds(bounds);
-
-    return this.restangle = {
-      strokeColor: '#1471ea',
-      strokeOpacity: 0.3,
-      fillColor: '#1471ea',
-      fillOpacity: 0.8,
-      bounds
-
-    };
-  }
-
-  private buildPolylines(): void {
-    this.dataFilterLocation.commutes.forEach((item) => {
-      this.polylines.push(this.createPolylineOptions(item));
-    });
-    this.fitBounds();
-    this.cdr.detectChanges();
-  }
 
   public markerClick(marker): void {
     this.infoWindowViewContent = 'marker';
@@ -194,13 +196,13 @@ export class MapComponent implements OnInit {
       scale: 4,
     };
 
-    // tslint:disable-next-line: no-unused-expression
+
     this.selectedPolyline && this.selectedPolyline.setOptions({ icons: [] });
     polyline.polyline.setOptions({ icons: [{ icon: selected, offset: '0', repeat: '2px', }] });
     this.selectedPolyline = polyline.polyline;
 
     this.cdr.detectChanges();
-    // this.infoWindowViewContent = 'polyline';
+    this.infoWindowViewContent = 'polyline';
     const bounds = new google.maps.LatLngBounds();
     polyline.getPath().getArray().forEach((latLng) => {
       bounds.extend(latLng);
@@ -209,18 +211,9 @@ export class MapComponent implements OnInit {
     const center = bounds.getCenter();
     this.map.googleMap.setCenter(center);
     this.infoWindow.position = center;
-    // this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
+    this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
     this.infoWindow.open();
     this.cdr.detectChanges();
-  }
-
-  private createPolylineOptions(hotel: any): google.maps.PolygonOptions {
-    return this.polylineOptions = {
-      strokeColor: hotel.commuteCO2Quartile,
-      strokeWeight: 4,
-      zIndex: 10,
-      path: this.convertLatLng(hotel),
-    };
   }
 
   public convertLatLng(items): google.maps.LatLng[] {
@@ -235,7 +228,26 @@ export class MapComponent implements OnInit {
   }
 
   public fitBounds(): void {
-    this.map.fitBounds(this.bounds);
+    !!this.dataSource.commutes.length && this.map.fitBounds(this.bounds);
   }
+
+  private createPolylineOptions(item: any): google.maps.PolygonOptions {
+    return this.polylineOptions = {
+      strokeColor: item.commuteCO2Quartile,
+      strokeWeight: 4,
+      zIndex: 10,
+      path: this.convertLatLng(item),
+    };
+  }
+
+  private buildPolylines(): void {
+    this.dataSource.commutes.forEach((item) => {
+      this.polylines.push(this.createPolylineOptions(item));
+    });
+    this.fitBounds();
+    this.cdr.detectChanges();
+  }
+
+
 }
 
