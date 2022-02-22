@@ -1,13 +1,13 @@
-// This file can be replaced during build by using the `fileReplacements` array.
+// this file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+// the list of file replacements can be found in `angular.json`.
 
 import { IEnvironment } from './environment.interface';
 
 export const environment: IEnvironment = {
   debounceTime: 300,
   production: false,
-  apiLocationUri: 'https://144.76.237.58:9043/api/',
+  apiLocationUri: 'http://144.76.237.58:9000/api/',
 
 };
 /*

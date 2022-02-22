@@ -18,6 +18,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
+  @ViewChild('marker', { static: false }) marker: google.maps.Marker;
 
   public destroy$ = new Subject<boolean>();
 
@@ -130,16 +131,15 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public buildMarker(): void {
-    this.infoWindowViewContent = 'marker';
     const point = this.dataSource.forecastPoint;
     const marker = this.createMarkerOptions(point);
     this.markers.push(marker);
-    this.center = marker.position;
     this.map.googleMap.setCenter(marker.position);
-    // this.infoWindow = new google.maps.InfoWindow();
-    // this.infoWindow.position = marker.position;
-    // this.infoWindow.open();
-    this.cdr.detectChanges();
+    this.infoWindowViewContent = 'marker';
+    // this.infoWindow.infoWindow.setPosition(marker.position);
+    // this.infoWindow.infoWindow.open();
+    // this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
+   // this.cdr.detectChanges();
   }
 
   public buildCircle(): void {
