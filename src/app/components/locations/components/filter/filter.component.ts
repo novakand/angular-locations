@@ -147,8 +147,6 @@ export class FilterComponent implements OnInit, OnDestroy {
 
     };
 
-
-
     const filterParam = {
       ...this.filterForm.value,
       ...defaultParam,
