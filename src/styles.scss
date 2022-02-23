@@ -16,6 +16,14 @@
     height: 0;
 }
 
+.wb-option__form {
+    color: #1471ea;
+    font-size: 14px;
+    line-height: 1.29;
+    transition: all 0.2s ease-in-out;
+    font-weight: 700;
+}
+
 
 /* The slider */
 
@@ -1281,7 +1289,7 @@ a {
 .sidebar__title {
     color: #1471ea;
     border-bottom: 1px dashed #c2dcff;
-    padding: 19px 24px;
+    padding: 16px 24px;
     margin: 0;
 }
 
@@ -2817,7 +2825,8 @@ a {
 .wb-slider__value {
     position: absolute;
     top: -31px;
-    right: 0;
+    // right: 0;
+    right: 10px;
     color: #1471ea;
     font-size: 14px;
     line-height: 1.29;

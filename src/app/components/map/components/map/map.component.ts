@@ -47,10 +47,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public sliderOptions: any = {
     floor: 0,
-    value: 80,
-    ceil: 80,
+    value: 5,
+    ceil: 5,
     minRange: 0,
-    maxRange: 16,
+    maxRange: 5,
     hideLimitLabels: true,
     hidePointerLabels: true,
     showSelectionBar: true,

@@ -9,8 +9,7 @@
                     <ul class="wb-form__options">
                         <li class="wb-form__options-item wb-option">
                             <div class="wb-option__form">
-                                <input type="radio" name="hybrid-working" id="hybrid-working" class="wb-option__radio" checked="">
-                                <label for="hybrid-working" class="wb-option__label">Hybrid Working poly</label>
+                                Office days
                             </div>
                             <div class="wb-option__body wb-option__body_active wb-slider">
                                 <ngx-slider class="filter-slider" [(value)]="sliderOptions.value" [options]="sliderOptions">
@@ -19,15 +18,15 @@
                                     <div class="wb-slider__label">Office</div>
                                     <div class="wb-slider__label">Home</div>
                                 </div>
-                                <div class="wb-slider__value">{{sliderOptions.value}}%</div>
+                                <div class="wb-slider__value">{{sliderOptions.value}}</div>
                             </div>
                         </li>
-                        <li class="wb-form__options-item wb-option" *ngIf="isChekedForecast$ | async ">
+                        <!-- <li class="wb-form__options-item wb-option" *ngIf="isChekedForecast$ | async ">
                             <div class="wb-option__form">
                                 <input type="radio" name="hybrid-working" id="work-from-home" class="wb-option__radio">
                                 <label for="work-from-home" class="wb-option__label">Hybrid Working</label>
                             </div>
-                        </li>
+                        </li> -->
                     </ul>
                     <button class="wb-form__submit button button_primary" (click)="onApplyInfoWindows(polyline)" type="submit">Apply</button>
                 </div>
