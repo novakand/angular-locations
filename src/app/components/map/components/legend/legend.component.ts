@@ -31,6 +31,9 @@ export class LegendComponent implements OnInit {
     this.addListenersForm();
     this.addListenerFilter();
 
+    // this.legendForm.get('showCommutes').disable({ emitEvent: false });
+    // this.legendForm.get('all').disable({ emitEvent: false });
+
   }
 
 

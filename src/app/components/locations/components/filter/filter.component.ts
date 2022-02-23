@@ -8,7 +8,7 @@ import {
   Output
 } from '@angular/core';
 
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 // external libs
 import { Subject, Subscription } from 'rxjs';
@@ -20,6 +20,7 @@ import { MoveTypeEnumstring } from '../../enums/move-type.enums';
 
 // interfaces
 import { FilterResponce } from '../../interfaces/filter-responce.interfaces';
+import { ForecastPoint } from '../../models/forecat-point';
 
 // models
 import { FilterRequest } from '../../models/qure.model';
@@ -52,6 +53,8 @@ export class FilterComponent implements OnInit, OnDestroy {
   public sliderType = FilterSliderType;
   public subscription: Subscription;
   public commutes: [] = [];
+  public forecastPoint: ForecastPoint = { lon: 2.538979, lat: 48.79875 };
+  public excludedCommutes: any = null;
 
   public sliderPerWeekOptions: any = {
     floor: 0,
@@ -67,7 +70,7 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   public sliderNearbyKmOptions: any = {
     floor: 0,
-    value: 12,
+    value: 16,
     ceil: 16,
     disabled: true,
     minRange: 3,
@@ -85,7 +88,7 @@ export class FilterComponent implements OnInit, OnDestroy {
     disabled: true,
     minRange: 1,
     maxRange: 50,
-    highValue: 12,
+    highValue: 50,
     minLimit: 1,
     steps: 1,
     hideLimitLabels: true,
@@ -122,6 +125,26 @@ export class FilterComponent implements OnInit, OnDestroy {
         this.sendFilter();
       });
 
+    this._locService.mapDrag$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      ).
+      subscribe((data: any) => {
+        this.forecastPoint = data;
+        this.sendFilter();
+      });
+
+    this._locService.excludedCommutes$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      ).
+      subscribe((data: any) => {
+        this.excludedCommutes = data;
+        this.sendFilter();
+      });
+
   }
 
   public ngOnDestroy(): void {
@@ -133,17 +156,21 @@ export class FilterComponent implements OnInit, OnDestroy {
 
     this._locService.actionPreloader$.next(true);
 
+    //0af03ae5-0d1a-47f4-bfec-70f60d0d7b66
+    //London HQ
+
     const defaultParam = {
       orgUid: '22cf31c2-9eea-460f-a489-c75a5d1dd2c9',
       officeUid: '22cf31c2-9eea-460f-a489-c75a5d1dd2c9',
+      officeName:'London HQ',
       cO2KgWeeklyMin: 0,
-      forecastPointLon: 2.538979,
-      forecastPointLat: 48.79875,
+      forecastPointLon: this.forecastPoint.lon,
+      forecastPointLat: this.forecastPoint.lat,
       nearbyHomesCountMin: this.isNearbyHomes ? this.sliderNearbyHomesOptions.value : null,
       nearbyHomesCountMax: this.isNearbyHomes ? this.sliderNearbyHomesOptions.highValue : null,
-      transports: this.getTransport(),
+      transports: this.isChekedTransport ? this.getTransport() : ['notSet'],
       showCommutes: this.commutes,
-      excludedCommutes: null,
+      excludedCommutes: this.excludedCommutes,
 
     };
 
@@ -172,7 +199,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   public buildFieldsTransport(): any {
-    return Object.values(this.TransportType).map((x) => false);
+    return Object.values(this.TransportType).map((x) => true);
 
   }
 
@@ -201,12 +228,20 @@ export class FilterComponent implements OnInit, OnDestroy {
   public fieldsChangeTransport(event): void {
 
     event.currentTarget.checked ?
-      this.filterForm.get('transports').enable({ emitEvent: false }) : this.resetFiledTransport();
+      this.filterForm.get('transports').enable({ emitEvent: true }) : this.resetFiledTransport();
   }
 
   public resetFiledTransport(): void {
-    this.filterForm.get('transports').disable({ emitEvent: false });
-    this.filterForm.get('transports').reset();
+    const checkboxControl = this.filterForm.get('transports');
+    checkboxControl.disable({ emitEvent: true })
+    checkboxControl.setValue(
+      checkboxControl.value.map((value: any, i: string | number) => value ? Object.values(this.TransportType)[i] : true),
+      { emitEvent: false },
+    );
+  }
+
+  public onForecat(event) {
+    this._locService.isChekedForecast$.next(!event.currentTarget.checked);
   }
 
   public fieldsChange(event) {

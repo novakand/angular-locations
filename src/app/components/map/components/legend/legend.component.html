@@ -9,32 +9,31 @@
     </ul>
     <div class="map-filter__body" style="padding: 0;">
         <div class="map-filter__body-item map-filter__body-item_active" id="map-total">
-            <!-- <img src="../../../../../assets/img/board-legend.svg" alt=""> -->
             <ul class="color-filters" style="width: 390px;" [formGroup]="legendForm">
                 <li class="color-filters__item color-filter">
-                    <input type="checkbox" formControlName="all" (change)="onAllChange($event)" name="color-all" id="color-all" class="color-filter__checkbox">
-                    <label for="color-all" style="background: conic-gradient(from 180deg at 50% 50%, #54c95a 0deg, #ff7a19 79.56deg, #fdb31b 145.19deg, #ff196e 244.56deg, #54c956 360deg);" class="color-filter__label"></label>
+                    <input type="checkbox" formControlName="all" (change)="onAllChange($event)" name="color-all" id="color-all" class="color-filter__checkbox gradient">
+                    <label for="color-all" class="color-filter__label"></label>
                 </li>
                 <ng-container formArrayName="showCommutes">
                     <li class="color-filters__item color-filter">
-                        <input type="checkbox" formControlName="0" name="color-1" id="color-1" (change)="fieldsChange($event)" class="color-filter__checkbox">
-                        <label for="color-1" style="background: #54c956;" class="color-filter__label"></label>
+                        <input type="checkbox" formControlName="0" name="color-1" id="color-1" (change)="fieldsChange($event)" class="color-filter__checkbox green">
+                        <label for="color-1" class="color-filter__label"></label>
                     </li>
                     <li class="color-filters__item color-filter">
-                        <input type="checkbox" formControlName="1" name="color-2" id="color-2" (change)="fieldsChange($event)" class="color-filter__checkbox">
-                        <label for="color-2" style="background: #fdbe1b;" class="color-filter__label"></label>
+                        <input type="checkbox" formControlName="1" name="color-2" id="color-2" (change)="fieldsChange($event)" class="color-filter__checkbox yellow">
+                        <label for="color-2" class="color-filter__label"></label>
                     </li>
                     <li class="color-filters__item color-filter">
-                        <input type="checkbox" formControlName="2" name="color-3" id="color-3" (change)="fieldsChange($event)" class="color-filter__checkbox">
-                        <label for="color-3" style="background: #ff7a19;" class="color-filter__label"></label>
+                        <input type="checkbox" formControlName="2" name="color-3" id="color-3" (change)="fieldsChange($event)" class="color-filter__checkbox orange">
+                        <label for="color-3" class="color-filter__label"></label>
                     </li>
                     <li class="color-filters__item color-filter">
-                        <input type="checkbox" formControlName="3" name="color-4" id="color-4" (change)="fieldsChange($event)" class="color-filter__checkbox">
-                        <label for="color-4" style="background: #ff196e;" class="color-filter__label"></label>
+                        <input type="checkbox" formControlName="3" name="color-4" id="color-4" (change)="fieldsChange($event)" class="color-filter__checkbox scarlet">
+                        <label for="color-4" class="color-filter__label"></label>
                     </li>
                     <li class="color-filters__item color-filter">
-                        <input type="checkbox" formControlName="4" name="color-5" id="color-5" (change)="fieldsChange($event)" class="color-filter__checkbox">
-                        <label for="color-5" style="background: #ff0a20;" class="color-filter__label"></label>
+                        <input type="checkbox" formControlName="4" name="color-5" id="color-5" (change)="fieldsChange($event)" class="color-filter__checkbox red">
+                        <label for="color-5" class="color-filter__label"></label>
                     </li>
                 </ng-container>
             </ul>

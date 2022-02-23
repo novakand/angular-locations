@@ -13,6 +13,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { LegendComponent } from './components/legend/legend.component';
 import { MapComponent } from './components/map/map.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
     imports: [
@@ -29,6 +30,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
         MatRadioModule,
         MatSlideToggleModule,
         NgxSliderModule,
+        MatMenuModule,
     ],
     declarations: [
         LegendComponent,

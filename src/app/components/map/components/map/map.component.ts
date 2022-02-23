@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
+import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { ForecastPoint } from 'src/app/components/locations/models/forecat-point';
 import { FilterResponce } from '../../../../components/locations/interfaces/filter-responce.interfaces';
 import { LocationsService } from '../../../../components/locations/services/locations.service';
+ import { MatMenuTrigger  } from '@angular/material/menu';
 
 // enums
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
@@ -17,8 +19,16 @@ import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
 export class MapComponent implements OnInit, OnDestroy {
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
-  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-  @ViewChild('marker', { static: false }) marker: google.maps.Marker;
+  @ViewChild(MapInfoWindow, { static: false }) infoWindow: MapInfoWindow;
+  // @ViewChild(MapMarker, { static: false }) markera: any;
+  // @ViewChild('clickHoverMenuTrigger') clickHoverMenuTrigger: Menu;
+
+  @ViewChild(MatMenuTrigger) public contextMenu: MatMenuTrigger;
+
+  // openOnMouseOver() {
+  //   this.clickHoverMenuTrigger.openMenu();
+  // }
+
 
   public destroy$ = new Subject<boolean>();
 
@@ -27,9 +37,13 @@ export class MapComponent implements OnInit, OnDestroy {
   public circles: google.maps.CircleOptions[] = [];
   public polylines: google.maps.PolygonOptions[] = [];
   public infoWindowBox: google.maps.InfoWindow[] = [];
-  public infoWindowViewContent: string;
   public selectedPolyline: any;
+  public selectedInfoWindow: any;
+  public visible: boolean;
   public center: any;
+  public isChekedForecast$ = this._locService.isChekedForecast$;
+  public isBuildMarker: boolean = true;
+  public contextMenuPosition = { x: '0px', y: '0px' };
 
   public sliderOptions: any = {
     floor: 0,
@@ -58,8 +72,8 @@ export class MapComponent implements OnInit, OnDestroy {
   };
 
   public circleOptions: google.maps.CircleOptions = {};
-  public markerOptions: google.maps.MarkerOptions = {};
-  public polylineOptions: google.maps.PolylineOptions = {};
+  public markerOptions: MarkerOptions = {};
+  public polylineOptions: PolylineOptions = {};
   public bounds: google.maps.LatLngBounds;
   public dataSource: FilterResponce;
 
@@ -78,8 +92,9 @@ export class MapComponent implements OnInit, OnDestroy {
       ).
       subscribe((data: FilterResponce) => {
         this.dataSource = data;
+        // console.log('data', this.dataSource)
         this.removeMapObject();
-        this.buildMarker();
+        (this.dataSource.forecastPoint && this.isBuildMarker) && this.buildMarker();
         this.dataSource.nearbies && this.buildCircle();
         this.dataSource.commutes && this.buildPolylines();
         this.createInfoWindow();
@@ -91,7 +106,59 @@ export class MapComponent implements OnInit, OnDestroy {
     ).
       subscribe((data: any) => {
         this.addOffice();
+        this.isBuildMarker = false;
       });
+
+
+    this.visible = false;
+    this.cdr.detectChanges();
+    this.visible = true;
+    this.cdr.detectChanges();
+
+    this._locService.isChekedForecast$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this.destroy$),
+      ).
+      subscribe((data: any) => {
+        this.isBuildMarker = data;
+      });
+
+
+  }
+
+  public onMapRightclick(event) {
+    // console.log(event, 'Context-menu')
+    // console.log(this.contextMenu, 'Cont')
+    this.contextMenuPosition.x = `${event.domEvent.clientX}px`;
+    this.contextMenuPosition.y = `${event.domEvent.clientY}px`;
+    this.contextMenu.openMenu();
+  }
+
+  public draggableChanged(marker, infowindow) {
+    this._locService.mapDrag$.next({ lat: marker.getPosition().lat(), lon: marker.getPosition().lng() });
+  }
+
+
+  public visibleChanged() {
+    console.log('visible');
+  }
+
+  public ngAfterContentInit() {
+    this.visible = true;
+    //console.log(this.markera, 'MArker', this.infoWindow);
+    //google.maps.event.addListenerOnce(this.map.googleMap, 'tilesloaded', () => {
+    // console.log('OOO')
+    //   console.log(this.markera, 'MArker', this.infoWindow);
+    //  new google.maps.event.trigger(this.markera.marker, 'click');
+    // this.markerClick(this.markera.marker, this.infoWindow)
+    //  this.cdr.detectChanges();
+
+    // });
+
+    //  console.log('OOO')
+    //console.log(this.markera, 'MArker', this.infoWindow);
+    // new google.maps.event.trigger(this.markera, 'click');
 
   }
 
@@ -102,7 +169,10 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public removeMapObject(): void {
-    this.markers = [];
+    //  if (this.isBuildMarker){
+    //   this.markers = [];
+    //  } 
+    // this.markers = [];
     this.circles = [];
     this.polylines = [];
     this.cdr.detectChanges();
@@ -132,14 +202,16 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public buildMarker(): void {
     const point = this.dataSource.forecastPoint;
-    const marker = this.createMarkerOptions(point);
+    const marker = this.createMarkerOptions();
     this.markers.push(marker);
     this.map.googleMap.setCenter(marker.position);
-    this.infoWindowViewContent = 'marker';
-    // this.infoWindow.infoWindow.setPosition(marker.position);
-    // this.infoWindow.infoWindow.open();
-    // this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
-   // this.cdr.detectChanges();
+    // console.log(this, 'This')
+    // this.infoWindow.position = marker.position;
+    // this.infoWindow.open();
+    // this.infoWindow.options = ({ pixelOffset: new google.maps.Size(0, -60) });
+    // this.markera.visibleChanged.next(true)
+    //google.maps.event.trigger(this.markera. visibleChanged, 'click');
+    this.cdr.detectChanges();
   }
 
   public buildCircle(): void {
@@ -164,29 +236,33 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
 
-  public createMarkerOptions(point: any): google.maps.MarkerOptions {
+  public createMarkerOptions(): google.maps.MarkerOptions {
     return this.markerOptions = {
       draggable: false,
       icon: MarkerTypeIcon.mainOffice,
-      position: { lat: point.lat, lng: point.lon },
+      position: { lat: this.dataSource.forecastPoint.lat, lng: this.dataSource.forecastPoint.lon },
+      forecastPerDay: this.dataSource.officeTotalCO2KgForecastPerDay,
+      forecastPerWeek: this.dataSource.officeTotalCO2KgPerWeek,
     };
   }
 
 
-  public markerClick(marker): void {
-    this.infoWindowViewContent = 'marker';
-    this.infoWindow.position = marker.getPosition();
-    this.infoWindow.open();
-    this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
+  public markerClick(marker, inf): void {
+    console.log(inf, 'markerClick')
+    inf.position = marker.getPosition();
+    inf.open();
+    inf.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
   }
 
-  public onApplyInfoWindows(): void {
+  public onApplyInfoWindows(polyline): void {
     this.infoWindow.close();
     this.selectedPolyline.setOptions({ icons: [] });
     this.selectedPolyline = null;
+    this._locService.excludedCommutes$.next([polyline.commuteUid]);
   }
 
-  public polylineDblclick(polyline): void {
+  public polylineDblclick(polyline, infowindow, p): void {
+    // console.log(infowindow, 'infowindow', p);
 
     const selected = {
       path: 'M 0,-1 0,1',
@@ -202,7 +278,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.selectedPolyline = polyline.polyline;
 
     this.cdr.detectChanges();
-    this.infoWindowViewContent = 'polyline';
     const bounds = new google.maps.LatLngBounds();
     polyline.getPath().getArray().forEach((latLng) => {
       bounds.extend(latLng);
@@ -210,9 +285,18 @@ export class MapComponent implements OnInit, OnDestroy {
 
     const center = bounds.getCenter();
     this.map.googleMap.setCenter(center);
-    this.infoWindow.position = center;
-    this.infoWindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
-    this.infoWindow.open();
+
+    if (this.selectedInfoWindow) {
+
+      this.selectedInfoWindow.close();
+    }
+
+    // infowindow.position = center;
+    // infowindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
+    this.selectedInfoWindow = infowindow;
+    infowindow.position = center;
+    infowindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
+    infowindow.open();
     this.cdr.detectChanges();
   }
 
@@ -231,12 +315,14 @@ export class MapComponent implements OnInit, OnDestroy {
     !!this.dataSource.commutes.length && this.map.fitBounds(this.bounds);
   }
 
-  private createPolylineOptions(item: any): google.maps.PolygonOptions {
+  private createPolylineOptions(item: any): PolylineOptions {
+    // console.log(item, 'item')
     return this.polylineOptions = {
       strokeColor: item.commuteCO2Quartile,
       strokeWeight: 4,
       zIndex: 10,
       path: this.convertLatLng(item),
+      commuteUid: item.commuteUid
     };
   }
 
@@ -249,5 +335,13 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
 
+}
+export interface PolylineOptions extends google.maps.PolylineOptions {
+  commuteUid?: string;
+}
+
+export interface MarkerOptions extends google.maps.MarkerOptions {
+  forecastPerDay?: number;
+  forecastPerWeek?: number;
 }
 

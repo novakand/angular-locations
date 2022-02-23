@@ -169,9 +169,7 @@ mat-sidenav {
 }
 
 .gm-style .gm-style-iw-c {
-    border-radius: 0 !important;
     padding: 0 !important;
-    box-shadow: none !important;
 }
 
 .gm-style-iw-d {
@@ -2460,6 +2458,124 @@ a {
         top: -3px;
         border-radius: 4px;
         border: 2px solid transparent;
+    }
+}
+
+.gradient {
+    + {
+        .color-filter__label {
+            background: conic-gradient(from 180deg at 50% 50%, #54c95a 0deg, #ff7a19 79.56deg, #fdb31b 145.19deg, #ff196e 244.56deg, #54c956 360deg);
+        }
+    }
+}
+
+.color-filter__checkbox:disabled+.color-filter__label:before {
+    border: none;
+}
+
+.gradient {
+    &:disabled {
+        + {
+            .color-filter__label {
+                background: #E0EAF7;
+                border: none;
+            }
+        }
+    }
+}
+
+.green {
+    + {
+        .color-filter__label {
+            background: #54c956;
+        }
+    }
+}
+
+.green {
+    &:disabled {
+        + {
+            .color-filter__label {
+                background: #E0EAF7;
+                border: none;
+            }
+        }
+    }
+}
+
+.yellow {
+    + {
+        .color-filter__label {
+            background: #fdbe1b;
+        }
+    }
+}
+
+.yellow {
+    &:disabled {
+        + {
+            .color-filter__label {
+                background: #E0EAF7;
+                border: none;
+            }
+        }
+    }
+}
+
+.orange {
+    + {
+        .color-filter__label {
+            background: #ff7a19;
+        }
+    }
+}
+
+.orange {
+    &:disabled {
+        + {
+            .color-filter__label {
+                background: #E0EAF7;
+                border: none;
+            }
+        }
+    }
+}
+
+.scarlet {
+    + {
+        .color-filter__label {
+            background: #ff196e;
+        }
+    }
+}
+
+.scarlet {
+    &:disabled {
+        + {
+            .color-filter__label {
+                background: #E0EAF7;
+                border: none;
+            }
+        }
+    }
+}
+
+.red {
+    + {
+        .color-filter__label {
+            background: #ff0a20;
+        }
+    }
+}
+
+.red {
+    &:disabled {
+        + {
+            .color-filter__label {
+                background: #E0EAF7;
+                border: none;
+            }
+        }
     }
 }
 
