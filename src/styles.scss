@@ -1291,6 +1291,8 @@ a {
     border-bottom: 1px dashed #c2dcff;
     padding: 16px 24px;
     margin: 0;
+    padding-top: 20px;
+    padding-bottom: 10px;
 }
 
 .sidebar__body {
@@ -2825,7 +2827,6 @@ a {
 .wb-slider__value {
     position: absolute;
     top: -31px;
-    // right: 0;
     right: 10px;
     color: #1471ea;
     font-size: 14px;

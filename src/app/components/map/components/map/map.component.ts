@@ -5,7 +5,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { ForecastPoint } from 'src/app/components/locations/models/forecat-point';
 import { FilterResponce } from '../../../../components/locations/interfaces/filter-responce.interfaces';
 import { LocationsService } from '../../../../components/locations/services/locations.service';
- import { MatMenuTrigger  } from '@angular/material/menu';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 // enums
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
@@ -20,14 +20,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow: MapInfoWindow;
-  // @ViewChild(MapMarker, { static: false }) markera: any;
-  // @ViewChild('clickHoverMenuTrigger') clickHoverMenuTrigger: Menu;
-
   @ViewChild(MatMenuTrigger) public contextMenu: MatMenuTrigger;
-
-  // openOnMouseOver() {
-  //   this.clickHoverMenuTrigger.openMenu();
-  // }
 
 
   public destroy$ = new Subject<boolean>();
@@ -124,12 +117,9 @@ export class MapComponent implements OnInit, OnDestroy {
         this.isBuildMarker = data;
       });
 
-
   }
 
   public onMapRightclick(event) {
-    // console.log(event, 'Context-menu')
-    // console.log(this.contextMenu, 'Cont')
     this.contextMenuPosition.x = `${event.domEvent.clientX}px`;
     this.contextMenuPosition.y = `${event.domEvent.clientY}px`;
     this.contextMenu.openMenu();
@@ -146,20 +136,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public ngAfterContentInit() {
     this.visible = true;
-    //console.log(this.markera, 'MArker', this.infoWindow);
-    //google.maps.event.addListenerOnce(this.map.googleMap, 'tilesloaded', () => {
-    // console.log('OOO')
-    //   console.log(this.markera, 'MArker', this.infoWindow);
-    //  new google.maps.event.trigger(this.markera.marker, 'click');
-    // this.markerClick(this.markera.marker, this.infoWindow)
-    //  this.cdr.detectChanges();
-
-    // });
-
-    //  console.log('OOO')
-    //console.log(this.markera, 'MArker', this.infoWindow);
-    // new google.maps.event.trigger(this.markera, 'click');
-
   }
 
   public createInfoWindow() {
@@ -169,10 +145,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public removeMapObject(): void {
-    //  if (this.isBuildMarker){
-    //   this.markers = [];
-    //  } 
-    // this.markers = [];
+    this.markers = [];
     this.circles = [];
     this.polylines = [];
     this.cdr.detectChanges();
@@ -205,12 +178,6 @@ export class MapComponent implements OnInit, OnDestroy {
     const marker = this.createMarkerOptions();
     this.markers.push(marker);
     this.map.googleMap.setCenter(marker.position);
-    // console.log(this, 'This')
-    // this.infoWindow.position = marker.position;
-    // this.infoWindow.open();
-    // this.infoWindow.options = ({ pixelOffset: new google.maps.Size(0, -60) });
-    // this.markera.visibleChanged.next(true)
-    //google.maps.event.trigger(this.markera. visibleChanged, 'click');
     this.cdr.detectChanges();
   }
 
@@ -262,8 +229,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public polylineDblclick(polyline, infowindow, p): void {
-    // console.log(infowindow, 'infowindow', p);
-
     const selected = {
       path: 'M 0,-1 0,1',
       strokeOpacity: 0.4,
@@ -291,8 +256,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.selectedInfoWindow.close();
     }
 
-    // infowindow.position = center;
-    // infowindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
     this.selectedInfoWindow = infowindow;
     infowindow.position = center;
     infowindow.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, 280) });
@@ -316,7 +279,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private createPolylineOptions(item: any): PolylineOptions {
-    // console.log(item, 'item')
     return this.polylineOptions = {
       strokeColor: item.commuteCO2Quartile,
       strokeWeight: 4,
@@ -333,8 +295,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.fitBounds();
     this.cdr.detectChanges();
   }
-
-
 }
 export interface PolylineOptions extends google.maps.PolylineOptions {
   commuteUid?: string;
