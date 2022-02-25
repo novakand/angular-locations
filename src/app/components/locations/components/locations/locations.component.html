@@ -1,6 +1,5 @@
 <div class="container" #screen>
     <mat-sidenav-container class="example-container autosize" autosize>
-        <app-screenshot #screensHot [screenContainer]="screenContainer"></app-screenshot>
 
         <mat-sidenav mode="side" [position]="'start'" [mode]="'side'" [opened]="true">
             <aside class="sidebar">
@@ -36,8 +35,9 @@
                             <a style="display: none;" class="controls__button controls__button_redo controls__button_disabled"></a>
                         </div>
                         <div class="save-png__buttons">
-                            <a class="button button_primary save-png__button" (click)="onSavePng()">Download</a>
-                            <a class="button button_secondary save-png__button">Upload</a>
+                            <input #file hidden accept="application/JSON" type="file" #fileInput (change)="onAddFile($event)">
+                            <a class="button button_primary save-png__button" (click)="onDownLoadFile()">Download</a>
+                            <a class="button button_secondary save-png__button" (click)="onUploadFile()">Upload</a>
                             <a class="button button_secondary save-png__button" style="color: #FF196E; border-color: #FF196E;">Discard</a>
                         </div>
                     </div>
@@ -49,4 +49,5 @@
             </main>
         </mat-sidenav-content>
     </mat-sidenav-container>
+    <a #downloadLink></a>
 </div>

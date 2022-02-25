@@ -1,11 +1,11 @@
-
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ScreensHotComponent } from '.././../../screenshot/screenshot.component';
+import { filter, takeUntil } from 'rxjs/operators';
+import moment from 'moment';
 
 // services
 import { LocationsService } from '../../services/locations.service';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-locations',
@@ -14,21 +14,34 @@ import { LocationsService } from '../../services/locations.service';
 })
 export class LocationsComponent implements OnInit, OnDestroy {
 
-  @ViewChild('screen', { static: true }) screenContainer: ElementRef;
-
-  @ViewChild('screensHot', { static: true }) screensHot: ScreensHotComponent;
+  @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
 
   public destroy$ = new Subject<boolean>();
   public isProgress = true;
+  public upJson: any = {};
 
+  private _destroy$ = new Subject<boolean>();
+
+  @ViewChild('file') public file: ElementRef<HTMLInputElement>;
 
   constructor(
-    private locService: LocationsService,
+    private _locService: LocationsService,
+    private _uploadService: UploadService,
   ) { }
 
 
   public ngOnInit(): void {
     this.addListenerPreloader();
+
+    this._uploadService.uploadFile$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: any) => {
+        this.upJson = data;
+      });
+
 
   }
 
@@ -37,19 +50,29 @@ export class LocationsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public onSavePng(): void {
-    this.screensHot.saveScreen();
-  }
-
-
   public addListenerPreloader(): void {
 
-    this.locService.actionPreloader$
+    this._locService.actionPreloader$
       .pipe(
         takeUntil(this.destroy$),
       ).
-      subscribe((data: any) => {
+      subscribe((data: boolean) => {
         this.isProgress = data;
       });
+  }
+
+  public onUploadFile(): void {
+    this.file.nativeElement.click();
+  }
+
+  public onAddFile(event): void {
+    this._uploadService.uploadFiles(event);
+  }
+
+  public onDownLoadFile(): void {
+    const uri = "data:text/json;charset=UTF-8," + encodeURIComponent(JSON.stringify(this.upJson));
+    this.downloadLink.nativeElement.href = uri || {};
+    this.downloadLink.nativeElement.download = `fatma ${moment().format('DD MM YYYY hh:mm:ss')}.json`;
+    this.downloadLink.nativeElement.click();
   }
 }

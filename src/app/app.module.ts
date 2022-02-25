@@ -15,6 +15,7 @@ import { LocationsModule } from './components/locations/locations.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StaticticsModule } from './components/statictics/statictics.module';
+import { UploadService } from './components/locations/services/upload.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { StaticticsModule } from './components/statictics/statictics.module';
     HttpClientModule,
     StaticticsModule,
   ],
-  providers: [HttpClientService, LocationsService, SettingsService],
+  providers: [HttpClientService, LocationsService, SettingsService, UploadService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

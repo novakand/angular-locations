@@ -14,7 +14,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { ScreensHotModule } from '../screenshot/screenshot.module';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -23,7 +23,6 @@ import { ScreensHotModule } from '../screenshot/screenshot.module';
   ],
   imports: [
     LocationRouteModule,
-    ScreensHotModule,
     MapModule,
     BrowserAnimationsModule,
     BrowserModule,
@@ -42,6 +41,7 @@ import { ScreensHotModule } from '../screenshot/screenshot.module';
     NgxSliderModule,
     HttpClientModule,
     MatProgressBarModule,
+    InfiniteScrollModule,
   ],
   exports: [
     LocationsComponent, FilterComponent, ListItemsComponent,

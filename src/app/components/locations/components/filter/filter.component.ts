@@ -156,16 +156,11 @@ export class FilterComponent implements OnInit, OnDestroy {
 
     this._locService.actionPreloader$.next(true);
 
-    //0af03ae5-0d1a-47f4-bfec-70f60d0d7b66
-    //London HQ
-
     const defaultParam = {
-      orgUid: '22cf31c2-9eea-460f-a489-c75a5d1dd2c9',
-      officeUid: '22cf31c2-9eea-460f-a489-c75a5d1dd2c9',
-      officeName:'London HQ',
+      orgUid: '4a279442-93e3-4e76-8f87-1bc9da15f711',
       cO2KgWeeklyMin: 0,
-      forecastPointLon: this.forecastPoint.lon,
-      forecastPointLat: this.forecastPoint.lat,
+      // forecastPointLon: this.forecastPoint.lon,
+      // forecastPointLat: this.forecastPoint.lat,
       nearbyHomesCountMin: this.isNearbyHomes ? this.sliderNearbyHomesOptions.value : null,
       nearbyHomesCountMax: this.isNearbyHomes ? this.sliderNearbyHomesOptions.highValue : null,
       transports: this.isChekedTransport ? this.getTransport() : ['notSet'],

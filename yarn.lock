@@ -157,10 +157,10 @@
   dependencies:
     tslib "^2.2.0"
 
-"@angular/cdk@^13.2.1":
-  version "13.2.1"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-13.2.1.tgz#7b9b4ee7423a62a9a5ec62544d13fd1ff7ad15f7"
-  integrity sha512-AjEn4Mk2ow2i8pw0T9F/C/bKFrnUqzlvOGfFkoMgZHp5r3yhDb5DbVRS1/fGScAbY8Pzln49r1maKdrE8DGUbg==
+"@angular/cdk@^13.2.3":
+  version "13.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-13.2.4.tgz#52ca05cabd64bc17fef3c3f23b215604267f3d66"
+  integrity sha512-t8LX/xySaIyN5EpWQjCwZFVLmdW/LE7pvx+6PghYGiLNvS+Vu/INi1Bhwt+b3fJDJ1uNYVCkB64G0UYhIsAwhg==
   dependencies:
     tslib "^2.3.0"
   optionalDependencies:
@@ -5601,6 +5601,13 @@ ng2-material-dropdown@^1.0.0:
   integrity sha512-waKgEkKQwGZT0dqRAd3ZW+wueYs5Xw9owiPBSMdg5jru5DcKDpUqFaADMqqI7HPuzJCxNJSln6nXX1tMYDbXGA==
   dependencies:
     tslib "^2.0.0"
+
+ngx-infinite-scroll@13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-infinite-scroll/-/ngx-infinite-scroll-13.1.0.tgz#68e7a6c4101a30328d48fa43a85894d019097a4f"
+  integrity sha512-9KAP62uJBAcVH6ZsmVCBORMLn6k+xwn8/LwEQqKq/ciWt1Bu2zRqxUhB9MDyT7dfStny7RTRU7neIA6LrnprDQ==
+  dependencies:
+    tslib "^2.3.0"
 
 ngx-mask@^13.1.1:
   version "13.1.1"

@@ -1,5 +1,5 @@
 <div class="locations">
-    <ul class="locations-list locations__list">
+    <ul class="locations-list locations__list" infinite-scroll>
         <li class="locations-list__item" *ngFor="let office of allOffices$ | async; let i = index">
             <div class="location locations-list__location" [class.location_active]="office.isOpen" type="button" (click)="onSelect(office)">
                 <div class="location__top">
