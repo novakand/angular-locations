@@ -19,10 +19,11 @@ export class LocationsComponent implements OnInit, OnDestroy {
   public destroy$ = new Subject<boolean>();
   public isProgress = true;
   public upJson: any = {};
-
-  private _destroy$ = new Subject<boolean>();
+  public dataSource: any = {};
 
   @ViewChild('file') public file: ElementRef<HTMLInputElement>;
+
+  private _destroy$ = new Subject<boolean>();
 
   constructor(
     private _locService: LocationsService,
@@ -40,6 +41,28 @@ export class LocationsComponent implements OnInit, OnDestroy {
       )
       .subscribe((data: any) => {
         this.upJson = data;
+        this._locService.takeFilter$.next(data);
+        this._locService.filter$.next(data);
+        this.file.nativeElement.value = '';
+        this._locService.actionPreloader$.next(false);
+      });
+
+    this._locService.addForecastPoint$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: any) => {
+        this.dataSource.forecastPoints = data;
+      });
+
+    this._locService.takeFilter$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: any) => {
+        this.dataSource = data;
       });
 
 
@@ -67,12 +90,13 @@ export class LocationsComponent implements OnInit, OnDestroy {
 
   public onAddFile(event): void {
     this._uploadService.uploadFiles(event);
+    this._locService.actionPreloader$.next(true);
   }
 
   public onDownLoadFile(): void {
-    const uri = "data:text/json;charset=UTF-8," + encodeURIComponent(JSON.stringify(this.upJson));
+    const uri = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.dataSource));
     this.downloadLink.nativeElement.href = uri || {};
-    this.downloadLink.nativeElement.download = `fatma ${moment().format('DD MM YYYY hh:mm:ss')}.json`;
+    this.downloadLink.nativeElement.download = `fatma ${moment().format('DD MM YYYY HH:mm:ss')}.json`;
     this.downloadLink.nativeElement.click();
   }
 }

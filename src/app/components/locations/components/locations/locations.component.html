@@ -35,7 +35,7 @@
                             <a style="display: none;" class="controls__button controls__button_redo controls__button_disabled"></a>
                         </div>
                         <div class="save-png__buttons">
-                            <input #file hidden accept="application/JSON" type="file" #fileInput (change)="onAddFile($event)">
+                            <input hidden accept="application/JSON" type="file" #file (change)="onAddFile($event)">
                             <a class="button button_primary save-png__button" (click)="onDownLoadFile()">Download</a>
                             <a class="button button_secondary save-png__button" (click)="onUploadFile()">Upload</a>
                             <a class="button button_secondary save-png__button" style="color: #FF196E; border-color: #FF196E;">Discard</a>

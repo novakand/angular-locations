@@ -9,6 +9,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 
 // enums
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
+import { MarkerType } from '../../enums/marker-type';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -22,11 +23,12 @@ export class MapComponent implements OnInit, OnDestroy {
   @ViewChild(MapInfoWindow, { static: false }) infoWindow: MapInfoWindow;
   @ViewChild(MatMenuTrigger) public contextMenu: MatMenuTrigger;
 
-
+  public isAddMarker = true;
   public destroy$ = new Subject<boolean>();
-
+  public markerId = 0;
   public restangle: google.maps.RectangleOptions;
-  public markers: google.maps.MarkerOptions[] = [];
+  public markers: MarkerOptions[] = [];
+  public forcastMarker: MarkerOptions[] = [];
   public circles: google.maps.CircleOptions[] = [];
   public polylines: google.maps.PolygonOptions[] = [];
   public infoWindowBox: google.maps.InfoWindow[] = [];
@@ -35,8 +37,10 @@ export class MapComponent implements OnInit, OnDestroy {
   public visible: boolean;
   public center: any;
   public isChekedForecast$ = this._locService.isChekedForecast$;
-  public isBuildMarker: boolean = true;
+  public isBuildMarker = true;
   public contextMenuPosition = { x: '0px', y: '0px' };
+  public forecastPoints: any[] = [];
+  public selectedOffice: any;
 
   public sliderOptions: any = {
     floor: 0,
@@ -55,7 +59,7 @@ export class MapComponent implements OnInit, OnDestroy {
   };
 
   public mapOptions: google.maps.MapOptions = {
-    center: { lat: 48.79875, lng: 2.538979 },
+    center: { lat: 51.5115238, lng: -0.0870248 },
     restriction: { strictBounds: false, latLngBounds: { north: 83.8, south: -83.8, west: -180, east: 180 } },
     zoom: 8,
     disableDefaultUI: true,
@@ -68,7 +72,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public markerOptions: MarkerOptions = {};
   public polylineOptions: PolylineOptions = {};
   public bounds: google.maps.LatLngBounds;
-  public dataSource: FilterResponce;
+  public dataSource: any;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -83,13 +87,19 @@ export class MapComponent implements OnInit, OnDestroy {
         filter(Boolean),
         takeUntil(this.destroy$),
       ).
-      subscribe((data: FilterResponce) => {
-        this.dataSource = data;
+      subscribe((source: any) => {
+        this.dataSource = source.data;
+        this.cdr.detectChanges();
         this.removeMapObject();
-        (this.dataSource.allOffices && this.isBuildMarker) && this.buildMarker();
+        (this.dataSource.allOffices && this.isAddMarker) && this.buildMarker();
         this.dataSource.nearbies && this.buildCircle();
         this.dataSource.commutes && this.buildPolylines();
         this.createInfoWindow();
+
+        this.dataSource?.forecastPoints && this.buildForecastPoint();
+
+        this.selectedOffice = this.dataSource.allOffices.find((item) => item.isSelected);
+        this.isAddMarker = false;
       });
 
     this._locService.actionAddPoint$.pipe(
@@ -98,14 +108,7 @@ export class MapComponent implements OnInit, OnDestroy {
     ).
       subscribe((data: any) => {
         this.addOffice();
-        this.isBuildMarker = false;
       });
-
-
-    this.visible = false;
-    this.cdr.detectChanges();
-    this.visible = true;
-    this.cdr.detectChanges();
 
     this._locService.isChekedForecast$
       .pipe(
@@ -115,27 +118,50 @@ export class MapComponent implements OnInit, OnDestroy {
       subscribe((data: any) => {
         this.isBuildMarker = data;
       });
-
   }
 
-  public onMapRightclick(event) {
+  public buildForecastPoint(): void {
+    this.dataSource?.forecastPoints && this.dataSource?.forecastPoints.forEach((value, index) => {
+      this.forcastMarker[index].data = value;
+    });
+  }
+
+  public onShowStats(item): void {
+    item.info.position = item.position;
+    item.info.open();
+    item.info.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
+  }
+
+  public onRemove(item, index): void {
+    this.forcastMarker = this.forcastMarker.filter((v) => v.id !== item.id);
+    this._locService.mapDrag$.next(this.buildForcast());
+    this.cdr.detectChanges();
+  }
+
+  public onMapRightclick(event, m, info, i): void {
+    const inf = { ...m, info };
     this.contextMenuPosition.x = `${event.domEvent.clientX}px`;
     this.contextMenuPosition.y = `${event.domEvent.clientY}px`;
+    this.contextMenu.menuData = { item: inf };
     this.contextMenu.openMenu();
   }
 
-  public draggableChanged(marker, infowindow) {
-    this._locService.mapDrag$.next({ lat: marker.getPosition().lat(), lon: marker.getPosition().lng() });
+  public draggableChanged(marker: any, m): void {
+    const mm = this.forcastMarker?.find((mark) => mark.id === m.id);
+    mm.position.lat = marker.getPosition().lat();
+    mm.position.lng = marker.getPosition().lng();
+    this._locService.mapDrag$.next(this.buildForcast());
   }
 
-
-  public visibleChanged() {
-    console.log('visible');
+  public buildForcast(): any[] {
+    const forMarker = [];
+    this.forcastMarker && this.forcastMarker.forEach((value) => {
+      forMarker.push({ lat: value.position.lat, lon: value.position.lng, });
+    });
+    return forMarker;
   }
 
-  public ngAfterContentInit() {
-    this.visible = true;
-  }
+  public visibleChanged() { }
 
   public createInfoWindow() {
     this.infoWindowOptions = {};
@@ -144,23 +170,16 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public removeMapObject(): void {
-    this.markers = [];
     this.circles = [];
     this.polylines = [];
     this.cdr.detectChanges();
   }
 
   public addOffice(): void {
-    this.markerOptions = {
-      draggable: true,
-      crossOnDrag: false,
-      icon: { url: MarkerTypeIcon.virtualOffice, anchor: new google.maps.Point(80, 75) },
-      anchorPoint: new google.maps.Point(-290, 90),
-      position: { lat: this.dataSource.allOffices[0].lat, lng: this.dataSource.allOffices[0].lon },
-    };
-
-    this.markers.push(this.markerOptions);
-    this.map.googleMap.setCenter(new google.maps.LatLng(this.dataSource.allOffices[0].lat, this.dataSource.allOffices[0].lon));
+    this.markerId++;
+    const marker = this.createMarkerOptions(MarkerType.virtual, true);
+    this.forcastMarker.push(marker);
+    this._locService.addForecastPoint$.next(this.dataSource?.forecastPoints);
     this.cdr.detectChanges();
   }
 
@@ -173,13 +192,34 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public buildMarker(): void {
-
     this.dataSource.allOffices.forEach((item) => {
-      const marker = this.createMarkerOptions(item);
+      const marker = this.createMarkerOptions(MarkerType.main, false, item);
       this.bounds.extend(marker.position);
       this.markers.push(marker);
     });
+
+    this.dataSource.forecastPoints.forEach((item) => {
+      const marker = this.createMarkerOptions(MarkerType.virtual, true, item);
+      this.bounds.extend(marker.position);
+      this.forcastMarker.push(marker);
+    });
+
     this.cdr.detectChanges();
+  }
+
+  public createMarkerOptions(type: MarkerType, anchor, item?): MarkerOptions {
+    return this.markerOptions = {
+      draggable: type === MarkerType.virtual,
+      crossOnDrag: false,
+      icon: {
+        url: type === MarkerType.main ? MarkerTypeIcon.mainOffice : MarkerTypeIcon.virtualOffice
+        , anchor: anchor ? new google.maps.Point(80, 75) : null,
+      },
+      position: type === MarkerType.main
+        ? { lat: item.lat, lng: item.lon } : { lat: this.selectedOffice.lat, lng: this.selectedOffice.lon },
+      id: type === MarkerType.main ? null : this.markerId,
+      type: type,
+    };
   }
 
   public buildCircle(): void {
@@ -203,20 +243,7 @@ export class MapComponent implements OnInit, OnDestroy {
     };
   }
 
-
-  public createMarkerOptions(item): google.maps.MarkerOptions {
-    return this.markerOptions = {
-      draggable: false,
-      icon: MarkerTypeIcon.mainOffice,
-      position: { lat: item.lat, lng: item.lon },
-      // forecastPerDay: this.dataSource.officeTotalCO2KgForecastPerDay,
-      // forecastPerWeek: this.dataSource.officeTotalCO2KgPerWeek,
-    };
-  }
-
-
-  public markerClick(marker, inf): void {
-    console.log(inf, 'markerClick')
+  public markerClick(marker, m, inf): void {
     inf.position = marker.getPosition();
     inf.open();
     inf.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
@@ -276,7 +303,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public fitBounds(): void {
-  this.dataSource && this.map.fitBounds(this.bounds);
+    this.dataSource && this.map.fitBounds(this.bounds);
   }
 
   private createPolylineOptions(item: any): PolylineOptions {
@@ -285,7 +312,7 @@ export class MapComponent implements OnInit, OnDestroy {
       strokeWeight: 4,
       zIndex: 10,
       path: this.convertLatLng(item),
-      commuteUid: item.commuteUid
+      commuteUid: item.commuteUid,
     };
   }
 
@@ -304,5 +331,8 @@ export interface PolylineOptions extends google.maps.PolylineOptions {
 export interface MarkerOptions extends google.maps.MarkerOptions {
   forecastPerDay?: number;
   forecastPerWeek?: number;
+  id?: number;
+  type?: MarkerType;
+  data?: any;
 }
 

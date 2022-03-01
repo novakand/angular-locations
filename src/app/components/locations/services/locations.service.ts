@@ -17,12 +17,13 @@ import { environment } from '../../../../environments/environment';
 @Injectable()
 export class LocationsService {
 
-
+    public addForecastPoint$ = new BehaviorSubject<any>(true);
     public mapDrag$ = new BehaviorSubject<any>(null);
     public actionAddPoint$ = new BehaviorSubject<any>(null);
     public actionCommutes$ = new BehaviorSubject<any>(null);
     public actionPreloader$ = new BehaviorSubject<any>(false);
-    public takeFilter$ = new BehaviorSubject<FilterResponce>(null);
+    public takeFilter$ = new BehaviorSubject<any>(null);
+    public filter$ = new BehaviorSubject<FilterResponce>(null);
     public excludedCommutes$ = new BehaviorSubject<any>(null);
     public isChekedForecast$ = new BehaviorSubject<any>(true);
 
@@ -31,10 +32,10 @@ export class LocationsService {
 
     ) { }
 
-    public filterUpdateAsync(filter: any): Observable<FilterResponce> {
+    public filterUpdateAsync(filter: any): Observable<any> {
         return this.http.post<FilterResponce>(`${environment.apiLocationUri}public/web/filter`, filter)
             .pipe(
-                tap((data) => this.takeFilter$.next(data)),
+                tap((data) => this.takeFilter$.next({ data: data, filter: filter })),
             );
     }
 }

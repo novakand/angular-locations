@@ -21,24 +21,31 @@
                                 <div class="wb-slider__value">{{sliderOptions.value}}</div>
                             </div>
                         </li>
-                        <!-- <li class="wb-form__options-item wb-option" *ngIf="isChekedForecast$ | async ">
-                            <div class="wb-option__form">
-                                <input type="radio" name="hybrid-working" id="work-from-home" class="wb-option__radio">
-                                <label for="work-from-home" class="wb-option__label">Hybrid Working</label>
-                            </div>
-                        </li> -->
                     </ul>
                     <button class="wb-form__submit button button_primary" (click)="onApplyInfoWindows(polyline)" type="submit">Apply</button>
                 </div>
             </map-info-window>
         </ng-container>
-        <ng-container *ngFor="let markerss of markers; let i = index">
-            <map-marker #marker="mapMarker" (visibleChanged)="visibleChanged(marker,infoWindow)" (mapRightclick)="onMapRightclick($event)" (mapDragend)="draggableChanged(marker,infoWindow)" (mapClick)="markerClick(marker,infoWindow)" [visible]="visible" [options]="markerss">
+        <ng-container *ngFor="let m of markers; let i = index">
+            <map-marker #marker="mapMarker" (visibleChanged)="visibleChanged(marker,infoWindow)" (mapRightclick)="onMapRightclick($event,m, infoWindow)" (mapDragend)="draggableChanged(marker,m,infoWindow)" (mapClick)="markerClick(marker,m,infoWindow)" [visible]="visible"
+                [options]="m">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
-                    <div class="pin-data__line">{{markerss.forecastPerWeek}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{markerss.forecastPerDay}} kg per day</div>
+                    <div class="pin-data__line">{{m.forecastPerWeek}} kg per week </div>
+                    <div class="pin-data__line pin-data__line_blue">{{m.forecastPerDay}} kg per day</div>
+                </div>
+            </map-info-window>
+        </ng-container>
+
+        <ng-container *ngFor="let f of forcastMarker; let i = index">
+            <map-marker #marker="mapMarker" (visibleChanged)="visibleChanged(marker,infoWindow)" (mapRightclick)="onMapRightclick($event,f, infoWindow,i)" (mapDragend)="draggableChanged(marker,f,infoWindow)" (mapClick)="markerClick(marker,f,infoWindow)" [visible]="visible"
+                [options]="f">
+            </map-marker>
+            <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
+                <div class="pin-data">
+                    <div class="pin-data__line">{{f.forecastPerWeek}} kg per week </div>
+                    <div class="pin-data__line pin-data__line_blue">{{f.forecastPerDay}} kg per day</div>
                 </div>
             </map-info-window>
         </ng-container>
@@ -48,11 +55,15 @@
     </google-map>
     <app-legend></app-legend>
 
-    <div [style.position]="'fixed'" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+    <div [style.position]="'fixed'" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerData]="{ item: contextMenu.menuData }" [matMenuTriggerFor]="contextMenu">
     </div>
 
-    <mat-menu #contextMenu="matMenu" [overlapTrigger]="true">
-        <button mat-menu-item>Show stats</button>
-        <button mat-menu-item>Remove point</button>
+    <mat-menu #contextMenu="matMenu" class="pin-data context-menu-pin-data" [overlapTrigger]="true">
+        <ng-template matMenuContent let-item="item" let i=index>
+            <div class="pin-data__line"><a (click)="onShowStats(item)">Show stats</a></div>
+            <div *ngIf="item.type ==='virtual'" class="pin-data__line"><a (click)="onRemove(item,i)">Remove point</a>
+            </div>
+        </ng-template>
+
     </mat-menu>
 </div>

@@ -29,20 +29,18 @@ export class ListItemsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // tslint:disable-next-line: typedef
-  public createListItem() {
+  public createListItem(): void {
     this.serv.takeFilter$
       .pipe(
         filter(Boolean),
-        tap((items: any) => items.allOffices.forEach((item, index) => item.checked = index === 0)),
+        tap((items: any) => items.data.allOffices?.forEach((item, index) => item.isSelected = index === 0)),
         takeUntil(this.destroy$),
       ).
       subscribe((data: any) => {
-        this.allOffices$.next(data.allOffices);
+        this.allOffices$.next(data.data.allOffices);
       });
   }
 
-  // tslint:disable-next-line: use-lifecycle-interface
   public onSelect(items: any): void {
     items.isOpen = items.isOpen ? false : true;
     this.cdr.detectChanges();

@@ -3,13 +3,13 @@
         <div class="filters-form__default">
             <div class="filter-wrapper">
                 <div class="custom-slider">
-                    <ngx-slider class="filter-slider custom" (userChange)="onUserChange($event,sliderType.cO2KgWeeklyMax)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
+                    <ngx-slider class="filter-slider custom" (userChange)="onSliderChange($event,sliderType.cO2KgWeeklyMax)" [(value)]="sliderPerWeekOptions.value" [options]="sliderPerWeekOptions"></ngx-slider>
                 </div>
                 <div class="filter-details filter-wrapper__details clearfix">
                     <label for="co2" class="filter-details__label">CO<sub>2</sub> kg per week</label>
                     <div class="filter-details__right">
                         <div class="filter-details__m"></div>
-                        <input type="number" formControlName="cO2KgWeeklyMax" [(ngModel)]="sliderPerWeekOptions.value" name="co2" id="co2" class="filter-details__input">
+                        <input type="number" formControlName="cO2KgWeeklyMax" name="co2" id="co2" class="filter-details__input">
                     </div>
                 </div>
             </div>
@@ -18,7 +18,7 @@
             <ul class="togglers-list">
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" [ngModelOptions]="{standalone: true}" (change)="fieldsChangeTransport($event)" [(ngModel)]="isChekedTransport" id="transport" class="toggler__input">
+                        <input type="checkbox" formControlName="isChekedTransport" id="transport" class="toggler__input">
                         <label for="transport" class="toggler__label">Transport</label>
                     </div>
                     <div class="toggler__body">
@@ -54,31 +54,32 @@
                 </li>
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" [ngModelOptions]="{standalone: true}" (change)="fieldsChange($event)" id="nearby-homes" [(ngModel)]="isNearbyHomes" class="toggler__input">
+                        <input type="checkbox" (change)="fieldsChange($event)" id="nearby-homes" formControlName="isChekedNearbyHomes" class="toggler__input">
                         <label for="nearby-homes" class="toggler__label">Nearby homes</label>
                     </div>
                     <div class="toggler__body">
                         <ul class="filter-list">
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.nearbyKm)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions"></ngx-slider>
+                                    <ngx-slider class="filter-slider" (userChange)="onSliderChange($event,sliderType.nearbyKm)" [(value)]="sliderNearbyKmOptions.value" [options]="sliderNearbyKmOptions">
+                                    </ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="within" class="filter-details__label">Within</label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">km</div>
-                                            <input type="number" formControlName="nearbyKm" class="filter-details__input" [(ngModel)]="sliderNearbyKmOptions.value" min="0" max="16">
+                                            <input type="number" formControlName="nearbyKm" class="filter-details__input" min="0" max="16">
                                         </div>
                                     </div>
                                 </div>
                             </li>
                             <li class="filter-list__item">
                                 <div class="filter-wrapper">
-                                    <ngx-slider class="filter-slider" (userChange)="onUserChange($event,sliderType.nearbyHomes)" [(value)]="sliderNearbyHomesOptions.value" [(highValue)]="sliderNearbyHomesOptions.highValue" [options]="sliderNearbyHomesOptions"></ngx-slider>
+                                    <ngx-slider class="filter-slider" (userChange)="onSliderChange($event,sliderType.nearbyHomesCountMin)" [(value)]="sliderNearbyHomesOptions.value" [(highValue)]="sliderNearbyHomesOptions.highValue" [options]="sliderNearbyHomesOptions"></ngx-slider>
                                     <div class="filter-details filter-wrapper__details clearfix">
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input formControlName="nearbyHomesCountMin" type="text" readonly (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" [(ngModel)]="currentValue" min="3" max="50">
+                                            <input formControlName="nearbyHomesCountMin" type="text" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" min="3" max="50">
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +89,7 @@
                 </li>
                 <li class="togglers-list__item toggler clearfix">
                     <div class="toggler__head">
-                        <input type="checkbox" id="forecast" [ngModelOptions]="{standalone: true}" (change)="onForecat($event)" [(ngModel)]="isChekedForecast" class="toggler__input">
+                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" [ngModelOptions]="{standalone: true}" class="toggler__input">
                         <label for="forecast" class="toggler__label">Forecast</label>
                     </div>
                     <div class="toggler__body toggler__body_right">

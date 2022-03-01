@@ -1,18 +1,17 @@
-import { BehaviorSubject, from, Observable, Observer, of } from "rxjs";
-import { catchError, concatMap, take } from "rxjs/operators";
+import { BehaviorSubject, from, Observable, Observer, of } from 'rxjs';
+import { catchError, concatMap, take } from 'rxjs/operators';
 
 export class UploadService {
 
     public uploadFile$ = new BehaviorSubject<any>(null);
 
     public uploadFiles(event): void {
-
         const files = event?.target?.files;
         const numberOfFiles = files.length;
         from(files)
             .pipe(
                 concatMap((file: File) => this._validateFile(file).pipe(catchError((error: any) => of(error)))),
-                take(numberOfFiles)
+                take(numberOfFiles),
             )
             .subscribe((validatedFile: any) => {
                 this.uploadFile$.next(validatedFile);
@@ -24,16 +23,17 @@ export class UploadService {
         const { type, name } = file;
         return new Observable((observer: Observer<any>) => {
             this._validateSize(file, observer);
-            fileReader.readAsText(file)
-            fileReader.onload = event => {
+            fileReader.readAsText(file);
+            fileReader.onload = (event) => {
                 if (this._isJson(type)) {
-                    const fileJson = JSON.parse(fileReader.result as string);
-                    observer.next(fileJson);
-                    observer.complete();
+                    if (typeof fileReader?.result !== 'undefined') {
+                        fileReader.result && observer.next(JSON?.parse(fileReader.result as string));
+                        observer.complete();
+                    }
                 }
             };
             fileReader.onerror = () => {
-                observer.error({ error: { name, errorMessage: 'INVALID_FILE' } });
+                observer.error(null);
             };
         });
     }
@@ -45,7 +45,7 @@ export class UploadService {
     private _validateSize(file: File, observer: Observer<any>): void {
         const { name, size } = file;
         if (!this._isValidSize(size)) {
-            observer.error({ error: { name, errorMessage: 'INVALID_SIZE' } });
+            observer.error(null);
         }
     }
 
