@@ -108,8 +108,8 @@ export class MapComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     ).
       subscribe((data: any) => {
-        this.addOffice();
-        this._locService.addForecastPoint$.next(this.buildForcast());
+        this.selectedOffice && this.addOffice();
+        this.selectedOffice && this._locService.addForecastPoint$.next(this.buildForcast());
       });
 
     this._locService.isRemoveMarker$.pipe(

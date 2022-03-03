@@ -63,8 +63,8 @@ export class LegendComponent implements OnInit {
 
   public sendCommutes(val): void {
     const selectCommutes = this.legendForm.get('showCommutes').value.filter((value) => !!value);
-      // tslint:disable-next-line: no-unused-expression
-     this._locService.actionCommutes$.next(!val.all ? ['notSet'] : selectCommutes);
+    const selected = (!selectCommutes.length && !val.all) ? ['notSet'] : selectCommutes;
+    this._locService.actionCommutes$.next(selected);
   }
 
   public fieldListener(): void {
