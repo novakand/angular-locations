@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import moment from 'moment';
@@ -6,11 +6,13 @@ import moment from 'moment';
 // services
 import { LocationsService } from '../../services/locations.service';
 import { UploadService } from '../../services/upload.service';
+import { Utils } from '../../../../../app/services/utils';
 
 @Component({
   selector: 'app-locations',
   templateUrl: './locations.component.html',
   styleUrls: ['./locations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationsComponent implements OnInit, OnDestroy {
 
@@ -20,6 +22,10 @@ export class LocationsComponent implements OnInit, OnDestroy {
   public isProgress = true;
   public upJson: any = {};
   public dataSource: any = {};
+  public forecastPoints: any;
+  public discardQuery: any = {};
+  public isDiscardDisable = true;
+  public isForecast = false;
 
   @ViewChild('file') public file: ElementRef<HTMLInputElement>;
 
@@ -28,6 +34,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   constructor(
     private _locService: LocationsService,
     private _uploadService: UploadService,
+    private _cdr: ChangeDetectorRef,
   ) { }
 
 
@@ -53,7 +60,8 @@ export class LocationsComponent implements OnInit, OnDestroy {
         takeUntil(this._destroy$),
       )
       .subscribe((data: any) => {
-        this.dataSource.forecastPoints = data;
+        this.forecastPoints = data;
+        this._cdr.detectChanges();
       });
 
     this._locService.takeFilter$
@@ -65,7 +73,26 @@ export class LocationsComponent implements OnInit, OnDestroy {
         this.dataSource = data;
       });
 
+    this._locService.isChekedForecast$
+      .pipe(
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: any) => {
+        this.isForecast = data;
+        if (data) {
+          this.discardQuery = Utils.deepCopy(this._locService.takeFilter$.getValue());
+        }
+      });
 
+    this._locService.actionAddPoint$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: any) => {
+        this.isDiscardDisable = data;
+
+      });
   }
 
   public ngOnDestroy(): void {
@@ -84,6 +111,13 @@ export class LocationsComponent implements OnInit, OnDestroy {
       });
   }
 
+  public onDiscard(): void {
+    this._locService.takeFilter$.next(this.discardQuery);
+    this._locService.filter$.next(this.discardQuery);
+    this._locService.isRemoveMarker$.next(true);
+    this._cdr.detectChanges();
+  }
+
   public onUploadFile(): void {
     this.file.nativeElement.click();
   }
@@ -94,6 +128,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   }
 
   public onDownLoadFile(): void {
+    this.dataSource.forecastPoints = this.forecastPoints;
     const uri = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.dataSource));
     this.downloadLink.nativeElement.href = uri || {};
     this.downloadLink.nativeElement.download = `fatma ${moment().format('DD MM YYYY HH:mm:ss')}.json`;

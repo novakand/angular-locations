@@ -33,11 +33,11 @@ export class ListItemsComponent implements OnInit, OnDestroy {
     this.serv.takeFilter$
       .pipe(
         filter(Boolean),
-        tap((items: any) => items.data.allOffices?.forEach((item, index) => item.isSelected = index === 0)),
+        tap((data: any) => data.allOffices?.forEach((item, index) => item.isSelected = index === 0)),
         takeUntil(this.destroy$),
       ).
       subscribe((data: any) => {
-        this.allOffices$.next(data.data.allOffices);
+        this.allOffices$.next(data.allOffices);
       });
   }
 

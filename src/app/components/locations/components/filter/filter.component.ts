@@ -14,6 +14,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 // external libs
 import { Subject, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { Utils } from '../../../../../app/services/utils';
 
 // enums
 import { FilterSliderType } from '../../enums/filter-slider-type.enums';
@@ -53,9 +54,9 @@ export class FilterComponent implements OnInit, OnDestroy {
   public sliderType = FilterSliderType;
   public subscription: Subscription;
   public commutes: [] = [];
-  public forecastPoint: any[];
-  public excludedCommutes: any = null;
+  public forecastPoint: any = [];
   public dataSource: any;
+  public changedCommuteOfficeDays: [] = [];
 
   public sliderPerWeekOptions: any = {
     floor: 0,
@@ -138,13 +139,13 @@ export class FilterComponent implements OnInit, OnDestroy {
         this.sendFilter();
       });
 
-    this._locService.excludedCommutes$
+    this._locService.changedCommute$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
       ).
       subscribe((data: any) => {
-        this.excludedCommutes = data;
+        this.changedCommuteOfficeDays = data;
         this.sendFilter();
       });
 
@@ -154,25 +155,24 @@ export class FilterComponent implements OnInit, OnDestroy {
         takeUntil(this._destroy$),
       ).
       subscribe((data: any) => {
-        const source = data;
-        this.filterForm.patchValue(source.filter, { emitEvent: false });
+        this.filterForm.patchValue(data.filter, { emitEvent: false });
         this.cdr.detectChanges();
 
         const checkboxControl = this.filterForm.get('transports');
 
         checkboxControl.setValue(
           checkboxControl.value.map((value: any, i: string | number) => value ?
-            Object.values(source.filter?.transports).some((val) => val === Object.values(this.TransportType)[i]) : false),
+            Object.values(data.filter?.transports).some((val) => val === Object.values(this.TransportType)[i]) : false),
           { emitEvent: false },
         );
 
         this.filterForm.get('isChekedTransport').patchValue(true, { emitEvent: true, onlySelf: true });
-        this.filterForm.get('isChekedNearbyHomes').patchValue(source.filter?.isChekedNearbyHomes, { emitEvent: true, onlySelf: true });
-        this.sliderNearbyHomesOptions.highValue = source.filter?.nearbyHomesCountMax;
-        this.sliderNearbyHomesOptions.value = source.filter?.nearbyHomesCountMin;
+        this.filterForm.get('isChekedNearbyHomes').patchValue(data.filter?.isChekedNearbyHomes, { emitEvent: true, onlySelf: true });
+        this.sliderNearbyHomesOptions.highValue = data.filter?.nearbyHomesCountMax;
+        this.sliderNearbyHomesOptions.value = data.filter?.nearbyHomesCountMin;
         this.currentValue = `${this.sliderNearbyHomesOptions.value}-${this.sliderNearbyHomesOptions.highValue}`;
         this.filterForm.get('nearbyHomesCountMin').patchValue(this.currentValue, { emitEvent: true, onlySelf: true });
-        this.isChekedForecast = source.filter.isChekedForecast || false;
+        this.isChekedForecast = data.filter.isChekedForecast || false;
       });
 
 
@@ -233,9 +233,9 @@ export class FilterComponent implements OnInit, OnDestroy {
       nearbyHomesCountMin: this.filterForm.get('isChekedNearbyHomes').value ? this.sliderNearbyHomesOptions.value : null,
       nearbyHomesCountMax: this.filterForm.get('isChekedNearbyHomes').value ? this.sliderNearbyHomesOptions.highValue : null,
       transports: this.filterForm.get('isChekedTransport').value ? this.getTransport() : ['notSet'],
-      showCommutes: this.commutes,
-      excludedCommutes: this.excludedCommutes,
+      commuteQuartiles: this.commutes,
       isChekedForecast: this.isChekedForecast,
+      changedCommuteOfficeDays: this.changedCommuteOfficeDays || [],
     };
 
 
@@ -261,6 +261,11 @@ export class FilterComponent implements OnInit, OnDestroy {
   public getTransport(): any {
     const transport = this.filterForm.get('transports').value.filter((value) => !!value);
     return !transport.length ? ['notSet'] : transport;
+  }
+
+  public onChangeForecast(event): void {
+    this._locService.isChekedForecast$.next(event.currentTarget.checked);
+    !event.currentTarget.checked && this._locService.isRemoveMarker$.next(true);
   }
 
   public buildFieldsTransport(): any {

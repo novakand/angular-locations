@@ -24,8 +24,9 @@ export class LocationsService {
     public actionPreloader$ = new BehaviorSubject<any>(false);
     public takeFilter$ = new BehaviorSubject<any>(null);
     public filter$ = new BehaviorSubject<FilterResponce>(null);
-    public excludedCommutes$ = new BehaviorSubject<any>(null);
-    public isChekedForecast$ = new BehaviorSubject<any>(true);
+    public changedCommute$ = new BehaviorSubject<any>(null);
+    public isChekedForecast$ = new BehaviorSubject<any>(null);
+    public isRemoveMarker$ = new BehaviorSubject<any>(null);
 
     constructor(
         private http: HttpClientService,
@@ -35,7 +36,7 @@ export class LocationsService {
     public filterUpdateAsync(filter: any): Observable<any> {
         return this.http.post<FilterResponce>(`${environment.apiLocationUri}public/web/filter`, filter)
             .pipe(
-                tap((data) => this.takeFilter$.next({ data: data, filter: filter })),
+                tap((data) => this.takeFilter$.next({ ...data, filter: filter })),
             );
     }
 }

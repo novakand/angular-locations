@@ -20,25 +20,20 @@ export class LegendComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private ftr: LocationsService,
+    private _locService: LocationsService,
     private cdr: ChangeDetectorRef,
   ) { }
 
   public ngOnInit(): void {
-
     this.buildForm();
     this.fieldListener();
     this.addListenersForm();
     this.addListenerFilter();
-
-    // this.legendForm.get('showCommutes').disable({ emitEvent: false });
-    // this.legendForm.get('all').disable({ emitEvent: false });
-
   }
 
 
   public addListenerFilter(): void {
-    this.ftr.takeFilter$
+    this._locService.takeFilter$
       .pipe(
         filter(Boolean),
         takeUntil(this.destroy$),
@@ -63,16 +58,16 @@ export class LegendComponent implements OnInit {
       filter((value) => !!value),
       debounceTime(800),
       takeUntil(this.destroy$),
-    ).subscribe((value) => this.sendCommutes());
+    ).subscribe((value) => this.sendCommutes(value));
   }
 
-  public sendCommutes(): void {
+  public sendCommutes(val): void {
     const selectCommutes = this.legendForm.get('showCommutes').value.filter((value) => !!value);
-    this.ftr.actionCommutes$.next(selectCommutes);
+      // tslint:disable-next-line: no-unused-expression
+     this._locService.actionCommutes$.next(!val.all ? ['notSet'] : selectCommutes);
   }
 
   public fieldListener(): void {
-
     const checkboxControl = this.legendForm.get('showCommutes');
     checkboxControl.valueChanges.subscribe(() => {
       checkboxControl.setValue(

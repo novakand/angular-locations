@@ -34,11 +34,11 @@
                         <div class="save-png__controls controls">
                             <a style="display: none;" class="controls__button controls__button_redo controls__button_disabled"></a>
                         </div>
-                        <div class="save-png__buttons">
+                        <div *ngIf="isForecast" class="save-png__buttons">
                             <input hidden accept="application/JSON" type="file" #file (change)="onAddFile($event)">
                             <a class="button button_primary save-png__button" (click)="onDownLoadFile()">Download</a>
                             <a class="button button_secondary save-png__button" (click)="onUploadFile()">Upload</a>
-                            <a class="button button_secondary save-png__button" style="color: #FF196E; border-color: #FF196E;">Discard</a>
+                            <a class="button button_secondary save-png__button" (click)="onDiscard()" style="color: #FF196E; border-color: #FF196E;">Discard</a>
                         </div>
                     </div>
                     <mat-progress-bar *ngIf="isProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>

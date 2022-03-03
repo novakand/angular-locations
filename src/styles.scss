@@ -7,6 +7,14 @@
     height: 34px;
 }
 
+button:disabled {
+    opacity: 0.3;
+}
+
+.context-menu-pin-data {
+    min-height: 100% !important;
+}
+
 .wb-form .ngx-slider-bar {
     left: 0;
     width: 100%;
@@ -2721,6 +2729,7 @@ a {
     box-shadow: 0 12px 32px -5px rgba(70, 107, 155, 0.6);
     border-radius: 6px;
     width: 290px;
+    z-index: 999;
 }
 
 .wb-form__options {

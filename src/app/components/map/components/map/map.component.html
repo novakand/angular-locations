@@ -1,8 +1,7 @@
 <div class="map">
-
-    <google-map [options]="mapOptions" [center]="center">
+    <google-map [options]="mapOptions" [center]="center" (mapClick)="onMapClick()">
         <ng-container *ngFor="let polyline of polylines; let i = index">
-            <map-polyline #poly="mapPolyline" (polylineRightclick)="onMapRightclick($event)" (polylineDblclick)="polylineDblclick(poly,info,polyline)" [options]="polyline">
+            <map-polyline #poly="mapPolyline" (polylineRightclick)="onPolylineRightclick($event,poly,info,polyline)" [options]="polyline">
             </map-polyline>
             <map-info-window #info="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="wb-form">
@@ -27,8 +26,7 @@
             </map-info-window>
         </ng-container>
         <ng-container *ngFor="let m of markers; let i = index">
-            <map-marker #marker="mapMarker" (visibleChanged)="visibleChanged(marker,infoWindow)" (mapRightclick)="onMapRightclick($event,m, infoWindow)" (mapDragend)="draggableChanged(marker,m,infoWindow)" (mapClick)="markerClick(marker,m,infoWindow)" [visible]="visible"
-                [options]="m">
+            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,m, infoWindow)" (mapDragend)="draggableChanged(marker,m,infoWindow)" [visible]="visible" [options]="m">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
@@ -39,8 +37,7 @@
         </ng-container>
 
         <ng-container *ngFor="let f of forcastMarker; let i = index">
-            <map-marker #marker="mapMarker" (visibleChanged)="visibleChanged(marker,infoWindow)" (mapRightclick)="onMapRightclick($event,f, infoWindow,i)" (mapDragend)="draggableChanged(marker,f,infoWindow)" (mapClick)="markerClick(marker,f,infoWindow)" [visible]="visible"
-                [options]="f">
+            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,f, infoWindow)" (mapDragend)="draggableChanged(marker,f,infoWindow)" [visible]="visible" [options]="f">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
@@ -58,10 +55,10 @@
     <div [style.position]="'fixed'" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerData]="{ item: contextMenu.menuData }" [matMenuTriggerFor]="contextMenu">
     </div>
 
-    <mat-menu #contextMenu="matMenu" class="pin-data context-menu-pin-data" [overlapTrigger]="true">
-        <ng-template matMenuContent let-item="item" let i=index>
-            <div class="pin-data__line"><a (click)="onShowStats(item)">Show stats</a></div>
-            <div *ngIf="item.type ==='virtual'" class="pin-data__line"><a (click)="onRemove(item,i)">Remove point</a>
+    <mat-menu #contextMenu="matMenu" class="pin-data context-menu-pin-data" (closed)="onMatmenuClose()" [overlapTrigger]="true">
+        <ng-template matMenuContent let-item="item">
+            <div class="pin-data__line"><a (click)="item.type === 'marker'? onShowStatsMarker(item) : onShowStatsPolyline(item)">Show stats</a></div>
+            <div *ngIf="item.draggable" class="pin-data__line"><a (click)="onRemove(item)">Remove point</a>
             </div>
         </ng-template>
 

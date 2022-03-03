@@ -79,7 +79,7 @@
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input formControlName="nearbyHomesCountMin" type="text" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" min="3" max="50">
+                                            <input formControlName="nearbyHomesCountMin" readonly type="text" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" min="3" max="50">
                                         </div>
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
                 </li>
                 <li class="togglers-list__item toggler clearfix">
                     <div class="toggler__head">
-                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" [ngModelOptions]="{standalone: true}" class="toggler__input">
+                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" (change)="onChangeForecast($event)" [ngModelOptions]="{standalone: true}" class="toggler__input">
                         <label for="forecast" class="toggler__label">Forecast</label>
                     </div>
                     <div class="toggler__body toggler__body_right">
