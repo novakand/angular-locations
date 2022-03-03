@@ -26,6 +26,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   public discardQuery: any = {};
   public isDiscardDisable = true;
   public isForecast = false;
+  public isProgress$ = this._locService.actionPreloader$;
 
   @ViewChild('file') public file: ElementRef<HTMLInputElement>;
 
@@ -39,8 +40,6 @@ export class LocationsComponent implements OnInit, OnDestroy {
 
 
   public ngOnInit(): void {
-    this.addListenerPreloader();
-
     this._uploadService.uploadFile$
       .pipe(
         filter(Boolean),
@@ -98,17 +97,6 @@ export class LocationsComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
-  }
-
-  public addListenerPreloader(): void {
-
-    this._locService.actionPreloader$
-      .pipe(
-        takeUntil(this.destroy$),
-      ).
-      subscribe((data: boolean) => {
-        this.isProgress = data;
-      });
   }
 
   public onDiscard(): void {

@@ -41,7 +41,7 @@
                             <a class="button button_secondary save-png__button" (click)="onDiscard()" style="color: #FF196E; border-color: #FF196E;">Discard</a>
                         </div>
                     </div>
-                    <mat-progress-bar *ngIf="isProgress" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
+                    <mat-progress-bar *ngIf="isProgress$ | async" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
                 </div>
                 <div class="main-body">
                     <app-map></app-map>
