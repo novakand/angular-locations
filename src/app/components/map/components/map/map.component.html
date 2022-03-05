@@ -11,13 +11,13 @@
                                 Office days
                             </div>
                             <div class="wb-option__body wb-option__body_active wb-slider">
-                                <ngx-slider class="filter-slider" [(value)]="sliderOptions.value" [options]="sliderOptions">
+                                <ngx-slider class="filter-slider" [(value)]="sliderOptions.value===polyline.data.officeDays" [options]="sliderOptions">
                                 </ngx-slider>
                                 <div class="wb-slider__labels">
                                     <div class="wb-slider__label">Office</div>
                                     <div class="wb-slider__label">Home</div>
                                 </div>
-                                <div class="wb-slider__value">{{sliderOptions.value}}</div>
+                                <div class="wb-slider__value">{{polyline.data.officeDays}}</div>
                             </div>
                         </li>
                     </ul>

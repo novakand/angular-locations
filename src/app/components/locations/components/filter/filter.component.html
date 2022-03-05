@@ -25,27 +25,27 @@
                         <ul class="tags-list">
                             <ul class="tags-list" formArrayName="transports">
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" id="pub-trans" class="tag-checkbox__input" formControlName="0">
+                                    <input type="checkbox" (change)="onChange($event,0)" id="pub-trans" class="tag-checkbox__input" formControlName="0">
                                     <label for="pub-trans" class="tag-checkbox__label">Public</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" id="car" class="tag-checkbox__input" formControlName="1">
+                                    <input type="checkbox" (change)="onChange($event,1)" id="car" class="tag-checkbox__input" formControlName="1">
                                     <label for="car" class="tag-checkbox__label">Car</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" id="e-bike" class="tag-checkbox__input" formControlName="2">
+                                    <input type="checkbox" (change)="onChange($event,2)" id="e-bike" class="tag-checkbox__input" formControlName="2">
                                     <label for="e-bike" class="tag-checkbox__label">E-bike</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" id="bicycle" class="tag-checkbox__input" formControlName="3">
+                                    <input type="checkbox" (change)="onChange($event,3)" id="bicycle" class="tag-checkbox__input" formControlName="3">
                                     <label for="bicycle" class="tag-checkbox__label">Bicycle</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" id="e-car" class="tag-checkbox__input" formControlName="4">
+                                    <input type="checkbox" (change)="onChange($event,4)" id="e-car" class="tag-checkbox__input" formControlName="4">
                                     <label for="e-car" class="tag-checkbox__label">E-Car</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" id="foot" class="tag-checkbox__input" formControlName="5">
+                                    <input type="checkbox" (change)="onChange($event,5)" id="foot" class="tag-checkbox__input" formControlName="5">
                                     <label for="foot" class="tag-checkbox__label">Foot</label>
                                 </li>
                             </ul>

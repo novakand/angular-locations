@@ -37,10 +37,6 @@ import { LocationsService } from '../../services/locations.service';
 })
 export class FilterComponent implements OnInit, OnDestroy {
 
-  @Input() public dataFilterLocation: FilterResponce;
-
-  @Output() public addPoints = new EventEmitter<void>();
-
   public TransportType = MoveTypeEnumstring;
   public sortedWeekdays = [];
   public isChekedForecast: false;
@@ -53,10 +49,16 @@ export class FilterComponent implements OnInit, OnDestroy {
   public currentValue = null;
   public sliderType = FilterSliderType;
   public subscription: Subscription;
-  public commutes: [] = [];
+  public commutes: any = [];
   public forecastPoint: any = [];
   public dataSource: any;
   public changedCommuteOfficeDays: [] = [];
+  public selectedTrasport: any;
+  public selectedCommute: any = [];
+  public changeTrasport = Object.values(MoveTypeEnumstring);
+  public moveType: any = [];
+  public copyMoveType: any = [];
+  public isCopy = true;
 
   public sliderPerWeekOptions: any = {
     floor: 0,
@@ -98,7 +100,9 @@ export class FilterComponent implements OnInit, OnDestroy {
     hidePointerLabels: true,
   };
 
+  public pending$ = new Subject<boolean>();
   private _destroy$ = new Subject<boolean>();
+
 
 
   constructor(
@@ -111,10 +115,13 @@ export class FilterComponent implements OnInit, OnDestroy {
     this.currentValue = `${this.sliderNearbyHomesOptions.value}-${this.sliderNearbyHomesOptions.highValue}`;
     this.buildForm();
 
+    this.copyMoveType = this.changeTrasport;
+
 
     this.filterForm.valueChanges.pipe(
       filter((value) => !!value),
       debounceTime(1000),
+      distinctUntilChanged(),
       takeUntil(this._destroy$),
     ).subscribe((value) => {
       this.sendFilter();
@@ -126,6 +133,9 @@ export class FilterComponent implements OnInit, OnDestroy {
       ).
       subscribe((data: any) => {
         this.commutes = data;
+        this.isCopy = true;
+        this.changeTrasport = Object.values(MoveTypeEnumstring);
+        this.selectedCommute = Utils.deepCopy(this.commutes);
         this.sendFilter();
       });
 
@@ -173,6 +183,7 @@ export class FilterComponent implements OnInit, OnDestroy {
         this.currentValue = `${this.sliderNearbyHomesOptions.value}-${this.sliderNearbyHomesOptions.highValue}`;
         this.filterForm.get('nearbyHomesCountMin').patchValue(this.currentValue, { emitEvent: true, onlySelf: true });
         this.isChekedForecast = data.filter.isChekedForecast || false;
+        this.cdr.detectChanges();
       });
 
 
@@ -223,6 +234,17 @@ export class FilterComponent implements OnInit, OnDestroy {
     this._destroy$.complete();
   }
 
+  public buildForm(): void {
+    this.filterForm = this.fb.group({
+      cO2KgWeeklyMax: new FormControl(this.sliderPerWeekOptions.value),
+      nearbyKm: new FormControl({ value: this.sliderNearbyKmOptions.value, disabled: true }),
+      nearbyHomesCountMin: new FormControl({ value: this.currentValue, disabled: true }),
+      isChekedTransport: new FormControl(false),
+      isChekedNearbyHomes: new FormControl(false),
+      transports: this.fb.array(this.buildFieldsTransport()),
+    });
+  }
+
   public sendFilter(): void {
     this._locService.actionPreloader$.next(true);
 
@@ -232,12 +254,11 @@ export class FilterComponent implements OnInit, OnDestroy {
       forecastPoints: this.forecastPoint || [],
       nearbyHomesCountMin: this.filterForm.get('isChekedNearbyHomes').value ? this.sliderNearbyHomesOptions.value : null,
       nearbyHomesCountMax: this.filterForm.get('isChekedNearbyHomes').value ? this.sliderNearbyHomesOptions.highValue : null,
-      transports: this.filterForm.get('isChekedTransport').value ? this.getTransport() : ['notSet'],
+      transports: this.filterForm.get('isChekedTransport').value ? this.changeTrasport : [],
       commuteQuartiles: this.commutes,
       isChekedForecast: this.isChekedForecast,
       changedCommuteOfficeDays: this.changedCommuteOfficeDays || [],
     };
-
 
     const filterParam = {
       ...this.filterForm.value,
@@ -254,13 +275,53 @@ export class FilterComponent implements OnInit, OnDestroy {
       .subscribe((data: any) => {
         console.log(data, ' RESPONSE');
         this.dataSource = data;
+
         this._locService.actionPreloader$.next(false);
+        if (!this.filterForm.get('isChekedTransport').value) { return; }
+        const trasports =
+          this.dataSource?.commutes?.filter((v, i, a) => a.findIndex((t: { moveType: any; }) => (t.moveType === v.moveType)) === i);
+        this.cdr.detectChanges();
+
+        this.moveType = trasports.map((key) => key.moveType);
+        this.cdr.detectChanges();
+        if (this.isCopy) {
+          this.copyMoveType = Utils.deepCopy(this.moveType);
+          this.isCopy = false;
+        }
+
+        const checkboxControl: any = this.filterForm.get('transports');
+        this.selectedTrasport = Object.values(this.TransportType).map((item: any) => {
+          const moveType = Object.values(this.moveType).find((findItem) => findItem === item);
+          return item = moveType ? moveType : false;
+        });
+
+        this.cdr.detectChanges();
+
+        checkboxControl.controls.map((items: any) => items.enable({ emitEvent: false }));
+
+        checkboxControl.setValue(checkboxControl.value.map((value: any, i: string | number) => true),
+          { emitEvent: false },
+        );
+
+        checkboxControl.setValue(
+          checkboxControl.value.map((value: any, i: string | number) => this.selectedTrasport[i]),
+          { emitEvent: false },
+        );
+        this.cdr.detectChanges();
+
+        checkboxControl.controls.map((items: any, i: string | number) => {
+          items.enable({ emitEvent: false });
+          const isNotDisabled = Object.values(this.copyMoveType).some((val) => val === Object.values(this.TransportType)[i]);
+          isNotDisabled
+            ? items.enable({ emitEvent: false }) : items.disable({ emitEvent: false });
+        });
+
+        this.cdr.detectChanges();
       });
   }
 
   public getTransport(): any {
-    const transport = this.filterForm.get('transports').value.filter((value) => !!value);
-    return !transport.length ? ['notSet'] : transport;
+    return Object.values(this.selectedTrasport).filter((value) => !!value);
   }
 
   public onChangeForecast(event): void {
@@ -272,28 +333,24 @@ export class FilterComponent implements OnInit, OnDestroy {
     return Object.values(this.TransportType).map((x) => true);
   }
 
-  public fieldListener(): void {
-    const checkboxControl = this.filterForm.get('transports');
-    checkboxControl.valueChanges.subscribe(() => {
-      checkboxControl.setValue(
-        checkboxControl.value.map((value: any, i: string | number) => value ? Object.values(this.TransportType)[i] : false),
-        { emitEvent: false },
-      );
-    });
+  public onChange(event: any, index: number) {
 
-  }
+    if (!event.currentTarget.checked) {
+      const f = 'notSet';
+      this.changeTrasport = this.changeTrasport.filter((value) => value !== Object.values(this.TransportType)[index]);
 
-  public buildForm(): void {
-    this.filterForm = this.fb.group({
-      cO2KgWeeklyMax: new FormControl(this.sliderPerWeekOptions.value),
-      nearbyKm: new FormControl({ value: this.sliderNearbyKmOptions.value, disabled: true }),
-      nearbyHomesCountMin: new FormControl({ value: this.currentValue, disabled: true }),
-      isChekedTransport: new FormControl(false),
-      isChekedNearbyHomes: new FormControl(false),
-      transports: this.fb.array(this.buildFieldsTransport()),
-    });
+      if (this.changeTrasport.length === 0) {
+        this.commutes.push(f);
+      }
 
-    this.fieldListener();
+    }
+
+    if (this.changeTrasport.length === 0 && event.currentTarget.checked) {
+      this.commutes = this.selectedCommute;
+    }
+
+    event.currentTarget.checked && this.changeTrasport.push(Object.values(this.TransportType)[index]);
+
   }
 
   public fieldsChangeTransport(event): void {
@@ -334,6 +391,7 @@ export class FilterComponent implements OnInit, OnDestroy {
     this.currentValue = filterType === this.sliderType.nearbyHomesCountMin
       ? `${event.value}-${event.highValue}` : event.value;
     this.filterForm.get(filterType).setValue(this.currentValue);
+    this.isCopy = true;
   }
 
   public nearbyHomesChange(event): void {

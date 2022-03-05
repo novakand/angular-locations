@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { ForecastPoint } from 'src/app/components/locations/models/forecat-point';
 import { FilterResponce } from '../../../../components/locations/interfaces/filter-responce.interfaces';
 import { LocationsService } from '../../../../components/locations/services/locations.service';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -11,6 +10,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
 import { MarkerType } from '../../enums/marker-type';
 import { Utils } from '../../../../../app/services/utils';
+import { IMarkerOptions } from '../../interfaces/marker-options.interface';
+import { IPolylineOptions } from '../../interfaces/polyline-options.interface';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -28,8 +29,8 @@ export class MapComponent implements OnInit, OnDestroy {
   public destroy$ = new Subject<boolean>();
   public markerId = 0;
   public restangle: google.maps.RectangleOptions;
-  public markers: MarkerOptions[] = [];
-  public forcastMarker: MarkerOptions[] = [];
+  public markers: IMarkerOptions[] = [];
+  public forcastMarker: IMarkerOptions[] = [];
   public circles: google.maps.CircleOptions[] = [];
   public polylines: google.maps.PolygonOptions[] = [];
   public infoWindowBox: google.maps.InfoWindow[] = [];
@@ -70,8 +71,8 @@ export class MapComponent implements OnInit, OnDestroy {
   };
 
   public circleOptions: google.maps.CircleOptions = {};
-  public markerOptions: MarkerOptions = {};
-  public polylineOptions: PolylineOptions = {};
+  public markerOptions: IMarkerOptions = {};
+  public polylineOptions: IPolylineOptions = {};
   public bounds: google.maps.LatLngBounds;
   public dataSource: any;
 
@@ -149,7 +150,7 @@ export class MapComponent implements OnInit, OnDestroy {
     item.info.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
   }
 
-  public onShowStatsPolyline(item) {
+  public onShowStatsPolyline(item): void {
     const bounds = new google.maps.LatLngBounds();
     item.polyline.getPath().getArray().forEach((latLng) => {
       bounds.extend(latLng);
@@ -167,7 +168,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public onMapRightclick(event, m, info): void {
-    console.log(m)
     const inf = { ...m, info, type: 'marker' };
     this.contextMenuPosition.x = `${event.domEvent.clientX}px`;
     this.contextMenuPosition.y = `${event.domEvent.clientY}px`;
@@ -270,7 +270,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  public createMarkerOptions(type: MarkerType, item?): MarkerOptions {
+  public createMarkerOptions(type: MarkerType, item?): IMarkerOptions {
     const LatLng = type === MarkerType.virtual
       && this.convertOffset(new google.maps.LatLng(this.selectedOffice.lat, this.selectedOffice.lon), 50, 0);
     return this.markerOptions = {
@@ -327,7 +327,10 @@ export class MapComponent implements OnInit, OnDestroy {
     this.infoWindow.close();
     this.selectedPolyline.setOptions({ icons: [] });
     this.selectedPolyline = null;
-    this._locService.changedCommute$.next([{ commuteUid: polyline.commuteUid, officeDays: this.sliderOptions.value }]);
+    this._locService.changedCommute$.next([{ commuteUid: polyline.data.commuteUid, officeDays: polyline.data.officeDays }]);
+    this.selectedInfoWindow && this.selectedInfoWindow.close();
+    this.cdr.detectChanges();
+
   }
 
   public convertLatLng(items): google.maps.LatLng[] {
@@ -352,13 +355,13 @@ export class MapComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  private createPolylineOptions(item: any): PolylineOptions {
+  private createPolylineOptions(item: any): IPolylineOptions {
     return this.polylineOptions = {
       strokeColor: item.commuteCO2Quartile,
       strokeWeight: 4,
       zIndex: 10,
       path: this.convertLatLng(item),
-      commuteUid: item.commuteUid,
+      data: item,
     };
   }
 
@@ -370,15 +373,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 }
-export interface PolylineOptions extends google.maps.PolylineOptions {
-  commuteUid?: string;
-}
 
-export interface MarkerOptions extends google.maps.MarkerOptions {
-  forecastPerDay?: number;
-  forecastPerWeek?: number;
-  id?: number;
-  type?: MarkerType;
-  data?: any;
-}
+
 
