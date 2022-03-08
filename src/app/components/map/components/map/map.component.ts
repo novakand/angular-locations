@@ -12,6 +12,8 @@ import { MarkerType } from '../../enums/marker-type';
 import { Utils } from '../../../../../app/services/utils';
 import { IMarkerOptions } from '../../interfaces/marker-options.interface';
 import { IPolylineOptions } from '../../interfaces/polyline-options.interface';
+import { ColorsType } from '../../enums/color-type.enum';
+import { ISliderOptions } from '../../../../components/locations/interfaces/slider-optios.interface';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -36,15 +38,18 @@ export class MapComponent implements OnInit, OnDestroy {
   public infoWindowBox: google.maps.InfoWindow[] = [];
   public selectedPolyline: any;
   public selectedInfoWindow: any;
+  public selectedInfoWindowMarker: any;
   public visible: boolean;
   public center: any;
-  public isChekedForecast$ = this._locService.isChekedForecast$;
+  public isChekedForecast = false;
   public isBuildMarker = true;
   public contextMenuPosition = { x: '0px', y: '0px' };
   public selectedOffice: any;
   public overlay: google.maps.OverlayView;
+  public cO2Emission = null;
+  public cO2EmissionVirtual = null;
 
-  public sliderOptions: any = {
+  public sliderOptions: ISliderOptions = {
     floor: 0,
     value: 5,
     ceil: 5,
@@ -63,7 +68,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public mapOptions: google.maps.MapOptions = {
     center: { lat: 51.5115238, lng: -0.0870248 },
     restriction: { strictBounds: false, latLngBounds: { north: 83.8, south: -83.8, west: -180, east: 180 } },
-    zoom: 8,
+    zoom: 3,
     disableDefaultUI: true,
     minZoom: 3,
     disableDoubleClickZoom: false,
@@ -98,10 +103,24 @@ export class MapComponent implements OnInit, OnDestroy {
         this.dataSource.commutes && this.buildPolylines();
         this.createInfoWindow();
 
-        (this.dataSource?.forecastPoints && this.forcastMarker.length) && this.buildForecastPoint();
+         (this.dataSource?.forecastPoints && this.forcastMarker.length) && this.buildForecastPoint();
 
         this.selectedOffice = this.dataSource.allOffices.find((item) => item.isSelected);
         this.isAddMarker = false;
+        this.cO2Emission = !this.selectedOffice?.calcCO2WeeklyEmission
+          ? this.selectedOffice?.originalCO2WeeklyEmission : this.selectedOffice?.calcCO2WeeklyEmission;
+      });
+
+    this._locService.filter$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this.destroy$),
+      ).
+      subscribe((data: any) => {
+
+        data?.forecastPoints && this.buildForecastPoints();
+
+        this.cdr.detectChanges();
       });
 
     this._locService.actionAddPoint$.pipe(
@@ -122,11 +141,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._locService.isChekedForecast$
       .pipe(
-        filter(Boolean),
         takeUntil(this.destroy$),
       ).
       subscribe((data: any) => {
         this.isBuildMarker = data;
+        this.isChekedForecast = data;
       });
   }
 
@@ -137,6 +156,23 @@ export class MapComponent implements OnInit, OnDestroy {
       });
   }
 
+  public createForecastOptions(type: MarkerType, item?): IMarkerOptions {
+    const LatLng = type === MarkerType.virtual
+      && this.convertOffset(new google.maps.LatLng(this.selectedOffice.lat, this.selectedOffice.lon), 50, 0);
+    return this.markerOptions = {
+      draggable: type === MarkerType.virtual,
+      crossOnDrag: false,
+      icon: {
+        url: type === MarkerType.main ? MarkerTypeIcon.mainOffice : MarkerTypeIcon.virtualOffice,
+      },
+      position: type === MarkerType.main
+        ? { lat: item.lat, lng: item.lon } :
+        { lat: LatLng.lat(), lng: LatLng.lng() },
+      id: type === MarkerType.main ? null : this.markerId,
+      type: type,
+    };
+  }
+
   public onMapClick(): void {
     this.selectedInfoWindow && this.selectedInfoWindow.close();
     this.selectedPolyline && this.selectedPolyline.setOptions({ icons: [] });
@@ -145,26 +181,11 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public onShowStatsMarker(item): void {
+    this.selectedInfoWindowMarker = item.info;
     item.info.position = item.position;
     item.info.open();
     item.info.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -60) });
-  }
-
-  public onShowStatsPolyline(item): void {
-    const bounds = new google.maps.LatLngBounds();
-    item.polyline.getPath().getArray().forEach((latLng) => {
-      bounds.extend(latLng);
-    });
-
-    const center = bounds.getCenter();
-    this.map.googleMap.setCenter(center);
-
-    this.selectedInfoWindow && this.selectedInfoWindow.close();
-
-    this.selectedInfoWindow = item.infowindow;
-    item.infowindow.position = center;
-    item.infowindow.open();
-    this.cdr.detectChanges();
+    this.cO2EmissionVirtual = item.data ? item.data.cO2WeeklyEmission : this.cO2Emission;
   }
 
   public onMapRightclick(event, m, info): void {
@@ -175,12 +196,21 @@ export class MapComponent implements OnInit, OnDestroy {
     this.contextMenu.openMenu();
   }
 
-  public onPolylineRightclick(event, polyline, infowindow): void {
-    const inf = { ...polyline, infowindow, type: 'polyline' };
-    this.contextMenuPosition.x = `${event.domEvent.clientX}px`;
-    this.contextMenuPosition.y = `${event.domEvent.clientY}px`;
-    this.contextMenu.menuData = { item: inf };
-    this.contextMenu.openMenu();
+  public onPolylineRightclick(polyline, infowindow, item): void {
+    if (!this.isChekedForecast) { return; }
+
+    const bounds = new google.maps.LatLngBounds();
+    polyline.getPath().getArray().forEach((latLng) => {
+      bounds.extend(latLng);
+    });
+
+    const center = bounds.getCenter();
+    this.selectedInfoWindow && this.selectedInfoWindow.close();
+    this.sliderOptions.value = item.data.officeDays;
+    this.selectedInfoWindow = infowindow.infoWindow;
+    infowindow.infoWindow.position = center;
+    infowindow.open();
+    this.cdr.detectChanges();
 
     const selected = {
       path: 'M 0,-1 0,1',
@@ -194,8 +224,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.selectedPolyline && this.selectedPolyline.setOptions({ icons: [] });
     polyline.polyline.setOptions({ icons: [{ icon: selected, offset: '0', repeat: '2px', }] });
     this.selectedPolyline = polyline.polyline;
-    this.selectedInfoWindow && this.selectedInfoWindow.close();
-
     this.cdr.detectChanges();
   }
 
@@ -210,13 +238,17 @@ export class MapComponent implements OnInit, OnDestroy {
   public onRemove(item): void {
     this.forcastMarker = this.forcastMarker.filter((v) => v.id !== item.id);
     this._locService.mapDrag$.next(this.buildForcast());
+    this._locService.addForecastPoint$.next(this.buildForcast());
     this.cdr.detectChanges();
   }
+
   public draggableChanged(marker: any, m): void {
     const mm = this.forcastMarker?.find((mark) => mark.id === m.id);
     mm.position.lat = marker.getPosition().lat();
     mm.position.lng = marker.getPosition().lng();
     this._locService.mapDrag$.next(this.buildForcast());
+    this._locService.addForecastPoint$.next(this.buildForcast());
+    this.selectedInfoWindowMarker && this.selectedInfoWindowMarker.close();
   }
 
   public buildForcast(): any[] {
@@ -247,11 +279,20 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.complete();
     this.markers = [];
     this.circles = [];
     this.polylines = [];
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
+  public buildForecastPoints(): void {
+    this.dataSource.forecastPoints?.forEach((item) => {
+      const marker = this.createMarkerOptions(MarkerType.virtual, item);
+      this.bounds.extend(marker.position);
+      this.forcastMarker.push(marker);
+    });
+
   }
 
   public buildMarker(): void {
@@ -260,13 +301,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.bounds.extend(marker.position);
       this.markers.push(marker);
     });
-
-    this.dataSource.forecastPoints.forEach((item) => {
-      const marker = this.createMarkerOptions(MarkerType.virtual, item);
-      this.bounds.extend(marker.position);
-      this.forcastMarker.push(marker);
-    });
-
     this.cdr.detectChanges();
   }
 
@@ -286,7 +320,6 @@ export class MapComponent implements OnInit, OnDestroy {
       type: type,
     };
   }
-
 
   public convertOffset(latlng: google.maps.LatLng, offsetX: number, offsetY: number): google.maps.LatLng {
 
@@ -327,10 +360,9 @@ export class MapComponent implements OnInit, OnDestroy {
     this.infoWindow.close();
     this.selectedPolyline.setOptions({ icons: [] });
     this.selectedPolyline = null;
-    this._locService.changedCommute$.next([{ commuteUid: polyline.data.commuteUid, officeDays: polyline.data.officeDays }]);
+    this._locService.changedCommute$.next([{ commuteUid: polyline.data.commuteUid, officeDays: this.sliderOptions.value }]);
     this.selectedInfoWindow && this.selectedInfoWindow.close();
     this.cdr.detectChanges();
-
   }
 
   public convertLatLng(items): google.maps.LatLng[] {
@@ -357,7 +389,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private createPolylineOptions(item: any): IPolylineOptions {
     return this.polylineOptions = {
-      strokeColor: item.commuteCO2Quartile,
+      strokeColor: ColorsType[item.commuteCO2Quartile],
       strokeWeight: 4,
       zIndex: 10,
       path: this.convertLatLng(item),
@@ -366,13 +398,10 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private buildPolylines(): void {
-    this.dataSource.commutes.forEach((item) => {
+    this.dataSource?.commutes?.forEach((item) => {
       this.polylines.push(this.createPolylineOptions(item));
     });
-    this.fitBounds();
+    (!!this.dataSource?.commutes.length) && this.fitBounds();
     this.cdr.detectChanges();
   }
 }
-
-
-

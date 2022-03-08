@@ -4,7 +4,7 @@
             <div class="location locations-list__location" [class.location_active]="office.isOpen" type="button" (click)="onSelect(office)">
                 <div class="location__top">
                     <a href="#" class="location__visibility"></a>
-                    <div class="location__name">{{office.officeName}} {{office.officeAddr}}</div>
+                    <div title="{{office.officeName}} {{office.officeAddr}}" class="location__name">{{office.officeName}} {{office.officeAddr}}</div>
                 </div>
                 <div class="location__body">
                     <div class="location__qr">

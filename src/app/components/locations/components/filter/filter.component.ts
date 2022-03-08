@@ -2,18 +2,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
-  Input,
   OnDestroy,
-  OnInit,
-  Output
+  OnInit
 } from '@angular/core';
 
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 // external libs
 import { Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { Utils } from '../../../../../app/services/utils';
 
 // enums
@@ -21,11 +18,7 @@ import { FilterSliderType } from '../../enums/filter-slider-type.enums';
 import { MoveTypeEnumstring } from '../../enums/move-type.enums';
 
 // interfaces
-import { FilterResponce } from '../../interfaces/filter-responce.interfaces';
-import { ForecastPoint } from '../../models/forecat-point';
-
-// models
-import { FilterRequest } from '../../models/qure.model';
+import { ISliderOptions } from '../../interfaces/slider-optios.interface';
 
 // services
 import { LocationsService } from '../../services/locations.service';
@@ -59,8 +52,9 @@ export class FilterComponent implements OnInit, OnDestroy {
   public moveType: any = [];
   public copyMoveType: any = [];
   public isCopy = true;
+  public isDisabledForecast = true;
 
-  public sliderPerWeekOptions: any = {
+  public sliderPerWeekOptions: ISliderOptions = {
     floor: 0,
     value: 100000,
     ceil: 100000,
@@ -72,7 +66,7 @@ export class FilterComponent implements OnInit, OnDestroy {
     step: 1,
   };
 
-  public sliderNearbyKmOptions: any = {
+  public sliderNearbyKmOptions: ISliderOptions = {
     floor: 0,
     value: 16,
     ceil: 16,
@@ -85,9 +79,9 @@ export class FilterComponent implements OnInit, OnDestroy {
     step: 1,
   };
 
-  public sliderNearbyHomesOptions: any = {
+  public sliderNearbyHomesOptions: ISliderOptions = {
     floor: 0,
-    value: 1,
+    value: 0,
     ceil: 50,
     disabled: true,
     minRange: 1,
@@ -103,8 +97,6 @@ export class FilterComponent implements OnInit, OnDestroy {
   public pending$ = new Subject<boolean>();
   private _destroy$ = new Subject<boolean>();
 
-
-
   constructor(
     private fb: FormBuilder,
     private _locService: LocationsService,
@@ -115,8 +107,13 @@ export class FilterComponent implements OnInit, OnDestroy {
     this.currentValue = `${this.sliderNearbyHomesOptions.value}-${this.sliderNearbyHomesOptions.highValue}`;
     this.buildForm();
 
-    this.copyMoveType = this.changeTrasport;
+    // this.filterForm.disable({ emitEvent: true, onlySelf: true });
+    // this.sliderPerWeekOptions = { ...this.sliderPerWeekOptions, ...{ disabled: this.filterForm.disabled } };
+    // this.isDisabledForecast = this.filterForm.disabled;
 
+    this.isDisabledForecast = false;
+
+    this.copyMoveType = this.changeTrasport;
 
     this.filterForm.valueChanges.pipe(
       filter((value) => !!value),
@@ -165,65 +162,35 @@ export class FilterComponent implements OnInit, OnDestroy {
         takeUntil(this._destroy$),
       ).
       subscribe((data: any) => {
+        this.isCopy = true;
         this.filterForm.patchValue(data.filter, { emitEvent: false });
         this.cdr.detectChanges();
+        if (this.filterForm.get('isChekedTransport').value) {
+          this.updateMoveType(data);
+          this.isCopy && this.setCopyMoveType();
+          this.setSelectedMoveType();
+          this.enableMoveType();
 
-        const checkboxControl = this.filterForm.get('transports');
+          this.resetMoveType();
+          this.setValueMoveType();
+          this.setDisabledMoveType();
+          this.cdr.detectChanges();
+        }
 
-        checkboxControl.setValue(
-          checkboxControl.value.map((value: any, i: string | number) => value ?
-            Object.values(data.filter?.transports).some((val) => val === Object.values(this.TransportType)[i]) : false),
-          { emitEvent: false },
-        );
-
-        this.filterForm.get('isChekedTransport').patchValue(true, { emitEvent: true, onlySelf: true });
         this.filterForm.get('isChekedNearbyHomes').patchValue(data.filter?.isChekedNearbyHomes, { emitEvent: true, onlySelf: true });
         this.sliderNearbyHomesOptions.highValue = data.filter?.nearbyHomesCountMax;
         this.sliderNearbyHomesOptions.value = data.filter?.nearbyHomesCountMin;
+        this.sliderPerWeekOptions.value = data.filter?.cO2KgWeeklyMax;
         this.currentValue = `${this.sliderNearbyHomesOptions.value}-${this.sliderNearbyHomesOptions.highValue}`;
         this.filterForm.get('nearbyHomesCountMin').patchValue(this.currentValue, { emitEvent: true, onlySelf: true });
-        this.isChekedForecast = data.filter.isChekedForecast || false;
         this.cdr.detectChanges();
       });
 
 
-    this.filterForm.get('isChekedTransport').valueChanges.pipe(
-      takeUntil(this._destroy$),
-    ).subscribe((value) => {
-      value ?
-        this.filterForm.get('transports').enable({ emitEvent: true, onlySelf: true }) : this.resetFiledTransport();
-    });
-
-
-    this.filterForm.get('nearbyKm').valueChanges.pipe(
-      takeUntil(this._destroy$),
-    ).subscribe((value) => {
-
-      this.sliderNearbyKmOptions = { ...this.sliderNearbyKmOptions, ...{ value: value } };
-    });
-
-    this.filterForm.get('cO2KgWeeklyMax').valueChanges.pipe(
-      takeUntil(this._destroy$),
-    ).subscribe((value) => {
-
-      this.sliderPerWeekOptions = { ...this.sliderPerWeekOptions, ...{ value: value } };
-    });
-
-
-    this.filterForm.get('isChekedNearbyHomes').valueChanges.pipe(
-      takeUntil(this._destroy$),
-    ).subscribe((value) => {
-      value ?
-        this.filterForm.get('nearbyKm').enable({ emitEvent: true, onlySelf: true })
-        : this.filterForm.get('nearbyKm').disable({ emitEvent: true, onlySelf: true });
-      value ?
-        this.filterForm.get('nearbyHomesCountMin').enable({ emitEvent: true, onlySelf: true })
-        : this.filterForm.get('nearbyHomesCountMin').disable({ emitEvent: true, onlySelf: true });
-
-      this.sliderNearbyKmOptions = { ...this.sliderNearbyKmOptions, ...{ disabled: !value } };
-      this.sliderNearbyHomesOptions = { ...this.sliderNearbyHomesOptions, ...{ disabled: !value } };
-      this.cdr.detectChanges();
-    });
+    this.IsChekedTransportListener();
+    this.changeNearbyKmListener();
+    this.changeCO2KgWeeklyMax();
+    this.isChekedNearbyHomesListener();
 
     this.filterForm.enable();
     this.filterForm.get('transports').disable({ emitEvent: false });
@@ -277,47 +244,119 @@ export class FilterComponent implements OnInit, OnDestroy {
         this.dataSource = data;
 
         this._locService.actionPreloader$.next(false);
+
         if (!this.filterForm.get('isChekedTransport').value) { return; }
-        const trasports =
-          this.dataSource?.commutes?.filter((v, i, a) => a.findIndex((t: { moveType: any; }) => (t.moveType === v.moveType)) === i);
-        this.cdr.detectChanges();
+        this.updateMoveType(data);
+        this.isCopy && this.setCopyMoveType();
+        this.setSelectedMoveType();
+        this.enableMoveType();
 
-        this.moveType = trasports.map((key) => key.moveType);
-        this.cdr.detectChanges();
-        if (this.isCopy) {
-          this.copyMoveType = Utils.deepCopy(this.moveType);
-          this.isCopy = false;
-        }
-
-        const checkboxControl: any = this.filterForm.get('transports');
-        this.selectedTrasport = Object.values(this.TransportType).map((item: any) => {
-          const moveType = Object.values(this.moveType).find((findItem) => findItem === item);
-          return item = moveType ? moveType : false;
-        });
-
-        this.cdr.detectChanges();
-
-        checkboxControl.controls.map((items: any) => items.enable({ emitEvent: false }));
-
-        checkboxControl.setValue(checkboxControl.value.map((value: any, i: string | number) => true),
-          { emitEvent: false },
-        );
-
-        checkboxControl.setValue(
-          checkboxControl.value.map((value: any, i: string | number) => this.selectedTrasport[i]),
-          { emitEvent: false },
-        );
-        this.cdr.detectChanges();
-
-        checkboxControl.controls.map((items: any, i: string | number) => {
-          items.enable({ emitEvent: false });
-          const isNotDisabled = Object.values(this.copyMoveType).some((val) => val === Object.values(this.TransportType)[i]);
-          isNotDisabled
-            ? items.enable({ emitEvent: false }) : items.disable({ emitEvent: false });
-        });
-
+        this.resetMoveType();
+        this.setValueMoveType();
+        this.setDisabledMoveType();
         this.cdr.detectChanges();
       });
+  }
+
+  public isChekedNearbyHomesListener(): void {
+
+    this.filterForm.get('isChekedNearbyHomes').valueChanges
+      .pipe(
+        takeUntil(this._destroy$),
+      ).subscribe((value) => {
+        value ?
+          this.filterForm.get('nearbyKm').enable({ emitEvent: true, onlySelf: true })
+          : this.filterForm.get('nearbyKm').disable({ emitEvent: true, onlySelf: true });
+        value ?
+          this.filterForm.get('nearbyHomesCountMin').enable({ emitEvent: true, onlySelf: true })
+          : this.filterForm.get('nearbyHomesCountMin').disable({ emitEvent: true, onlySelf: true });
+
+        this.sliderNearbyKmOptions = { ...this.sliderNearbyKmOptions, ...{ disabled: !value } };
+        this.sliderNearbyHomesOptions = { ...this.sliderNearbyHomesOptions, ...{ disabled: !value } };
+        this.cdr.detectChanges();
+      });
+
+  }
+
+  public IsChekedTransportListener(): void {
+    this.filterForm.get('isChekedTransport').valueChanges
+      .pipe(
+        takeUntil(this._destroy$),
+      ).subscribe((value) => {
+        this.filterForm.get('transports').disable({ emitEvent: true, onlySelf: true });
+      });
+  }
+
+  public changeNearbyKmListener(): void {
+    this.filterForm.get('nearbyKm').valueChanges
+      .pipe(
+        takeUntil(this._destroy$),
+      ).subscribe((value) => {
+
+        this.sliderNearbyKmOptions = { ...this.sliderNearbyKmOptions, ...{ value: value } };
+      });
+  }
+
+  public changeCO2KgWeeklyMax(): void {
+
+    this.filterForm.get('cO2KgWeeklyMax').valueChanges
+      .pipe(
+        takeUntil(this._destroy$),
+      ).subscribe((value) => {
+
+        this.sliderPerWeekOptions = { ...this.sliderPerWeekOptions, ...{ value: value } };
+      });
+
+  }
+
+  public updateMoveType(data): void {
+    const trasports =
+      data?.commutes?.filter((v, i, a) => a.findIndex((t: { moveType: any; }) => (t.moveType === v.moveType)) === i);
+    this.moveType = trasports.map((key) => key.moveType);
+    this.cdr.detectChanges();
+  }
+
+  public setCopyMoveType(): void {
+    this.copyMoveType = Utils.deepCopy(this.moveType);
+    this.isCopy = false;
+  }
+
+  public setSelectedMoveType(): void {
+    const checkboxControl: any = this.filterForm.get('transports');
+    this.selectedTrasport = Object.values(this.TransportType).map((item: any) => {
+      const moveType = Object.values(this.moveType).find((findItem) => findItem === item);
+      return item = moveType ? moveType : false;
+    });
+  }
+
+  public resetMoveType(): void {
+    const checkboxControl: any = this.filterForm.get('transports');
+    checkboxControl.setValue(checkboxControl.value.map((value: any, i: string | number) => true),
+      { emitEvent: false },
+    );
+  }
+
+  public enableMoveType(): void {
+    const checkboxControl: any = this.filterForm.get('transports');
+    checkboxControl.controls.map((items: any) => items.enable({ emitEvent: false }));
+  }
+
+  public setValueMoveType(): void {
+    const checkboxControl: any = this.filterForm.get('transports');
+    checkboxControl.setValue(
+      checkboxControl.value.map((value: any, i: string | number) => this.selectedTrasport[i]),
+      { emitEvent: false },
+    );
+  }
+
+  public setDisabledMoveType(): void {
+    const checkboxControl: any = this.filterForm.get('transports');
+    checkboxControl.controls.map((items: any, i: string | number) => {
+      items.enable({ emitEvent: false });
+      const isNotDisabled = Object.values(this.copyMoveType).some((val) => val === Object.values(this.TransportType)[i]);
+      isNotDisabled
+        ? items.enable({ emitEvent: false }) : items.disable({ emitEvent: false });
+    });
   }
 
   public getTransport(): any {
@@ -351,20 +390,6 @@ export class FilterComponent implements OnInit, OnDestroy {
 
     event.currentTarget.checked && this.changeTrasport.push(Object.values(this.TransportType)[index]);
 
-  }
-
-  public fieldsChangeTransport(event): void {
-    event.currentTarget.checked ?
-      this.filterForm.get('transports').enable({ emitEvent: true }) : this.resetFiledTransport();
-  }
-
-  public resetFiledTransport(): void {
-    const checkboxControl = this.filterForm.get('transports');
-    checkboxControl.disable({ emitEvent: true });
-    checkboxControl.setValue(
-      checkboxControl.value.map((value: any, i: string | number) => value ? Object.values(this.TransportType)[i] : true),
-      { emitEvent: false },
-    );
   }
 
   public onForecat(event) {
@@ -406,3 +431,4 @@ export class FilterComponent implements OnInit, OnDestroy {
     this._locService.actionAddPoint$.next(true);
   }
 }
+

@@ -18,10 +18,13 @@ export class LegendComponent implements OnInit {
   public dataSource: any;
   public isShowLegend: boolean;
 
+  private _destroy$ = new Subject<boolean>();
+
   constructor(
     private fb: FormBuilder,
     private _locService: LocationsService,
     private cdr: ChangeDetectorRef,
+
   ) { }
 
   public ngOnInit(): void {
@@ -29,6 +32,7 @@ export class LegendComponent implements OnInit {
     this.fieldListener();
     this.addListenersForm();
     this.addListenerFilter();
+    this.legendForm.disable({ emitEvent: false, onlySelf: true });
   }
 
 
@@ -41,6 +45,32 @@ export class LegendComponent implements OnInit {
       subscribe((data: any) => {
         this.dataSource = data;
         this.isShowLegend = !(!this.dataSource && !this.dataSource.commutes.length);
+        !!this.dataSource.commutes.length && this.legendForm.enable({ emitEvent: false, onlySelf: true });
+        this.cdr.detectChanges();
+      });
+
+    this._locService.filter$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      ).
+      subscribe((data: any) => {
+        this.legendForm.reset(true, { emitEvent: false, onlySelf: true });
+
+        if (data.filter.commuteQuartiles.length === 0) {
+          this.legendForm.get('all').setValue(true, { emitEvent: false, onlySelf: true });
+          return;
+        }
+        const checkboxControl: any = this.legendForm.get('showCommutes');
+        const selectedType = Object.values(this.commutesType).map((item: any) => {
+          const moveType = Object.values(data.filter?.commuteQuartiles).find((findItem) => findItem === item);
+          return item = moveType ? moveType : false;
+        });
+
+        checkboxControl.setValue(
+          checkboxControl.value.map((value: any, i: string | number) => selectedType[i]),
+          { emitEvent: false },
+        );
         this.cdr.detectChanges();
       });
 

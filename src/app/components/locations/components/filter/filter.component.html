@@ -89,7 +89,7 @@
                 </li>
                 <li class="togglers-list__item toggler clearfix">
                     <div class="toggler__head">
-                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" (change)="onChangeForecast($event)" [ngModelOptions]="{standalone: true}" class="toggler__input">
+                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" [disabled]="isDisabledForecast" (change)="onChangeForecast($event)" [ngModelOptions]="{standalone: true}" class="toggler__input">
                         <label for="forecast" class="toggler__label">Forecast</label>
                     </div>
                     <div class="toggler__body toggler__body_right">

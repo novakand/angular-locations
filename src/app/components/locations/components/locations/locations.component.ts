@@ -59,7 +59,8 @@ export class LocationsComponent implements OnInit, OnDestroy {
         takeUntil(this._destroy$),
       )
       .subscribe((data: any) => {
-        this.forecastPoints = data;
+        console.log('data', data),
+          this.forecastPoints = data;
         this._cdr.detectChanges();
       });
 
@@ -116,6 +117,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   }
 
   public onDownLoadFile(): void {
+    const forecastPoints = Utils.deepCopy(this.dataSource.forecastPoints);
     this.dataSource.forecastPoints = this.forecastPoints;
     const uri = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.dataSource));
     this.downloadLink.nativeElement.href = uri || {};

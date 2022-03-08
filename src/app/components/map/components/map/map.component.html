@@ -1,7 +1,7 @@
 <div class="map">
     <google-map [options]="mapOptions" [center]="center" (mapClick)="onMapClick()">
         <ng-container *ngFor="let polyline of polylines; let i = index">
-            <map-polyline #poly="mapPolyline" (polylineRightclick)="onPolylineRightclick($event,poly,info,polyline)" [options]="polyline">
+            <map-polyline #poly="mapPolyline" (polylineRightclick)="onPolylineRightclick(poly,info,polyline)" [options]="polyline">
             </map-polyline>
             <map-info-window #info="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="wb-form">
@@ -11,13 +11,13 @@
                                 Office days
                             </div>
                             <div class="wb-option__body wb-option__body_active wb-slider">
-                                <ngx-slider class="filter-slider" [(value)]="sliderOptions.value===polyline.data.officeDays" [options]="sliderOptions">
+                                <ngx-slider class="filter-slider" [(value)]="sliderOptions.value" [options]="sliderOptions">
                                 </ngx-slider>
                                 <div class="wb-slider__labels">
                                     <div class="wb-slider__label">Office</div>
                                     <div class="wb-slider__label">Home</div>
                                 </div>
-                                <div class="wb-slider__value">{{polyline.data.officeDays}}</div>
+                                <div class="wb-slider__value">{{sliderOptions.value}}</div>
                             </div>
                         </li>
                     </ul>
@@ -30,8 +30,8 @@
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
-                    <div class="pin-data__line">{{m.forecastPerWeek}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{m.forecastPerDay}} kg per day</div>
+                    <div class="pin-data__line">{{cO2Emission}} kg per week </div>
+                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day</div>
                 </div>
             </map-info-window>
         </ng-container>
@@ -41,8 +41,8 @@
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
-                    <div class="pin-data__line">{{f.forecastPerWeek}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{f.forecastPerDay}} kg per day</div>
+                    <div class="pin-data__line">{{cO2EmissionVirtual}} kg per week </div>
+                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day</div>
                 </div>
             </map-info-window>
         </ng-container>
@@ -57,7 +57,7 @@
 
     <mat-menu #contextMenu="matMenu" class="pin-data context-menu-pin-data" (closed)="onMatmenuClose()" [overlapTrigger]="true">
         <ng-template matMenuContent let-item="item">
-            <div class="pin-data__line"><a (click)="item.type === 'marker'? onShowStatsMarker(item) : onShowStatsPolyline(item)">Show stats</a></div>
+            <div class="pin-data__line"><a (click)="onShowStatsMarker(item)">Show stats</a></div>
             <div *ngIf="item.draggable" class="pin-data__line"><a (click)="onRemove(item)">Remove point</a>
             </div>
         </ng-template>

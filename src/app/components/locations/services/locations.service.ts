@@ -17,7 +17,7 @@ import { environment } from '../../../../environments/environment';
 @Injectable()
 export class LocationsService {
 
-    public addForecastPoint$ = new BehaviorSubject<any>(true);
+    public addForecastPoint$ = new BehaviorSubject<any>(null);
     public mapDrag$ = new BehaviorSubject<any>(null);
     public actionAddPoint$ = new BehaviorSubject<any>(null);
     public actionCommutes$ = new BehaviorSubject<any>(null);
