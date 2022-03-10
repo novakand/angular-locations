@@ -1,5 +1,5 @@
 <div class="map">
-    <google-map [options]="mapOptions" [center]="center" (mapClick)="onMapClick()">
+    <google-map [options]="mapOptions" (mapClick)="onMapClick()">
         <ng-container *ngFor="let polyline of polylines; let i = index">
             <map-polyline #poly="mapPolyline" (polylineRightclick)="onPolylineRightclick(poly,info,polyline)" [options]="polyline">
             </map-polyline>
@@ -21,28 +21,30 @@
                             </div>
                         </li>
                     </ul>
-                    <button class="wb-form__submit button button_primary" (click)="onApplyInfoWindows(polyline)" type="submit">Apply</button>
+                    <button class="wb-form__submit button button_primary" (click)="onApply(polyline)">Apply</button>
                 </div>
             </map-info-window>
         </ng-container>
         <ng-container *ngFor="let m of markers; let i = index">
-            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,m, infoWindow,marker)" (mapDragend)="draggableChanged(marker,m,infoWindow)" [visible]="visible" [options]="m">
+            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,m, infoWindow,marker)" (mapDragend)="draggableChanged(marker,m,infoWindow)" [options]="m">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
                     <div class="pin-data__line">{{cO2Emission}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day</div>
+                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day
+                    </div>
                 </div>
             </map-info-window>
         </ng-container>
 
         <ng-container *ngFor="let f of forcastMarker; let i = index">
-            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,f, infoWindow,marker)" (mapDragend)="draggableChanged(marker,f,infoWindow)" [visible]="visible" [options]="f">
+            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,f, infoWindow,marker)" (mapDragend)="draggableChanged(marker,f,infoWindow)" [options]="f">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
                     <div class="pin-data__line">{{cO2EmissionVirtual}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day</div>
+                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day
+                    </div>
                 </div>
             </map-info-window>
         </ng-container>
@@ -57,7 +59,7 @@
 
     <mat-menu #contextMenu="matMenu" class="pin-data context-menu-pin-data" (closed)="onMatmenuClose()" [overlapTrigger]="true">
         <ng-template matMenuContent let-item="item">
-            <div class="pin-data__line"><a (click)="onShowStatsMarker(item)">Show stats</a></div>
+            <div class="pin-data__line"><a (click)="onInfoWindowOpen(item)">{{titleContexMenu}}</a></div>
             <div *ngIf="item.draggable" class="pin-data__line"><a (click)="onRemove(item)">Remove point</a>
             </div>
         </ng-template>

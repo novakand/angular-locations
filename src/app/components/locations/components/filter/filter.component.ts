@@ -206,7 +206,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   private _buildFieldsTransport(): boolean[] {
-    return Object.values(this.transportType).map((x: MoveType) => true);
+    return Object.values(this.transportType).map(() => true);
   }
 
   private _sendFilter(): void {
@@ -414,7 +414,6 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   private _watchForCO2KgWeeklyMaxChange(): void {
-
     this.filterForm.get('cO2KgWeeklyMax').valueChanges
       .pipe(
         takeUntil(this._destroy$),
@@ -422,7 +421,6 @@ export class FilterComponent implements OnInit, OnDestroy {
 
         this.sliderPerWeekOptions = { ...this.sliderPerWeekOptions, ...{ value: value } };
       });
-
   }
 
   private _enableFilterForm(isEnable: boolean): void {
