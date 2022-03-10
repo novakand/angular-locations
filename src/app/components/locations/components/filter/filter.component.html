@@ -25,27 +25,27 @@
                         <ul class="tags-list">
                             <ul class="tags-list" formArrayName="transports">
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" (change)="onChange($event,0)" id="pub-trans" class="tag-checkbox__input" formControlName="0">
+                                    <input type="checkbox" (change)="onTrasportChange($event.currentTarget.checked,0)" id="pub-trans" class="tag-checkbox__input" formControlName="0">
                                     <label for="pub-trans" class="tag-checkbox__label">Public</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" (change)="onChange($event,1)" id="car" class="tag-checkbox__input" formControlName="1">
+                                    <input type="checkbox" (change)="onTrasportChange($event.currentTarget.checked,1)" id="car" class="tag-checkbox__input" formControlName="1">
                                     <label for="car" class="tag-checkbox__label">Car</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" (change)="onChange($event,2)" id="e-bike" class="tag-checkbox__input" formControlName="2">
+                                    <input type="checkbox" (change)="onTrasportChange($event.currentTarget.checked,2)" id="e-bike" class="tag-checkbox__input" formControlName="2">
                                     <label for="e-bike" class="tag-checkbox__label">E-bike</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" (change)="onChange($event,3)" id="bicycle" class="tag-checkbox__input" formControlName="3">
+                                    <input type="checkbox" (change)="onTrasportChange($event.currentTarget.checked,3)" id="bicycle" class="tag-checkbox__input" formControlName="3">
                                     <label for="bicycle" class="tag-checkbox__label">Bicycle</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" (change)="onChange($event,4)" id="e-car" class="tag-checkbox__input" formControlName="4">
+                                    <input type="checkbox" (change)="onTrasportChange($event.currentTarget.checked,4)" id="e-car" class="tag-checkbox__input" formControlName="4">
                                     <label for="e-car" class="tag-checkbox__label">E-Car</label>
                                 </li>
                                 <li class="tags-list__item tag-checkbox">
-                                    <input type="checkbox" (change)="onChange($event,5)" id="foot" class="tag-checkbox__input" formControlName="5">
+                                    <input type="checkbox" (change)="onTrasportChange($event.currentTarget.checked,5)" id="foot" class="tag-checkbox__input" formControlName="5">
                                     <label for="foot" class="tag-checkbox__label">Foot</label>
                                 </li>
                             </ul>
@@ -54,7 +54,7 @@
                 </li>
                 <li class="togglers-list__item toggler">
                     <div class="toggler__head">
-                        <input type="checkbox" (change)="fieldsChange($event)" id="nearby-homes" formControlName="isChekedNearbyHomes" class="toggler__input">
+                        <input type="checkbox" (change)="onHomesChange($event.currentTarget.checked)" id="nearby-homes" formControlName="isChekedNearbyHomes" class="toggler__input">
                         <label for="nearby-homes" class="toggler__label">Nearby homes</label>
                     </div>
                     <div class="toggler__body">
@@ -79,7 +79,7 @@
                                         <label for="min" class="filter-details__label">CO<sub>2</sub></label>
                                         <div class="filter-details__right">
                                             <div class="filter-details__m">homes</div>
-                                            <input formControlName="nearbyHomesCountMin" readonly type="text" (input)="nearbyHomesChange($event.target.value)" id="min" class="filter-details__input" min="3" max="50">
+                                            <input formControlName="nearbyHomesCountMin" readonly type="text" (input)="onNearbyHomesChange($event.target.value)" id="min" class="filter-details__input" min="3" max="50">
                                         </div>
                                     </div>
                                 </div>
@@ -89,17 +89,17 @@
                 </li>
                 <li class="togglers-list__item toggler clearfix">
                     <div class="toggler__head">
-                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" [disabled]="isDisabledForecast" (change)="onChangeForecast($event)" [ngModelOptions]="{standalone: true}" class="toggler__input">
+                        <input type="checkbox" id="forecast" [(ngModel)]="isChekedForecast" [disabled]="isDisabledForecast" (change)="onForecastChange($event.currentTarget.checked)" [ngModelOptions]="{standalone: true}" class="toggler__input">
                         <label for="forecast" class="toggler__label">Forecast</label>
                     </div>
                     <div class="toggler__body toggler__body_right">
-                        <a class="add-point" (click)="onaddPoint()" [ngClass]="{'add-point_disabled': !isChekedForecast}">+ Add point</a>
+                        <a class="add-point" (click)="onAddPoint()" [ngClass]="{'add-point_disabled': !isChekedForecast}">+ Add point</a>
                     </div>
                 </li>
             </ul>
         </div>
         <div class="filters-form__toggle" [ngClass]="{'filters-form__toggler_active': isFilterShow}">
-            <a class="filters-form__toggler" (click)=toggleFilter()>
+            <a class="filters-form__toggler" (click)=onToggleFilter()>
                 <span class="filters-form__toggler-text">
                     <span *ngIf="!isFilterShow">Show filters</span>
                 <span *ngIf="isFilterShow">Hide filters</span>

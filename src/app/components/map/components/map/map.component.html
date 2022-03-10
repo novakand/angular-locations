@@ -26,7 +26,7 @@
             </map-info-window>
         </ng-container>
         <ng-container *ngFor="let m of markers; let i = index">
-            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,m, infoWindow)" (mapDragend)="draggableChanged(marker,m,infoWindow)" [visible]="visible" [options]="m">
+            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,m, infoWindow,marker)" (mapDragend)="draggableChanged(marker,m,infoWindow)" [visible]="visible" [options]="m">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
@@ -37,7 +37,7 @@
         </ng-container>
 
         <ng-container *ngFor="let f of forcastMarker; let i = index">
-            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,f, infoWindow)" (mapDragend)="draggableChanged(marker,f,infoWindow)" [visible]="visible" [options]="f">
+            <map-marker #marker="mapMarker" (mapRightclick)="onMapRightclick($event,f, infoWindow,marker)" (mapDragend)="draggableChanged(marker,f,infoWindow)" [visible]="visible" [options]="f">
             </map-marker>
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">

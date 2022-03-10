@@ -1,4 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+
+// external lib
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import moment from 'moment';
@@ -7,6 +9,11 @@ import moment from 'moment';
 import { LocationsService } from '../../services/locations.service';
 import { UploadService } from '../../services/upload.service';
 import { Utils } from '../../../../../app/services/utils';
+
+// interfaces
+import { IFilterUploadResponse } from '../../interfaces/filter-upload-response.interface';
+import { IFilterResponse } from '../../interfaces/filter-response.interface';
+import { IForecastPointsRes } from '../../interfaces/forecast-point.interfaces';
 
 @Component({
   selector: 'app-locations',
@@ -18,92 +25,42 @@ export class LocationsComponent implements OnInit, OnDestroy {
 
   @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
 
-  public destroy$ = new Subject<boolean>();
   public isProgress = true;
-  public upJson: any = {};
-  public dataSource: any = {};
-  public forecastPoints: any;
-  public discardQuery: any = {};
-  public isDiscardDisable = true;
   public isForecast = false;
-  public isProgress$ = this._locService.actionPreloader$;
+
+  public isProgress$ = this._service.actionPreloader$;
 
   @ViewChild('file') public file: ElementRef<HTMLInputElement>;
+
+  private _discardQuery: IFilterResponse = null;
+  private _dataSource: IFilterResponse = null;
+  private _forecastPoints: IForecastPointsRes[];
 
   private _destroy$ = new Subject<boolean>();
 
   constructor(
-    private _locService: LocationsService,
+    private _service: LocationsService,
     private _uploadService: UploadService,
     private _cdr: ChangeDetectorRef,
   ) { }
 
 
   public ngOnInit(): void {
-    this._uploadService.uploadFile$
-      .pipe(
-        filter(Boolean),
-        takeUntil(this._destroy$),
-      )
-      .subscribe((data: any) => {
-        this.upJson = data;
-        this._locService.takeFilter$.next(data);
-        this._locService.filter$.next(data);
-        this.file.nativeElement.value = '';
-        this._locService.actionPreloader$.next(false);
-      });
-
-    this._locService.addForecastPoint$
-      .pipe(
-        filter(Boolean),
-        takeUntil(this._destroy$),
-      )
-      .subscribe((data: any) => {
-        console.log('data', data),
-          this.forecastPoints = data;
-        this._cdr.detectChanges();
-      });
-
-    this._locService.takeFilter$
-      .pipe(
-        filter(Boolean),
-        takeUntil(this._destroy$),
-      )
-      .subscribe((data: any) => {
-        this.dataSource = data;
-      });
-
-    this._locService.isChekedForecast$
-      .pipe(
-        takeUntil(this._destroy$),
-      )
-      .subscribe((data: any) => {
-        this.isForecast = data;
-        if (data) {
-          this.discardQuery = Utils.deepCopy(this._locService.takeFilter$.getValue());
-        }
-      });
-
-    this._locService.actionAddPoint$
-      .pipe(
-        filter(Boolean),
-        takeUntil(this._destroy$),
-      )
-      .subscribe((data: any) => {
-        this.isDiscardDisable = data;
-
-      });
+    this._watchForUploadFileChanges();
+    this._watchForForecastPointChanges();
+    this._watchForIsForecastChanges();
+    this._watchForFilterUpdateChanges();
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.complete();
+    this._destroy$.next(true);
+    this._destroy$.complete();
   }
 
   public onDiscard(): void {
-    this._locService.takeFilter$.next(this.discardQuery);
-    this._locService.filter$.next(this.discardQuery);
-    this._locService.isRemoveMarker$.next(true);
+    this._service.takeFilter$.next(this._discardQuery);
+    this._service.filter$.next(this._discardQuery);
+    this._service.isRemoveMarker$.next(true);
     this._cdr.detectChanges();
   }
 
@@ -113,15 +70,66 @@ export class LocationsComponent implements OnInit, OnDestroy {
 
   public onAddFile(event): void {
     this._uploadService.uploadFiles(event);
-    this._locService.actionPreloader$.next(true);
+    this._service.actionPreloader$.next(true);
   }
 
   public onDownLoadFile(): void {
-    const forecastPoints = Utils.deepCopy(this.dataSource.forecastPoints);
-    this.dataSource.forecastPoints = this.forecastPoints;
-    const uri = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.dataSource));
+    this._dataSource.forecastPoints = this._forecastPoints;
+    const uri = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this._dataSource));
     this.downloadLink.nativeElement.href = uri || {};
     this.downloadLink.nativeElement.download = `fatma ${moment().format('DD MM YYYY HH:mm:ss')}.json`;
     this.downloadLink.nativeElement.click();
+  }
+
+  private _watchForFilterUpdateChanges(): void {
+    this._service.takeFilter$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: IFilterResponse) => {
+        this._dataSource = data;
+      });
+  }
+
+  private _watchForIsForecastChanges(): void {
+    this._service.isChekedForecast$
+      .pipe(
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: boolean) => {
+        this.isForecast = data;
+        data && this._copyQuery();
+      });
+  }
+
+  private _copyQuery(): void {
+    this._discardQuery = Utils.deepCopy(this._service.takeFilter$.getValue());
+  }
+
+  private _watchForForecastPointChanges(): void {
+    this._service.addForecastPoint$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: IForecastPointsRes[]) => {
+        this._forecastPoints = data;
+        this._cdr.detectChanges();
+      });
+  }
+
+  private _watchForUploadFileChanges(): void {
+    this._uploadService.uploadFile$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((data: IFilterUploadResponse) => {
+        this._service.takeFilter$.next(data);
+        this._service.filter$.next(data);
+        this.file.nativeElement.value = '';
+        this._service.actionPreloader$.next(false);
+      });
   }
 }

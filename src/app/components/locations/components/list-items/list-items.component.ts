@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, takeUntil, tap } from 'rxjs/operators';
+
+// interfaces
+import { IFilterResponse } from '../../interfaces/filter-response.interface';
+
+// services
 import { LocationsService } from '../../services/locations.service';
 
 @Component({
@@ -12,38 +17,34 @@ import { LocationsService } from '../../services/locations.service';
 export class ListItemsComponent implements OnInit, OnDestroy {
 
   public allOffices$ = new BehaviorSubject<any>(null);
-  public destroy$ = new Subject<boolean>();
+
+  private _destroy$ = new Subject<boolean>();
 
   constructor(
-    private cdr: ChangeDetectorRef,
-    private serv: LocationsService,
+    private _cdr: ChangeDetectorRef,
+    private _service: LocationsService,
   ) { }
 
 
   public ngOnInit(): void {
-    this.createListItem();
+    this._createListItem();
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.complete();
+    this._destroy$.next(true);
+    this._destroy$.complete();
   }
 
-  public createListItem(): void {
-    this.serv.takeFilter$
+  private _createListItem(): void {
+    this._service.takeFilter$
       .pipe(
         filter(Boolean),
-        tap((data: any) => data.allOffices?.forEach((item, index) => item.isSelected = index === 0)),
-        takeUntil(this.destroy$),
+        tap((data: IFilterResponse) => data.allOffices?.forEach((item, index) => item.isSelected = index === 0)),
+        takeUntil(this._destroy$),
       ).
-      subscribe((data: any) => {
+      subscribe((data: IFilterResponse) => {
         this.allOffices$.next(data.allOffices);
       });
-  }
-
-  public onSelect(items: any): void {
-    items.isOpen = items.isOpen ? false : true;
-    this.cdr.detectChanges();
   }
 
 }
