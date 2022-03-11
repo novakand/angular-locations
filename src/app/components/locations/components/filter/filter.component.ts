@@ -323,7 +323,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   private _watchForCommuteOfficeDaysChanges(): void {
-    this._service.changedCommute$
+     this._service.changedCommute$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
