@@ -13,6 +13,7 @@ import { FilterRequest } from '../models/qure.model';
 // environment
 import { environment } from '../../../../environments/environment';
 import { IFilterResponse } from '../interfaces/filter-response.interface';
+import { IFilterUploadResponse } from '../interfaces/filter-upload-response.interface';
 
 @Injectable()
 export class LocationsService {
@@ -22,8 +23,8 @@ export class LocationsService {
     public actionAddPoint$ = new BehaviorSubject<any>(null);
     public actionCommutes$ = new BehaviorSubject<any>(null);
     public actionPreloader$ = new BehaviorSubject<any>(false);
-    public takeFilter$ = new BehaviorSubject<any>(null);
-    public filter$ = new BehaviorSubject<IFilterResponse>(null);
+    public query$ = new BehaviorSubject<IFilterResponse>(null);
+    public queryUpload$ = new BehaviorSubject<IFilterUploadResponse>(null);
     public changedCommute$ = new BehaviorSubject<any>(null);
     public isChekedForecast$ = new BehaviorSubject<any>(null);
     public isRemoveMarker$ = new BehaviorSubject<any>(null);
@@ -36,7 +37,7 @@ export class LocationsService {
     public filterUpdateAsync(filter: any): Observable<any> {
         return this.http.post<IFilterResponse>(`${environment.apiLocationUri}public/web/filter`, filter)
             .pipe(
-                tap((data) => this.takeFilter$.next({ ...data, filter: filter })),
+                tap((data) => this.query$.next({ ...data, filter: filter })),
             );
     }
 }

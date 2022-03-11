@@ -259,7 +259,7 @@
         "component-selector": [
             true,
             "element",
-            "app",
+            "fatma",
             "kebab-case"
         ],
         "directive-class-suffix": [
@@ -269,7 +269,7 @@
         "directive-selector": [
             true,
             "attribute",
-            "app",
+            "fatma",
             "camelCase"
         ],
         "object-curly-spacing": true,

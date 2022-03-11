@@ -9,6 +9,10 @@ import { MarkerType } from '../../enums/marker-type.enum';
 
 // interfaces
 import { IMarkerOptions } from '../../interfaces/marker-options.interface';
+import { INearby } from '../../../../components/locations/interfaces/nearby.interface';
+import { ICommutes } from '../../../../components/locations/interfaces/commutes.interface';
+import { ColorsType } from '../../enums/color-type.enum';
+import { IPolylineOptions } from '../../interfaces/polyline-options.interface';
 
 
 @Injectable()
@@ -48,6 +52,28 @@ export class MapBuilder {
         };
     }
 
+    public createCircleOptions(item: INearby): google.maps.CircleOptions {
+        return this.cmp.circleOptions = {
+            center: new google.maps.LatLng(item.center.lat, item.center.lon),
+            radius: item.radiusKm * 1000,
+            fillColor: '#1471ea',
+            fillOpacity: 0.2,
+            strokeColor: '#1471ea',
+            strokeOpacity: 0.2,
+        };
+    }
+
+
+    public createPolylineOptions(item: ICommutes): IPolylineOptions {
+        return this.cmp.polylineOptions = {
+            strokeColor: ColorsType[item.commuteCO2Quartile],
+            strokeWeight: 4,
+            zIndex: 10,
+            path: this._convertLatLng(item),
+            data: item,
+        };
+    }
+
 
     private _convertOffset(latlng: google.maps.LatLng, offsetX: number, offsetY: number): google.maps.LatLng {
 
@@ -60,6 +86,16 @@ export class MapBuilder {
             worldCoordinateCenter.y + pixelOffset.y,
         );
         return this.cmp.map.googleMap.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
+    }
+
+    private _convertLatLng(items: ICommutes): google.maps.LatLng[] {
+        const latLngs: google.maps.LatLng[] = [];
+        items.commute.forEach((latlng: any) => {
+            const latLng = new google.maps.LatLng(latlng[0], latlng[1]);
+            latLngs.push(latLng);
+            this.cmp.bounds.extend(latLng);
+        });
+        return latLngs;
     }
 
 }

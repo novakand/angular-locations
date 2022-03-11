@@ -3,7 +3,7 @@ import { MoveType } from '../enums/move-type.enums';
 
 export interface ICommutes {
     commuteUid: string;
-    commuteCO2Quartile: CommuteQuartiles[];
+    commuteCO2Quartile: CommuteQuartiles;
     allOfficesTotalCO2KgPerWeek: number;
     cO2KgPerDay: number;
     cO2KgPerWeek: number;

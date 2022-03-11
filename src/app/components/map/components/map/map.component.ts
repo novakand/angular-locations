@@ -19,7 +19,6 @@ import { LocationsService } from '../../../../components/locations/services/loca
 
 // enums
 import { MarkerType } from '../../enums/marker-type.enum';
-import { ColorsType } from '../../enums/color-type.enum';
 
 // interfaces
 import { IMarkerOptions } from '../../interfaces/marker-options.interface';
@@ -30,12 +29,11 @@ import { IFilterResponse } from 'src/app/components/locations/interfaces/filter-
 import { IInfoWindow } from '../../interfaces/info-windows.interface';
 import { IFilterUploadResponse } from 'src/app/components/locations/interfaces/filter-upload-response.interface';
 import { IItemPoint } from '../../interfaces/item-point.interface';
-import { INearby } from 'src/app/components/locations/interfaces/nearby.interface';
-import { ICommutes } from 'src/app/components/locations/interfaces/commutes.interface';
+import { INearby } from '../../../../components/locations/interfaces/nearby.interface';
 import { MapBuilder } from './map.builder';
 import { IForecastPointsRes } from 'src/app/components/locations/interfaces/forecast-point.interfaces';
 @Component({
-  selector: 'app-map',
+  selector: 'fatma-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
   providers: [MapBuilder, GoogleMap],
@@ -91,7 +89,7 @@ export class MapComponent implements OnInit, OnDestroy {
     clickableIcons: false,
   };
 
-  private _bounds: google.maps.LatLngBounds;
+  public bounds: google.maps.LatLngBounds;
   private _selectedPolyline: google.maps.Polyline;
   private _selectedInfoWindow: google.maps.InfoWindow;
 
@@ -108,7 +106,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
 
-    this._bounds = new google.maps.LatLngBounds();
+    this.bounds = new google.maps.LatLngBounds();
 
     this._watchForFilterUpdateChanges();
     this._watchForUploadChanges();
@@ -239,7 +237,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.dataSource.forecastPoints?.forEach((item: any) => {
       this.markerId++;
       const marker = item.data ? this._builder.updateMarker(MarkerType.virtual, item) : this._builder.updateMarker(MarkerType.office, item);
-      this._bounds.extend(marker.position);
+      this.bounds.extend(marker.position);
       this.forcastMarker.push(marker);
     });
   }
@@ -247,7 +245,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public buildMarker(): void {
     this.dataSource.allOffices.forEach((item: IAllOffices) => {
       const marker = this._builder.createMarkerOptions(MarkerType.virtual, item);
-      this._bounds.extend(marker.position);
+      this.bounds.extend(marker.position);
       this.markers.push(marker);
     });
     this._cdr.detectChanges();
@@ -260,7 +258,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public addCircle(item: INearby): void {
-    this.circles.push(this._createCircleOptions(item));
+    this.circles.push(this._builder.createCircleOptions(item));
   }
 
   private _boundsPolyline(polyline: MapPolyline): google.maps.LatLngBounds {
@@ -290,30 +288,8 @@ export class MapComponent implements OnInit, OnDestroy {
     };
   }
 
-  private _createCircleOptions(item: INearby): google.maps.CircleOptions {
-    return this.circleOptions = {
-      center: new google.maps.LatLng(item.center.lat, item.center.lon),
-      radius: item.radiusKm * 1000,
-      fillColor: '#1471ea',
-      fillOpacity: 0.2,
-      strokeColor: '#1471ea',
-      strokeOpacity: 0.2,
-    };
-  }
-
-  private _convertLatLng(items: ICommutes): google.maps.LatLng[] {
-    const latLngs: google.maps.LatLng[] = [];
-    items.commute.forEach((latlng: any) => {
-      const latLng = new google.maps.LatLng(latlng[0], latlng[1]);
-      latLngs.push(latLng);
-      this._bounds.extend(latLng);
-    });
-
-    return latLngs;
-  }
-
   private _fitBounds(): void {
-    (this.dataSource && this.isAddMarker) && this.map.fitBounds(this._bounds);
+    (this.dataSource && this.isAddMarker) && this.map.fitBounds(this.bounds);
   }
 
   private _removeForecast(): void {
@@ -321,16 +297,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.forcastMarker = [];
     !!copyMarker.length && this._service.mapDrag$.next(this.buildForcast());
     this._cdr.detectChanges();
-  }
-
-  private _createPolylineOptions(item: any): IPolylineOptions {
-    return this.polylineOptions = {
-      strokeColor: ColorsType[item.commuteCO2Quartile],
-      strokeWeight: 4,
-      zIndex: 10,
-      path: this._convertLatLng(item),
-      data: item,
-    };
   }
 
   private _watchForIsForecastChanges(): void {
@@ -367,7 +333,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _watchForUploadChanges(): void {
-    this._service.filter$
+    this._service.queryUpload$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
@@ -379,7 +345,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _watchForFilterUpdateChanges(): void {
-    this._service.takeFilter$
+    this._service.query$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
@@ -407,7 +373,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private buildPolylines(): void {
     this.dataSource?.commutes?.forEach((item) => {
-      this.polylines.push(this._createPolylineOptions(item));
+      this.polylines.push(this._builder.createPolylineOptions(item));
     });
     (!!this.dataSource?.commutes.length) && this._fitBounds();
     this._cdr.detectChanges();

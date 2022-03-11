@@ -41,7 +41,7 @@ module.exports = {
             "error",
             {
                 "type": "element",
-                "prefix": "app",
+                "prefix": "fatma",
                 "style": "kebab-case"
             }
         ],
@@ -51,7 +51,7 @@ module.exports = {
             "error",
             {
                 "type": "attribute",
-                "prefix": "app",
+                "prefix": "fatma",
                 "style": "camelCase"
             }
         ],

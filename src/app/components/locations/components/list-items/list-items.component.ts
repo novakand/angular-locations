@@ -9,7 +9,7 @@ import { IFilterResponse } from '../../interfaces/filter-response.interface';
 import { LocationsService } from '../../services/locations.service';
 
 @Component({
-  selector: 'app-list-items',
+  selector: 'fatma-list-items',
   templateUrl: './list-items.component.html',
   styleUrls: ['./list-items.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,7 +36,7 @@ export class ListItemsComponent implements OnInit, OnDestroy {
   }
 
   private _createListItem(): void {
-    this._service.takeFilter$
+    this._service.query$
       .pipe(
         filter(Boolean),
         tap((data: IFilterResponse) => data.allOffices?.forEach((item, index) => item.isSelected = index === 0)),

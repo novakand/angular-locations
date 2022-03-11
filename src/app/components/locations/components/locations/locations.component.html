@@ -8,8 +8,8 @@
                 </a>
                 <div class="sidebar__body">
 
-                    <app-list-items></app-list-items>
-                    <app-filter></app-filter>
+                    <fatma-list-items></fatma-list-items>
+                    <fatma-filter-form></fatma-filter-form>
 
                 </div>
                 <div class="sidebar__footer">
@@ -44,7 +44,7 @@
                     <mat-progress-bar *ngIf="isProgress$ | async" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
                 </div>
                 <div class="main-body">
-                    <app-map></app-map>
+                    <fatma-map></fatma-map>
                 </div>
             </main>
         </mat-sidenav-content>

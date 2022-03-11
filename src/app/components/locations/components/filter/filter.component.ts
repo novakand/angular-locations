@@ -28,7 +28,7 @@ import { IFilterResponse } from '../../interfaces/filter-response.interface';
 import { LocationsService } from '../../services/locations.service';
 import { IFilterUploadResponse } from '../../interfaces/filter-upload-response.interface';
 @Component({
-  selector: 'app-filter',
+  selector: 'fatma-filter-form',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -167,7 +167,6 @@ export class FilterComponent implements OnInit, OnDestroy {
     this._cdr.detectChanges();
   }
 
-
   public onToggleFilter(): void {
     this.isFilterShow = !this.isFilterShow;
   }
@@ -229,23 +228,20 @@ export class FilterComponent implements OnInit, OnDestroy {
       ...defaultParam,
     };
 
-    console.log('filterParam', filterParam);
-
     this._service.filterUpdateAsync(filterParam)
       .pipe(
         filter(Boolean),
         tap((data: IFilterResponse) => (this._isAddFilter && !!data?.allOffices?.length) && this._enableFilterForm(true)),
-        tap((data: IFilterResponse) => this.filterForm.get('isChekedTransport').value && this._uploadFilterTrasport(data)),
+        tap((data: any) => this.filterForm.get('isChekedTransport').value && this._uploadFilterTrasport(data)),
         takeUntil(this._destroy$),
       )
       .subscribe((data: IFilterResponse) => {
-        console.log(data, ' RESPONSE');
         this._service.actionPreloader$.next(false);
         this._isAddFilter = false;
       });
   }
 
-  private _uploadFilterTrasport(data): void {
+  private _uploadFilterTrasport(data: IFilterUploadResponse): void {
     this._updateMoveType(data);
     this._isCopy && this._setCopyMoveType();
     this._selectedMoveType();
@@ -271,13 +267,13 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   private _selectedMoveType(): void {
     this._selectedTrasport = Object.values(this.transportType).map((item: any) => {
-      const moveType = Object.values(this._moveType).find((findItem) => findItem === item);
+      const moveType: MoveType = Object.values(this._moveType).find((findItem) => findItem === item);
       return item = moveType ? moveType : false;
     });
   }
 
   private _resetMoveType(): void {
-    this._trasportControl.setValue(this._trasportControl.value.map((value: string, i: string | number) => true),
+    this._trasportControl.setValue(this._trasportControl.value.map(() => true),
       { emitEvent: false },
     );
   }
@@ -303,7 +299,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   private _watchForUploadChanges(): void {
-    this._service.filter$
+    this._service.queryUpload$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
@@ -323,7 +319,7 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   private _watchForCommuteOfficeDaysChanges(): void {
-     this._service.changedCommute$
+    this._service.changedCommute$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),

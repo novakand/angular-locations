@@ -16,7 +16,7 @@ import { IFilterResponse } from '../../interfaces/filter-response.interface';
 import { IForecastPointsRes } from '../../interfaces/forecast-point.interfaces';
 
 @Component({
-  selector: 'app-locations',
+  selector: 'fatma-locations',
   templateUrl: './locations.component.html',
   styleUrls: ['./locations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,7 +32,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
 
   @ViewChild('file') public file: ElementRef<HTMLInputElement>;
 
-  private _discardQuery: IFilterResponse = null;
+  private _discardQuery: any = null;
   private _dataSource: IFilterResponse = null;
   private _forecastPoints: IForecastPointsRes[];
 
@@ -58,8 +58,8 @@ export class LocationsComponent implements OnInit, OnDestroy {
   }
 
   public onDiscard(): void {
-    this._service.takeFilter$.next(this._discardQuery);
-    this._service.filter$.next(this._discardQuery);
+    this._service.query$.next(this._discardQuery);
+    this._service.queryUpload$.next(this._discardQuery);
     this._service.isRemoveMarker$.next(true);
     this._cdr.detectChanges();
   }
@@ -82,7 +82,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   }
 
   private _watchForFilterUpdateChanges(): void {
-    this._service.takeFilter$
+    this._service.query$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
@@ -104,7 +104,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
   }
 
   private _copyQuery(): void {
-    this._discardQuery = Utils.deepCopy(this._service.takeFilter$.getValue());
+    this._discardQuery = Utils.deepCopy(this._service.query$.getValue());
   }
 
   private _watchForForecastPointChanges(): void {
@@ -126,8 +126,8 @@ export class LocationsComponent implements OnInit, OnDestroy {
         takeUntil(this._destroy$),
       )
       .subscribe((data: IFilterUploadResponse) => {
-        this._service.takeFilter$.next(data);
-        this._service.filter$.next(data);
+        this._service.query$.next(data);
+        this._service.queryUpload$.next(data);
         this.file.nativeElement.value = '';
         this._service.actionPreloader$.next(false);
       });

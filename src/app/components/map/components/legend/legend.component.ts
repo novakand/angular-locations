@@ -37,7 +37,7 @@ export class LegendComponent implements OnInit {
 
 
   public addListenerFilter(): void {
-    this._locService.takeFilter$
+    this._locService.query$
       .pipe(
         filter(Boolean),
         takeUntil(this.destroy$),
@@ -49,7 +49,7 @@ export class LegendComponent implements OnInit {
         this.cdr.detectChanges();
       });
 
-    this._locService.filter$
+    this._locService.queryUpload$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
