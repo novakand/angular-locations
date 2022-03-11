@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
-import { MarkerTypeIcon } from '../../enums/marker-icon-type.enums';
-import { MarkerType } from '../../enums/marker-type.enum';
-import { IMarkerOptions } from '../../interfaces/marker-options.interface';
+
+// components
 import { MapComponent } from './map.component';
+
+// enums
+import { MarkerTypeIcon } from '../../enums/marker-icon-type.enum';
+import { MarkerType } from '../../enums/marker-type.enum';
+
+// interfaces
+import { IMarkerOptions } from '../../interfaces/marker-options.interface';
+
 
 @Injectable()
 export class MapBuilder {
@@ -11,20 +18,32 @@ export class MapBuilder {
 
     constructor() { }
 
-
-    public createMarkerOptions(type: MarkerType, item?): IMarkerOptions {
-        const LatLng = type === MarkerType.virtual
-            && this._convertOffset(new google.maps.LatLng(this.cmp.selectedOffice.lat, this.cmp.selectedOffice.lon), 50, 0);
+    public updateMarker(type: MarkerType, item?): IMarkerOptions {
+        const LatLng = type === MarkerType.office
+            && this._convertOffset(new google.maps.LatLng(item.lat, item.lon), 50, 0);
         return this.cmp.markerOptions = {
-            draggable: type === MarkerType.virtual,
+            draggable: true,
             crossOnDrag: false,
             icon: {
-                url: type === MarkerType.office ? MarkerTypeIcon.mainOffice : MarkerTypeIcon.virtualOffice,
+                url: MarkerTypeIcon.virtual,
             },
-            position: type === MarkerType.office
+            position: type === MarkerType.virtual
                 ? { lat: item.lat, lng: item.lon } :
                 { lat: LatLng.lat(), lng: LatLng.lng() },
-            id: type === MarkerType.office ? null : this.cmp.markerId,
+            id: this.cmp.markerId,
+            type: MarkerType.office,
+        };
+    }
+
+    public createMarkerOptions(type: MarkerType, item?): IMarkerOptions {
+        return this.cmp.markerOptions = {
+            draggable: type === MarkerType.office,
+            crossOnDrag: false,
+            icon: type === MarkerType.virtual ? MarkerTypeIcon.office : MarkerTypeIcon.virtual,
+            position: type === MarkerType.virtual
+                ? { lat: item.lat, lng: item.lon } :
+                this._convertOffset(new google.maps.LatLng(this.cmp.selectedOffice.lat, this.cmp.selectedOffice.lon), 50, 0),
+            id: type === MarkerType.virtual ? null : this.cmp.markerId,
             type: type,
         };
     }
