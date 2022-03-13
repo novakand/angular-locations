@@ -1,55 +1,108 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+
+// external lib
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+
+// services
 import { LocationsService } from '../../../../components/locations/services/locations.service';
+
+// interfaces
+import { IFilterResponse } from 'src/app/components/locations/interfaces/filter-response.interface';
+
+// enums
 import { CommutesType } from '../../enums/commutest-type.enum';
 
 @Component({
-  selector: 'app-legend',
+  selector: 'fatma-legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss'],
 })
-export class LegendComponent implements OnInit {
+export class LegendComponent implements OnInit, OnDestroy {
 
-  public destroy$ = new Subject<boolean>();
   public commutesType = CommutesType;
   public legendForm: FormGroup;
-  public dataSource: any;
+  public dataSource: IFilterResponse;
   public isShowLegend: boolean;
 
   private _destroy$ = new Subject<boolean>();
 
   constructor(
-    private fb: FormBuilder,
-    private _locService: LocationsService,
-    private cdr: ChangeDetectorRef,
+    private _fb: FormBuilder,
+    private _service: LocationsService,
+    private _cdr: ChangeDetectorRef,
 
   ) { }
 
   public ngOnInit(): void {
-    this.buildForm();
-    this.fieldListener();
-    this.addListenersForm();
-    this.addListenerFilter();
+    this._buildForm();
+    this._setValueForm();
+
+    this._watchForFormChanges();
+    this._watchForFilterUpdateChanges();
+    this._watchForUploadChanges();
     this.legendForm.disable({ emitEvent: false, onlySelf: true });
   }
 
+  public ngOnDestroy(): void {
+    this._destroy$.next(true);
+    this._destroy$.complete();
+  }
 
-  public addListenerFilter(): void {
-    this._locService.query$
+
+  public fieldsChange(): void {
+    this.legendForm.get('all').reset();
+  }
+
+  public onAllChange(event): void {
+    event.currentTarget.checked && this.legendForm.get('showCommutes').reset();
+  }
+
+
+  private _buildForm(): void {
+    this.legendForm = this._fb.group({
+      all: new FormControl({ checked: true }),
+      showCommutes: this._fb.array(this._buildFieldArray()),
+    });
+  }
+
+  private _buildFieldArray(): any {
+    return Object.values(this.commutesType).map((x) => false);
+  }
+
+  private _setValueForm(): void {
+    const checkboxControl = this.legendForm.get('showCommutes');
+    checkboxControl.valueChanges.subscribe(() => {
+      checkboxControl.setValue(
+        checkboxControl.value.map((value, i) => value ? Object.values(this.commutesType)[i] : false),
+        { emitEvent: false },
+      );
+    });
+  }
+
+  private _sendCommutes(val): void {
+    const selectCommutes = this.legendForm.get('showCommutes').value.filter((value) => !!value);
+    const selected = (!selectCommutes.length && !val.all) ? ['notSet'] : selectCommutes;
+    this._service.actionCommutes$.next(selected);
+  }
+
+  private _watchForFormChanges(): void {
+    this.legendForm.valueChanges
       .pipe(
-        filter(Boolean),
-        takeUntil(this.destroy$),
-      ).
-      subscribe((data: any) => {
-        this.dataSource = data;
-        this.isShowLegend = !(!this.dataSource && !this.dataSource.commutes.length);
-        !!this.dataSource.commutes.length && this.legendForm.enable({ emitEvent: false, onlySelf: true });
-        this.cdr.detectChanges();
-      });
+        filter((value) => !!value),
+        debounceTime(800),
+        takeUntil(this._destroy$),
+      ).subscribe((value) => this._sendCommutes(value));
+  }
 
-    this._locService.queryUpload$
+  private _watchForUploadChanges(): void {
+    this._service.queryUpload$
       .pipe(
         filter(Boolean),
         takeUntil(this._destroy$),
@@ -71,52 +124,22 @@ export class LegendComponent implements OnInit {
           checkboxControl.value.map((value: any, i: string | number) => selectedType[i]),
           { emitEvent: false },
         );
-        this.cdr.detectChanges();
+        this._cdr.detectChanges();
       });
 
   }
 
-  public buildForm(): void {
-    this.legendForm = this.fb.group({
-      all: new FormControl({ checked: true }),
-      showCommutes: this.fb.array(this.buildFieldArray()),
-    });
-  }
-
-  public addListenersForm(): void {
-    this.legendForm.valueChanges.pipe(
-      filter((value) => !!value),
-      debounceTime(800),
-      takeUntil(this.destroy$),
-    ).subscribe((value) => this.sendCommutes(value));
-  }
-
-  public sendCommutes(val): void {
-    const selectCommutes = this.legendForm.get('showCommutes').value.filter((value) => !!value);
-    const selected = (!selectCommutes.length && !val.all) ? ['notSet'] : selectCommutes;
-    this._locService.actionCommutes$.next(selected);
-  }
-
-  public fieldListener(): void {
-    const checkboxControl = this.legendForm.get('showCommutes');
-    checkboxControl.valueChanges.subscribe(() => {
-      checkboxControl.setValue(
-        checkboxControl.value.map((value, i) => value ? Object.values(this.commutesType)[i] : false),
-        { emitEvent: false },
-      );
-    });
-  }
-
-  public buildFieldArray(): any {
-    return Object.values(this.commutesType).map(x => false);
-  }
-
-  public fieldsChange(event): void {
-    this.legendForm.get('all').reset();
-  }
-
-  public onAllChange(event): void {
-    // tslint:disable-next-line: no-unused-expression
-    event.currentTarget.checked && this.legendForm.get('showCommutes').reset();
+  private _watchForFilterUpdateChanges(): void {
+    this._service.query$
+      .pipe(
+        filter(Boolean),
+        takeUntil(this._destroy$),
+      ).
+      subscribe((data: IFilterResponse) => {
+        this.dataSource = data;
+        this.isShowLegend = !(!this.dataSource && !this.dataSource.commutes.length);
+        !!this.dataSource.commutes.length && this.legendForm.enable({ emitEvent: false, onlySelf: true });
+        this._cdr.detectChanges();
+      });
   }
 }

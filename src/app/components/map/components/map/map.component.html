@@ -52,7 +52,7 @@
         <map-circle *ngFor="let circle of circles" [options]="circle"></map-circle>
 
     </google-map>
-    <app-legend></app-legend>
+    <fatma-legend></fatma-legend>
 
     <div [style.position]="'fixed'" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerData]="{ item: contextMenu.menuData }" [matMenuTriggerFor]="contextMenu">
     </div>

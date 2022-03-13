@@ -105,7 +105,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-
     this.bounds = new google.maps.LatLngBounds();
 
     this._watchForFilterUpdateChanges();

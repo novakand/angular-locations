@@ -21,27 +21,50 @@
             <main class="main">
                 <div class="main-header">
                     <div class="main-header__left">
-                        <ul class="trigger-list">
-                            <li style="display: none;" class="trigger-list__item">
-                                <a routerLinkActive="trigger-list__button_active" class="trigger-list__button " routerLink="/statictics">Stats</a>
+                        <ul class="trigger-list" style="display: none;">
+                            <li class="trigger-list__item">
+                                <a routerLinkActive="trigger-list__button_active" class="trigger-list__button "
+                                    routerLink="/statictics">Stats</a>
                             </li>
                             <li class="trigger-list__item">
-                                <a routerLinkActive="trigger-list__button_active" class="trigger-list__button trigger-list__button_active" routerLink="/map">Map</a>
+                                <a routerLinkActive="trigger-list__button_active"
+                                    class="trigger-list__button trigger-list__button_active" routerLink="/map">Map</a>
                             </li>
                         </ul>
                     </div>
-                    <div class="save-png main-header__right">
-                        <div class="save-png__controls controls">
-                            <a style="display: none;" class="controls__button controls__button_redo controls__button_disabled"></a>
-                        </div>
-                        <div *ngIf="isForecast" class="save-png__buttons">
-                            <input hidden accept="application/JSON" type="file" #file (change)="onAddFile($event)">
-                            <a class="button button_primary save-png__button" (click)="onDownLoadFile()">Download</a>
-                            <a class="button button_secondary save-png__button" (click)="onUploadFile()">Upload</a>
-                            <a class="button button_secondary save-png__button" (click)="onDiscard()" style="color: #FF196E; border-color: #FF196E;">Discard</a>
+
+                    <div *ngIf="isForecast" class="save-png main-header__right">
+                        <input hidden accept="application/JSON" type="file" #file (change)="onAddFile($event)">
+                        <button class="button button_primary save-png__button" (click)="onDownLoadFile()"
+                            mat-button>Download</button>
+                        <button class="button button_secondary save-png__button" (click)="onUploadFile()"
+                            mat-button>Upload</button>
+                        <button style="color: #FF196E; border-color: #FF196E;"
+                            class="button button_secondary save-png__button" mat-button
+                            (click)="onDiscard()">Discard</button>
+                    </div>
+
+                    <div *ngIf="true" class="top-account main-header__right">
+                        <div class="top-account__list" [matMenuTriggerFor]="profileMenu">
+                            <div class="top-account__dropdown top-account__item ta-summary">
+                                <div class="ta-summary__avatar">
+                                    <div mat-icon-button *ngIf="true">
+                                        <img class="ta-summary__avatar-src" src="../../../../../assets/img/avatar.svg">
+                                    </div>
+                                </div>
+                            </div>
+                            <mat-menu #profileMenu="matMenu" class=" nav-menu-mat account-nav-list">
+                                <ul class="account-nav-list">
+                                    <li class="account-nav-list__item">
+                                        <a href="/Account/SignOut" class="account-nav-list__link">Log out</a>
+                                    </li>
+                                </ul>
+                            </mat-menu>
                         </div>
                     </div>
-                    <mat-progress-bar *ngIf="isProgress$ | async" mode="indeterminate" color="primary" class="h21-dialog-panel_progress"></mat-progress-bar>
+
+                    <mat-progress-bar *ngIf="isProgress$ | async" mode="indeterminate" color="primary"
+                        class="panel_progress"></mat-progress-bar>
                 </div>
                 <div class="main-body">
                     <fatma-map></fatma-map>

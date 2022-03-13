@@ -14,7 +14,6 @@ import { LegendComponent } from './components/legend/legend.component';
 import { MapComponent } from './components/map/map.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatMenuModule } from '@angular/material/menu';
-// import { MapBuilder } from './components/map/map.builder';
 @NgModule({
     imports: [
         CommonModule,
@@ -31,15 +30,12 @@ import { MatMenuModule } from '@angular/material/menu';
         MatSlideToggleModule,
         NgxSliderModule,
         MatMenuModule,
-        // MapBuilder,
     ],
     declarations: [
         LegendComponent,
         MapComponent,
-        // MapBuilder,
     ],
     exports: [
-        // MapBuilder,
         LegendComponent,
         MapComponent,
     ],

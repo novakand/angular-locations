@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MatMenuModule } from '@angular/material/menu';
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -42,6 +43,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     HttpClientModule,
     MatProgressBarModule,
     InfiniteScrollModule,
+    MatMenuModule,
   ],
   exports: [
     LocationsComponent, FilterComponent, ListItemsComponent,
