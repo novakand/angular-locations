@@ -7,8 +7,9 @@ import { IEnvironment } from './environment.interface';
 export const environment: IEnvironment = {
   debounceTime: 300,
   production: false,
-  apiLocationUri: 'http://144.76.237.58:9000/api/',
-
+  apiLocationUri: 'http://localhost:9000/api/',
+  cookieName: "asdf",
+  cookieValue: "asf"
 };
 /*
  * For easier debugging in development mode, you can import the following file

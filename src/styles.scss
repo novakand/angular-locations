@@ -1559,7 +1559,7 @@ a {
 //     width: calc(100% - 400px);
 // }
 .top-account {
-    position: relative;
+    position: absolute;
     display: flex;
     justify-content: end;
     margin-left: 3px;
@@ -1814,7 +1814,7 @@ a {
 }
 
 .main-header {
-    padding: 16px 40px 12px;
+    padding: 38px 40px 38px;
     border-bottom: 1px dashed #c2dcff;
     display: flex;
     align-items: center;

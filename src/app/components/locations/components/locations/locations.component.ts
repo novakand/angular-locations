@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDe
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import moment from 'moment';
+import { CookieService } from 'ngx-cookie';
 
 // services
 import { LocationsService } from '../../services/locations.service';
@@ -27,6 +28,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
 
   public isProgress = true;
   public isForecast = false;
+  public IsAuthorized = false;
 
   public isProgress$ = this._service.actionPreloader$;
 
@@ -42,6 +44,7 @@ export class LocationsComponent implements OnInit, OnDestroy {
     private _service: LocationsService,
     private _uploadService: UploadService,
     private _cdr: ChangeDetectorRef,
+    private _cookieService: CookieService
   ) { }
 
 
@@ -50,6 +53,8 @@ export class LocationsComponent implements OnInit, OnDestroy {
     this._watchForForecastPointChanges();
     this._watchForIsForecastChanges();
     this._watchForFilterUpdateChanges();
+
+    this.IsAuthorized = Boolean(this._cookieService.get('.Fatma.AuthCookieAspNetCore'));
   }
 
   public ngOnDestroy(): void {

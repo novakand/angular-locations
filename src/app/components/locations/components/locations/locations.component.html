@@ -44,7 +44,7 @@
                             (click)="onDiscard()">Discard</button>
                     </div>
 
-                    <div *ngIf="true" class="top-account main-header__right">
+                    <div *ngIf="IsAuthorized" class="top-account main-header__right">
                         <div class="top-account__list" [matMenuTriggerFor]="profileMenu">
                             <div class="top-account__dropdown top-account__item ta-summary">
                                 <div class="ta-summary__avatar">

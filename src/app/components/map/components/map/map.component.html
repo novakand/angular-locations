@@ -14,8 +14,8 @@
                                 <ngx-slider class="filter-slider" [(value)]="sliderOptions.value" [options]="sliderOptions">
                                 </ngx-slider>
                                 <div class="wb-slider__labels">
-                                    <div class="wb-slider__label">Office</div>
                                     <div class="wb-slider__label">Home</div>
+                                    <div class="wb-slider__label">Office</div>
                                 </div>
                                 <div class="wb-slider__value">{{sliderOptions.value}}</div>
                             </div>
@@ -31,7 +31,7 @@
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
                     <div class="pin-data__line">{{cO2Emission}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day
+                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per week
                     </div>
                 </div>
             </map-info-window>
@@ -43,7 +43,7 @@
             <map-info-window #infoWindow="mapInfoWindow" [options]="infoWindowOptions">
                 <div class="pin-data">
                     <div class="pin-data__line">{{cO2EmissionVirtual}} kg per week </div>
-                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per day
+                    <div class="pin-data__line pin-data__line_blue">{{dataSource.allOfficesTotalCO2KgPerWeek}} kg per week
                     </div>
                 </div>
             </map-info-window>

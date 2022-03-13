@@ -157,10 +157,10 @@
   dependencies:
     tslib "^2.2.0"
 
-"@angular/cdk@^13.2.3":
-  version "13.2.4"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-13.2.4.tgz#52ca05cabd64bc17fef3c3f23b215604267f3d66"
-  integrity sha512-t8LX/xySaIyN5EpWQjCwZFVLmdW/LE7pvx+6PghYGiLNvS+Vu/INi1Bhwt+b3fJDJ1uNYVCkB64G0UYhIsAwhg==
+"@angular/cdk@^13.2.4":
+  version "13.2.6"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-13.2.6.tgz#4a5cf4b93ccad4123e09a6cbe2c880bb6f3242fe"
+  integrity sha512-epuXmaHqfukwPsYvIksbuHLXDtb6GALV2Vgv6W2asj4TorD584CeQTs0EcdPGmCzhGUYI8U8QV63WOxu9YFcNA==
   dependencies:
     tslib "^2.3.0"
   optionalDependencies:
@@ -257,10 +257,10 @@
     "@types/google.maps" "^3.45.6"
     tslib "^2.3.0"
 
-"@angular/material@^13.2.3":
-  version "13.2.3"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-13.2.3.tgz#a7d716d7d3eebfeb1250a0235b38262f1000df00"
-  integrity sha512-io9NzL32QKBngSpNbnIGRN0/qhkGpyfZHnpW+IOsYa4gMlXqi0JMV5Ygi+O1Dvd57TXzbb3e2eggdZyAWe7IDA==
+"@angular/material@^13.2.4":
+  version "13.2.6"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-13.2.6.tgz#615ad63453cd4122ab1775b077e8122c932cab06"
+  integrity sha512-/h5wa/tXE0DMIIEQX+rozFkUWHYUWg1Xf1R2tXUFLslLQ0KRCGyNo225Sv/1wrxXHxfrML787lA9ex4p90Feqw==
   dependencies:
     tslib "^2.3.0"
 
@@ -5599,6 +5599,13 @@ ng2-material-dropdown@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ng2-material-dropdown/-/ng2-material-dropdown-1.0.0.tgz"
   integrity sha512-waKgEkKQwGZT0dqRAd3ZW+wueYs5Xw9owiPBSMdg5jru5DcKDpUqFaADMqqI7HPuzJCxNJSln6nXX1tMYDbXGA==
+  dependencies:
+    tslib "^2.0.0"
+
+ngx-cookie@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-5.0.2.tgz#cb658180b786d511d0ef163cfe195061d0a0e0e1"
+  integrity sha512-auivWhAhC5bW1HssvtQild1TREHWb1JtcKO0e+VGe9T7LHrfi5w2qcP8C58ly64PT+brZHQBvT1Azb7a6goHZA==
   dependencies:
     tslib "^2.0.0"
 

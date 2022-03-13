@@ -16,6 +16,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MatMenuModule } from '@angular/material/menu';
+import { CookieModule } from 'ngx-cookie';
+
 @NgModule({
   declarations: [
     LocationsComponent,
@@ -44,6 +46,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatProgressBarModule,
     InfiniteScrollModule,
     MatMenuModule,
+    CookieModule.forRoot(),
   ],
   exports: [
     LocationsComponent, FilterComponent, ListItemsComponent,
